@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>2.11</version>
+    <version>2.28</version>
     <relativePath/>
   </parent>
   <groupId>sap.ai.st.cm.plugins</groupId>
@@ -77,14 +77,9 @@
   -->
     <dependencies>
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-olingo2-starter</artifactId>
-            <version>2.19.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.odata4j</groupId>
-            <artifactId>odata4j</artifactId>
-            <version>0.5</version>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>odata-client-core</artifactId>
+            <version>4.0.0-RC03</version>
         </dependency>
     </dependencies>
 </project>

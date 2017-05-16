@@ -13,4 +13,7 @@
   <f:entry title="Change ID" field="ChangeID">
     <f:textbox />
   </f:entry>
+  <f:entry title="Change Status" field="ChangeStatus">
+    <f:textbox />
+  </f:entry>
 </j:jelly>

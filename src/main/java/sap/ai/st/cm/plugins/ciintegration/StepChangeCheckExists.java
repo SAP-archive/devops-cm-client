@@ -10,35 +10,18 @@ import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import java.io.IOException;
 import org.kohsuke.stapler.DataBoundConstructor;
-import jenkins.model.GlobalConfiguration;
-import jenkins.tasks.SimpleBuildStep;
 
-public class StepChangeCheckExists extends Builder implements SimpleBuildStep {
-
-    private final String ChangeID;
-
-    public String getChangeID() {
-        return ChangeID;
-    }
+public class StepChangeCheckExists extends StepAbstract {
 
     @DataBoundConstructor
     public StepChangeCheckExists(String ChangeID) {
-        this.ChangeID = ChangeID;
+        
+        super(ChangeID);
     }
 
     @Override
-    public void perform(Run<?, ?> run, FilePath fp, Launcher lnchr, TaskListener tl) throws InterruptedException, IOException {
-
-        tl.getLogger().println(getDescriptor().getDisplayName());
-        tl.getLogger().println("Change ID " + this.ChangeID);
-
-        CIIntegrationGlobalConfiguration globalConfiguration = GlobalConfiguration.all().get(CIIntegrationGlobalConfiguration.class);
-
-        if (globalConfiguration != null) {
-
-            tl.getLogger().println("URL " + globalConfiguration.getServiceURL());
-            tl.getLogger().println("User " + globalConfiguration.getServiceUser());
-        }
+    public void perform(Run<?, ?> run, FilePath filepath, Launcher launcher, TaskListener taskListener) throws InterruptedException, IOException {        
+        super.perform(run, filepath, launcher, taskListener);
     }
 
     @Extension
@@ -51,7 +34,7 @@ public class StepChangeCheckExists extends Builder implements SimpleBuildStep {
 
         @Override
         public String getDisplayName() {
-            return "SAP ChaRM: Check Change exists";
+            return "SAP Change Management: Check Change exists";
         }
     }
 }
