@@ -55,7 +55,7 @@ public abstract class StepAbstract extends Builder implements SimpleBuildStep {
 
             taskListener.getLogger().println(e);
 
-            throw new InterruptedException();
+            throw new IOException(e);
 
         }
     }
