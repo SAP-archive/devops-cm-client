@@ -16,18 +16,10 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 public class StepChangeGetDevelopmentTransport extends StepAbstract {
 
-    private final String TargetEnvVariable;
-
-    public String getTargetEnvVariable() {
-        return TargetEnvVariable;
-    }
-
     @DataBoundConstructor
-    public StepChangeGetDevelopmentTransport(String ChangeID, String TargetEnvVariable) {
+    public StepChangeGetDevelopmentTransport(String ChangeID) {
 
         super(ChangeID);
-
-        this.TargetEnvVariable = TargetEnvVariable;
     }
 
     @Override
@@ -54,12 +46,16 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
             if (selectedTransport != null) {
 
                 taskListener.getLogger().println("Transport " + selectedTransport.getTransportID() + " selected");
-
-                //run.getEnvironment(taskListener).put(this.TargetEnvVariable, selectedTransport.getTransportID());
                 
-                run.addAction(new VariableInjectionAction(this.TargetEnvVariable, selectedTransport.getTransportID()));
+                CIIntegrationProperties properties = new CIIntegrationProperties(fp);
+                
+                properties.setDevelopmentTransportID(selectedTransport.getTransportID());
+                
+                properties = new CIIntegrationProperties(fp);
+                
+                properties.setProperty("TransportID", selectedTransport.getTransportID());
 
-                taskListener.getLogger().println("Variable " + this.TargetEnvVariable + " set to " + run.getEnvironment(taskListener).get(this.TargetEnvVariable));
+                taskListener.getLogger().println("Set current development transport to " + properties.getDevelopmentTransportID());
             }
 
         } catch (Exception e) {

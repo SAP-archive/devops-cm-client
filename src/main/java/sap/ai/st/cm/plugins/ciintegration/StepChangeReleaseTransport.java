@@ -12,23 +12,27 @@ import java.io.IOException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
-public class StepChangeCheckExists extends StepAbstract {
+public class StepChangeReleaseTransport extends StepAbstract {
 
     @DataBoundConstructor
-    public StepChangeCheckExists(String ChangeID) {
-        
+    public StepChangeReleaseTransport(String ChangeID) {
+
         super(ChangeID);
     }
 
     @Override
-    public void perform(Run<?, ?> run, FilePath filepath, Launcher launcher, TaskListener taskListener) throws InterruptedException, IOException {        
+    public void perform(Run<?, ?> run, FilePath filepath, Launcher launcher, TaskListener taskListener) throws InterruptedException, IOException {
         super.perform(run, filepath, launcher, taskListener);
-        
+
         try {
 
             CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
 
-            odataClient.getChange(this.ChangeID);
+            CIIntegrationProperties properties = new CIIntegrationProperties(filepath);
+
+            odataClient.releaseDevelopmentTransport(properties.getDevelopmentTransportID());
+
+            taskListener.getLogger().println("Development transport " + properties.getDevelopmentTransportID() + " released");
 
         } catch (Exception e) {
 
@@ -36,7 +40,7 @@ public class StepChangeCheckExists extends StepAbstract {
 
             throw new IOException(e);
 
-        }        
+        }
     }
 
     @Extension
@@ -49,7 +53,7 @@ public class StepChangeCheckExists extends StepAbstract {
 
         @Override
         public String getDisplayName() {
-            return "SAP Change Management: Check Change exists";
+            return "SAP Change Management: Release development transport";
         }
     }
 }

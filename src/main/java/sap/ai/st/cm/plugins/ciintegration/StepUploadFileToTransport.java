@@ -51,7 +51,7 @@ public class StepUploadFileToTransport extends StepAbstract {
 
         try {
 
-            String transportID = environment.expand(this.TransportID);
+            String transportID = new CIIntegrationProperties(fp).getDevelopmentTransportID();
             String filePath = fp.getRemote() + File.separator + environment.expand(this.FilePath);
             String applicationID = environment.expand(this.ApplicationID);
 

@@ -44,19 +44,6 @@ public abstract class StepAbstract extends Builder implements SimpleBuildStep {
 
         taskListener.getLogger().println("URL " + this.globalConfiguration.getServiceURL());
         taskListener.getLogger().println("User " + this.globalConfiguration.getServiceUser());
-
-        try {
-
-            CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
-
-            odataClient.getChange(this.ChangeID);
-
-        } catch (Exception e) {
-
-            taskListener.getLogger().println(e);
-
-            throw new IOException(e);
-
-        }
+        
     }
 }
