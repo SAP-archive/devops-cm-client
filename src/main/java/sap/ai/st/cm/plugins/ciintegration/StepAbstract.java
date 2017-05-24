@@ -8,7 +8,6 @@ import hudson.tasks.Builder;
 import java.io.IOException;
 import jenkins.model.GlobalConfiguration;
 import jenkins.tasks.SimpleBuildStep;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 public abstract class StepAbstract extends Builder implements SimpleBuildStep {
 

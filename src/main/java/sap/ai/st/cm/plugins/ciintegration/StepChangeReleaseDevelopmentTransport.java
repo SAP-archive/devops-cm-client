@@ -12,12 +12,13 @@ import java.io.IOException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
-public class StepChangeReleaseTransport extends StepAbstract {
+public class StepChangeReleaseDevelopmentTransport extends StepAbstract {
 
     @DataBoundConstructor
-    public StepChangeReleaseTransport(String ChangeID) {
+    public StepChangeReleaseDevelopmentTransport(String ChangeID) {
 
         super(ChangeID);
+
     }
 
     @Override
@@ -30,7 +31,7 @@ public class StepChangeReleaseTransport extends StepAbstract {
 
             CIIntegrationProperties properties = new CIIntegrationProperties(filepath);
 
-            odataClient.releaseDevelopmentTransport(properties.getDevelopmentTransportID());
+            odataClient.releaseDevelopmentTransport(this.ChangeID, properties.getDevelopmentTransportID());
 
             taskListener.getLogger().println("Development transport " + properties.getDevelopmentTransportID() + " released");
 

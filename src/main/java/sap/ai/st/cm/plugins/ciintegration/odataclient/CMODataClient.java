@@ -6,11 +6,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
-import org.apache.olingo.client.api.communication.request.invoke.InvokeRequestFactory;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntityRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntitySetIteratorRequest;
@@ -22,7 +19,6 @@ import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.domain.ClientProperty;
-import org.apache.olingo.client.api.domain.ClientValue;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
@@ -48,7 +44,7 @@ public class CMODataClient {
 
         ODataEntityRequest<ClientEntity> request = this.client.getRetrieveRequestFactory().getEntityRequest(entityUri);
 
-        request.setAccept("application/atom+xml");
+        request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
         ODataRetrieveResponse<ClientEntity> response = request.execute();
 
@@ -63,7 +59,7 @@ public class CMODataClient {
 
         ODataEntitySetIteratorRequest<ClientEntitySet, ClientEntity> request = this.client.getRetrieveRequestFactory().getEntitySetIteratorRequest(entityUri);
 
-        request.setAccept("application/atom+xml");
+        request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
         ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = request.execute();
 
@@ -121,15 +117,15 @@ public class CMODataClient {
         }
     }
 
-    public void releaseDevelopmentTransport(String TransportID) throws Exception {
+    public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
 
-        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendOperationCallSegment("releaseTransport").build();
+        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("releaseTransport").build();
+        
+        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID +  "'" + "&TransportID='" + TransportID + "'");
 
-        Map<String, ClientValue> parameters = new HashMap<>();
-
-        parameters.put("TransportID", this.client.getObjectFactory().newPrimitiveValueBuilder().buildString(TransportID));
-
-        ODataInvokeRequest<ClientProperty> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientProperty.class, parameters);
+        ODataInvokeRequest<ClientProperty> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientProperty.class);
+        
+        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
         ODataInvokeResponse<ClientProperty> response = functionInvokeRequest.execute();
 
