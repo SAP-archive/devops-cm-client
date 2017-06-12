@@ -40,6 +40,7 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
 
                 if (selectedTransport == null && transport.isModifiable()) {
                     selectedTransport = transport;
+                    break;
                 }
             }
 

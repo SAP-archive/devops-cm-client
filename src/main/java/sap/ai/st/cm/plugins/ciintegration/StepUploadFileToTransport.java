@@ -17,12 +17,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 public class StepUploadFileToTransport extends StepAbstract {
 
     private final String FilePath;
-    private final String TransportID;
     private final String ApplicationID;
 
-    public String getTransportID() {
-        return TransportID;
-    }
 
     public String getApplicationID() {
         return ApplicationID;
@@ -33,12 +29,11 @@ public class StepUploadFileToTransport extends StepAbstract {
     }
 
     @DataBoundConstructor
-    public StepUploadFileToTransport(String ChangeID, String TransportID, String FilePath, String ApplicationID) {
+    public StepUploadFileToTransport(String ChangeID, String FilePath, String ApplicationID) {
 
         super(ChangeID);
 
         this.FilePath = FilePath;
-        this.TransportID = TransportID;
         this.ApplicationID = ApplicationID;
     }
 

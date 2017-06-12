@@ -13,9 +13,6 @@
   <f:entry title="Change ID" field="ChangeID">
     <f:textbox />
   </f:entry>
-  <f:entry title="Transport ID" field="TransportID">
-    <f:textbox />
-  </f:entry>
   <f:entry title="File path" field="FilePath">
     <f:textbox />
   </f:entry>
