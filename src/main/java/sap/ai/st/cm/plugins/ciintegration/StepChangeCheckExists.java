@@ -28,7 +28,7 @@ public class StepChangeCheckExists extends StepAbstract {
 
             CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
 
-            odataClient.getChange(this.ChangeID);
+            odataClient.getChange(run.getEnvironment(taskListener).expand(this.ChangeID));
 
         } catch (Exception e) {
 
@@ -40,7 +40,7 @@ public class StepChangeCheckExists extends StepAbstract {
     }
 
     @Extension
-    public static final class ChangeCheckExistsDescriptor extends BuildStepDescriptor<Builder> {
+    public static final class StepDescriptor extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {

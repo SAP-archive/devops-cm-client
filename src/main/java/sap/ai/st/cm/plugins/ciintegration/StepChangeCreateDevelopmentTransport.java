@@ -10,56 +10,42 @@ import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
 import java.io.IOException;
 import org.kohsuke.stapler.DataBoundConstructor;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class StepChangeCheckStatus extends StepAbstract {
+public class StepChangeCreateDevelopmentTransport extends StepAbstract {
 
-    private final String ChangeStatus;
-
-    public String getChangeStatus() {
-        return ChangeStatus;
-    }
+    protected final String Description;
+    protected final String Owner;
 
     @DataBoundConstructor
-    public StepChangeCheckStatus(String ChangeID, String ChangeStatus) {
+    public StepChangeCreateDevelopmentTransport(String ChangeID, String Description, String Owner) {
 
         super(ChangeID);
 
-        this.ChangeStatus = ChangeStatus;
+        this.Description = Description;
+        this.Owner = Owner;
     }
 
     @Override
     public void perform(Run<?, ?> run, FilePath fp, Launcher lnchr, TaskListener taskListener) throws InterruptedException, IOException {
-        
+
         super.perform(run, fp, lnchr, taskListener);
 
         try {
 
             CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
 
-            CMODataChange change = odataClient.getChange(run.getEnvironment(taskListener).expand(this.ChangeID));
+            CMODataTransport selectedTransport = odataClient.createDevelopmentTransportAdvanced(run.getEnvironment(taskListener).expand(this.ChangeID), run.getEnvironment(taskListener).expand(this.Description), run.getEnvironment(taskListener).expand(this.Owner));
 
-            String status = change.getStatus();
-
-            if (status.equals(run.getEnvironment(taskListener).expand(this.ChangeStatus))) {
-
-                taskListener.getLogger().println("Change is in status " + status);
-
-            } else {
-
-                throw new InterruptedException("Change is in status " + status + ". Expected status " + run.getEnvironment(taskListener).expand(this.ChangeStatus) + ".");
-
-            }
+            taskListener.getLogger().println("Created transport request " + selectedTransport.getTransportID());
 
         } catch (Exception e) {
 
             taskListener.getLogger().println(e);
 
             throw new IOException(e);
-
         }
-
     }
 
     @Extension
@@ -72,7 +58,7 @@ public class StepChangeCheckStatus extends StepAbstract {
 
         @Override
         public String getDisplayName() {
-            return "SAP Change Management: Check Change Status";
+            return "SAP Change Management: Create Development Transport";
         }
     }
 }

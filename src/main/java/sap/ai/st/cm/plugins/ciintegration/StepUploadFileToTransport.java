@@ -69,7 +69,7 @@ public class StepUploadFileToTransport extends StepAbstract {
     }
 
     @Extension
-    public static final class ChangeCheckInDevelopmentDescriptor extends BuildStepDescriptor<Builder> {
+    public static final class StepDescriptor extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {

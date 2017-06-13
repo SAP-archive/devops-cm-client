@@ -13,7 +13,10 @@
   <f:entry title="Change ID" field="ChangeID">
     <f:textbox />
   </f:entry>
-  <f:entry title="Create new transport on demand" field="CreateNewOnDemand">
-    <f:checkbox />
+  <f:entry title="Description" field="Description">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Owner" field="Owner">
+    <f:textbox />
   </f:entry>
 </j:jelly>

@@ -39,7 +39,7 @@ public abstract class StepAbstract extends Builder implements SimpleBuildStep {
     public void perform(Run<?, ?> run, FilePath filePath, Launcher launcher, TaskListener taskListener) throws InterruptedException, IOException {
 
         taskListener.getLogger().println(getDescriptor().getDisplayName());
-        taskListener.getLogger().println("Change ID " + this.ChangeID);
+        taskListener.getLogger().println("Change ID " + run.getEnvironment(taskListener).expand(this.ChangeID));
 
         taskListener.getLogger().println("URL " + this.globalConfiguration.getServiceURL());
         taskListener.getLogger().println("User " + this.globalConfiguration.getServiceUser());

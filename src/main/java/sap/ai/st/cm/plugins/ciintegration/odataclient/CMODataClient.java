@@ -120,20 +120,62 @@ public class CMODataClient {
     public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
 
         URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("releaseTransport").build();
-        
-        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID +  "'" + "&TransportID='" + TransportID + "'");
 
-        ODataInvokeRequest<ClientProperty> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientProperty.class);
-        
+        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
+
+        ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
+
         functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
-        ODataInvokeResponse<ClientProperty> response = functionInvokeRequest.execute();
+        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
 
         if (response.getStatusCode() != 200) {
 
             throw new IOException(response.getRawResponse().toString());
 
         }
+    }
+
+    public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
+
+        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("createTransport").build();
+
+        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'");
+
+        ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
+
+        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+
+        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
+
+        if (response.getStatusCode() != 200) {
+
+            throw new IOException(response.getRawResponse().toString());
+
+        }
+
+        return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+    }
+    
+    public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
+
+        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("createTransportAdvanced").build();
+
+        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
+
+        ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
+
+        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+
+        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
+
+        if (response.getStatusCode() != 200) {
+
+            throw new IOException(response.getRawResponse().toString());
+
+        }
+
+        return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
     }
 
     private String getCSRFToken() {

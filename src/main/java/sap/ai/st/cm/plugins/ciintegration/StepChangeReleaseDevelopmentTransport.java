@@ -31,7 +31,7 @@ public class StepChangeReleaseDevelopmentTransport extends StepAbstract {
 
             CIIntegrationProperties properties = new CIIntegrationProperties(filepath);
 
-            odataClient.releaseDevelopmentTransport(this.ChangeID, properties.getDevelopmentTransportID());
+            odataClient.releaseDevelopmentTransport(run.getEnvironment(taskListener).expand(this.ChangeID), properties.getDevelopmentTransportID());
 
             taskListener.getLogger().println("Development transport " + properties.getDevelopmentTransportID() + " released");
 
@@ -45,7 +45,7 @@ public class StepChangeReleaseDevelopmentTransport extends StepAbstract {
     }
 
     @Extension
-    public static final class ChangeCheckExistsDescriptor extends BuildStepDescriptor<Builder> {
+    public static final class StepDescriptor extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {

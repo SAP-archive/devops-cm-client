@@ -16,10 +16,18 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 public class StepChangeGetDevelopmentTransport extends StepAbstract {
 
+    protected final boolean CreateNewOnDemand;
+
+    public boolean getCreateNewOnDemand() {
+        return CreateNewOnDemand;
+    }
+
     @DataBoundConstructor
-    public StepChangeGetDevelopmentTransport(String ChangeID) {
+    public StepChangeGetDevelopmentTransport(String ChangeID, Boolean CreateNewOnDemand) {
 
         super(ChangeID);
+
+        this.CreateNewOnDemand = CreateNewOnDemand;
     }
 
     @Override
@@ -31,7 +39,7 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
 
             CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
 
-            ArrayList<CMODataTransport> transportList = odataClient.getChangeTransports(this.ChangeID);
+            ArrayList<CMODataTransport> transportList = odataClient.getChangeTransports(run.getEnvironment(taskListener).expand(this.ChangeID));
 
             CMODataTransport selectedTransport = null;
 
@@ -45,20 +53,28 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
                 }
             }
 
-            if (selectedTransport != null) {
-                
-                CIIntegrationProperties properties = new CIIntegrationProperties(fp);
-                
-                properties.setDevelopmentTransportID(selectedTransport.getTransportID());
-                
-                properties = new CIIntegrationProperties(fp);
-                
-                properties.setProperty("TransportID", selectedTransport.getTransportID());
+            if (selectedTransport == null) {
 
-                taskListener.getLogger().println("Set current development transport to " + properties.getDevelopmentTransportID());
-            } else {
-                throw new InterruptedException("No modifiable tranpsort found");
+                if (this.CreateNewOnDemand) {
+
+                    selectedTransport = odataClient.createDevelopmentTransport(run.getEnvironment(taskListener).expand(this.ChangeID));
+
+                } else {
+
+                    throw new InterruptedException("No modifiable tranpsort found");
+                }
+                
             }
+
+            CIIntegrationProperties properties = new CIIntegrationProperties(fp);
+
+            properties.setDevelopmentTransportID(selectedTransport.getTransportID());
+
+            properties = new CIIntegrationProperties(fp);
+
+            properties.setProperty("TransportID", selectedTransport.getTransportID());
+
+            taskListener.getLogger().println("Set current development transport to " + properties.getDevelopmentTransportID());
 
         } catch (Exception e) {
 
@@ -71,7 +87,7 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
     }
 
     @Extension
-    public static final class ChangeCheckInDevelopmentDescriptor extends BuildStepDescriptor<Builder> {
+    public static final class StepDescriptor extends BuildStepDescriptor<Builder> {
 
         @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
@@ -82,5 +98,5 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
         public String getDisplayName() {
             return "SAP Change Management: Get Development Transport";
         }
-    } 
+    }
 }
