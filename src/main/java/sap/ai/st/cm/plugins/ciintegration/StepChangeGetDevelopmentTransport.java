@@ -40,13 +40,12 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
 
                 if (selectedTransport == null && transport.isModifiable()) {
                     selectedTransport = transport;
+                    taskListener.getLogger().println("Transport " + selectedTransport.getTransportID() + " selected");
                     break;
                 }
             }
 
             if (selectedTransport != null) {
-
-                taskListener.getLogger().println("Transport " + selectedTransport.getTransportID() + " selected");
                 
                 CIIntegrationProperties properties = new CIIntegrationProperties(fp);
                 
@@ -57,6 +56,8 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
                 properties.setProperty("TransportID", selectedTransport.getTransportID());
 
                 taskListener.getLogger().println("Set current development transport to " + properties.getDevelopmentTransportID());
+            } else {
+                throw new InterruptedException("No modifiable tranpsort found");
             }
 
         } catch (Exception e) {
