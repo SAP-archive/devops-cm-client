@@ -16,6 +16,14 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 public class StepChangeCreateDevelopmentTransport extends StepAbstract {
 
     protected final String Description;
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public String getOwner() {
+        return Owner;
+    }
     protected final String Owner;
 
     @DataBoundConstructor

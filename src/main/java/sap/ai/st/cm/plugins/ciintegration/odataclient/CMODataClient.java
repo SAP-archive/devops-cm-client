@@ -1,5 +1,6 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import com.google.common.net.UrlEscapers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,7 +19,6 @@ import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse
 import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
-import org.apache.olingo.client.api.domain.ClientProperty;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
@@ -140,7 +140,7 @@ public class CMODataClient {
 
         URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("createTransport").build();
 
-        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'");
+        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'"));
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
@@ -156,12 +156,12 @@ public class CMODataClient {
 
         return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
     }
-    
+
     public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
 
         URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("createTransportAdvanced").build();
 
-        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
+        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'"));
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
