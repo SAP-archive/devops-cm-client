@@ -25,7 +25,7 @@
     -->
   </properties>
 
-  <name>SAP Change Management Integration</name>
+  <name>SAP Change Management Integration - Jenkins Plugin</name>
   <description>SAP Change Management Integration</description>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/</url>
 
