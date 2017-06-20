@@ -8,6 +8,7 @@
     <modules>
       <module>modules/jenkins-plugin</module>
       <module>modules/lib</module>
+      <module>modules/cli</module>
     </modules>
 
 </project>
