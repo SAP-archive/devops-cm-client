@@ -50,7 +50,9 @@ public class StepUploadFileToTransport extends StepAbstract {
             String filePath = fp.getRemote() + File.separator + environment.expand(this.FilePath);
             String applicationID = environment.expand(this.ApplicationID);
 
-            CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
+            CMODataClient odataClient = new CMODataClient(this.globalConfiguration.getServiceURL(),
+                    this.globalConfiguration.getServiceUser(),
+                    this.globalConfiguration.getServicePassword());
 
             taskListener.getLogger().println("Uploading " + filePath + " to transport " + transportID + " for application " + applicationID);
 

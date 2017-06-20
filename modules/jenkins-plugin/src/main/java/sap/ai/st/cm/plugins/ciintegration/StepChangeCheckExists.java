@@ -26,7 +26,9 @@ public class StepChangeCheckExists extends StepAbstract {
         
         try {
 
-            CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
+            CMODataClient odataClient = new CMODataClient(this.globalConfiguration.getServiceURL(),
+                    this.globalConfiguration.getServiceUser(),
+                    this.globalConfiguration.getServicePassword());
 
             odataClient.getChange(run.getEnvironment(taskListener).expand(this.ChangeID));
 

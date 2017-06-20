@@ -27,7 +27,9 @@ public class StepChangeReleaseDevelopmentTransport extends StepAbstract {
 
         try {
 
-            CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
+            CMODataClient odataClient = new CMODataClient(this.globalConfiguration.getServiceURL(),
+                    this.globalConfiguration.getServiceUser(),
+                    this.globalConfiguration.getServicePassword());
 
             CIIntegrationProperties properties = new CIIntegrationProperties(filepath);
 

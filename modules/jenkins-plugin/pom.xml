@@ -81,15 +81,5 @@
             <artifactId>ci-integration-lib</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.olingo</groupId>
-            <artifactId>odata-client-core</artifactId>
-            <version>4.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>18.0</version>
-        </dependency>
     </dependencies>
 </project>

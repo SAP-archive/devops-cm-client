@@ -37,7 +37,9 @@ public class StepChangeGetDevelopmentTransport extends StepAbstract {
 
         try {
 
-            CMODataClient odataClient = new CMODataClient(this.globalConfiguration);
+            CMODataClient odataClient = new CMODataClient(this.globalConfiguration.getServiceURL(),
+                    this.globalConfiguration.getServiceUser(),
+                    this.globalConfiguration.getServicePassword());
 
             ArrayList<CMODataTransport> transportList = odataClient.getChangeTransports(run.getEnvironment(taskListener).expand(this.ChangeID));
 

@@ -22,25 +22,24 @@ import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
-import sap.ai.st.cm.plugins.ciintegration.CIIntegrationGlobalConfiguration;
 
 public class CMODataClient {
 
+    private String serviceUrl; //REVISIT: uri instead of string?
     private final ODataClient client;
-    private final CIIntegrationGlobalConfiguration configuration;
 
-    public CMODataClient(CIIntegrationGlobalConfiguration configuration) {
+    public CMODataClient(String serviceUrl, String serviceUser, String servicePassword) {
 
-        this.configuration = configuration;
+        this.serviceUrl = serviceUrl;
 
         this.client = ODataClientFactory.getClient();
-        this.client.getConfiguration().setHttpClientFactory(new CMOdataHTTPFactory(this.configuration.getServiceUser(), this.configuration.getServicePassword()));
+        this.client.getConfiguration().setHttpClientFactory(new CMOdataHTTPFactory(serviceUser, servicePassword));
 
     }
 
     public CMODataChange getChange(String ChangeID) throws Exception {
 
-        URI entityUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendEntitySetSegment("Changes").appendKeySegment(ChangeID).build();
+        URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes").appendKeySegment(ChangeID).build();
 
         ODataEntityRequest<ClientEntity> request = this.client.getRetrieveRequestFactory().getEntityRequest(entityUri);
 
@@ -54,7 +53,7 @@ public class CMODataClient {
 
     public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
 
-        URI entityUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendEntitySetSegment("Changes"
+        URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes"
         ).appendKeySegment(ChangeID).appendNavigationSegment("Transports").build();
 
         ODataEntitySetIteratorRequest<ClientEntitySet, ClientEntity> request = this.client.getRetrieveRequestFactory().getEntitySetIteratorRequest(entityUri);
@@ -81,7 +80,7 @@ public class CMODataClient {
 
         File file = new File(filePath);
 
-        URIBuilder uribuilder = this.client.newURIBuilder(this.configuration.getServiceURL()).appendEntitySetSegment("Files");
+        URIBuilder uribuilder = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Files");
 
         URI fileStreamUri = uribuilder.build();
 
@@ -119,7 +118,7 @@ public class CMODataClient {
 
     public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
 
-        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("releaseTransport").build();
+        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("releaseTransport").build();
 
         functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
 
@@ -138,7 +137,7 @@ public class CMODataClient {
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
 
-        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("createTransport").build();
+        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("createTransport").build();
 
         functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'"));
 
@@ -159,7 +158,7 @@ public class CMODataClient {
 
     public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
 
-        URI functionUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendActionCallSegment("createTransportAdvanced").build();
+        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("createTransportAdvanced").build();
 
         functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'"));
 
@@ -180,7 +179,7 @@ public class CMODataClient {
 
     private String getCSRFToken() {
 
-        URI metadataUri = this.client.newURIBuilder(this.configuration.getServiceURL()).appendMetadataSegment().build();
+        URI metadataUri = this.client.newURIBuilder(serviceUrl).appendMetadataSegment().build();
 
         ODataEntitySetIteratorRequest<ClientEntitySet, ClientEntity> request = this.client.getRetrieveRequestFactory().getEntitySetIteratorRequest(metadataUri);
 

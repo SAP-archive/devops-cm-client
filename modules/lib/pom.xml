@@ -10,6 +10,11 @@
 
   <name>SAP Change Management Integration Library</name>
   <description>SAP Change Management Integration</description>
+
+    <properties>
+      <java.level>1.7</java.level>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.olingo</groupId>
@@ -22,4 +27,17 @@
             <version>18.0</version>
         </dependency>
     </dependencies>
+    <build>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>${java.level}</source>
+            <target>${java.level}</target>
+            <testSource>${java.level.test}</testSource>
+            <testTarget>${java.level.test}</testTarget>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
 </project>
