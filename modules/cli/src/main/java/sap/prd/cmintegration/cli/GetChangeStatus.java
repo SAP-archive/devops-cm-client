@@ -7,7 +7,7 @@ import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
-public class GetChange {
+public class GetChangeStatus {
 
     public final static void main(String[] args) throws Exception {
 
@@ -35,11 +35,7 @@ public class GetChange {
         String password = commandLine.getOptionValue('p');
         String host = commandLine.getOptionValue('h');
 
-        System.err.println("ChangeId: " + changeId);
-        System.err.println("User: " + user);
-        System.err.println("Host: " + host);
-
-        new CMODataClient(host, user, password).getChange(changeId);
+        System.out.println(new CMODataClient(host, user, password).getChange(changeId).getStatus());
     }
 
 }
