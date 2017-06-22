@@ -8,9 +8,33 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 public class GetChangeStatus {
+
+    /* private */ static CMODataClient client;
+
+    private static String changeId;
+    private static String user;
+    private static String password;
+    private static String host;
+
+    static String getChangeId() {
+        return changeId;
+    }
+
+    static String getUser() {
+        return user;
+    }
+
+    static String getPassword() {
+        return password;
+    }
+
+    static String getHost() {
+        return host;
+    }
 
     public final static void main(String[] args) throws Exception {
 
@@ -22,13 +46,16 @@ public class GetChangeStatus {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        String changeId = commandLine.getOptionValue('c');
-        String user = commandLine.getOptionValue('u');
-        String password = commandLine.getOptionValue('p');
+        changeId = commandLine.getOptionValue('c');
+        user = commandLine.getOptionValue('u');
+        password = commandLine.getOptionValue('p');
         if(password.equals("-")) password = readPassword();
-        String host = commandLine.getOptionValue('h');
+        host = commandLine.getOptionValue('h');
 
-        System.out.println(new CMODataClient(host, user, password).getChange(changeId).getStatus());
+        if(client == null) client = new CMODataClient(host, user, password);
+        CMODataChange change = client.getChange(changeId);
+        String status = change.getStatus();
+        System.out.println(status);
     }
 
     private static String readPassword() throws IOException {
