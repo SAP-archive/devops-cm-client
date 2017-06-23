@@ -53,4 +53,46 @@ public class GetChangeStatusTest {
 
         assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteOS.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
     }
+
+    @Test
+    public void testGetChangeStatusPasswordViaStdin() throws Exception {
+
+        CMODataChange changeMock = EasyMock.createMock(CMODataChange.class);
+        expect(changeMock.getStatus()).andReturn("E0002");
+
+        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
+        expect(clientMock.getChange("8000038673")).andReturn(changeMock);
+
+        EasyMock.replay(changeMock, clientMock);
+
+        ByteArrayOutputStream byteOS = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(byteOS), oldOut = System.out;
+        InputStream oldIn = System.in;
+        System.setOut(out);
+
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        GetChangeStatus.client = clientMock;
+
+        try {
+          System.setIn(new ByteArrayInputStream("openSesame".getBytes()));
+          System.err.println("after writing to stdin.");
+          GetChangeStatus.main(new String[] {
+          "-c", "8000038673",
+          "-u", "john.doe",
+          "-p", "-",
+          "-h", "https://example.org/endpoint/"});
+        } finally {
+            IOUtils.closeQuietly(out);
+            System.setOut(oldOut);
+            System.setIn(oldIn);
+        }
+
+        assertThat(GetChangeStatus.getChangeId(), is(equalTo("8000038673")));
+        assertThat(GetChangeStatus.getUser(), is(equalTo("john.doe")));
+        assertThat(GetChangeStatus.getPassword(), is(equalTo("openSesame")));
+        assertThat(GetChangeStatus.getHost(), is(equalTo("https://example.org/endpoint/")));
+
+        assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteOS.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
+    }
 }
