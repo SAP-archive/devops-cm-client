@@ -12,15 +12,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
+import org.apache.commons.cli.MissingOptionException;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 public class GetChangeStatusTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     private CMODataClient clientMock;
     private CMODataChange changeMock;
@@ -99,5 +105,20 @@ public class GetChangeStatusTest {
         assertThat(GetChangeStatus.getPassword(), is(equalTo("openSesame")));
     }
 
+    @Test
+    public void testGetChangeStatusNoPassword() throws Exception {
+
+        thrown.expect(MissingOptionException.class);
+        thrown.expectMessage("Missing required option: p");
+
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        GetChangeStatus.client = clientMock;
+
+        GetChangeStatus.main(new String[] {
+        "-c", "8000038673",
+        "-u", "john.doe",
+        "-h", "https://example.org/endpoint/"});
+    }
 
 }
