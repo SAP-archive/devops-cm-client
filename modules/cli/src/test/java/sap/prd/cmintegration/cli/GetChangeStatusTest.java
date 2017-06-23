@@ -5,9 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 import org.apache.commons.io.IOUtils;
 import org.easymock.EasyMock;
@@ -53,6 +51,6 @@ public class GetChangeStatusTest {
         assertThat(GetChangeStatus.getPassword(), is(equalTo("openSesame")));
         assertThat(GetChangeStatus.getHost(), is(equalTo("https://example.org/endpoint/")));
 
-        assertThat(IOUtils.toString(new ByteArrayInputStream(byteOS.toByteArray())), equalTo("E0002\n"));
+        assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteOS.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
     }
 }
