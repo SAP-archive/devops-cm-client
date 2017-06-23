@@ -88,11 +88,8 @@ public class GetChangeStatusTest {
             System.setIn(oldIn);
         }
 
-        assertThat(GetChangeStatus.getChangeId(), is(equalTo("8000038673")));
-        assertThat(GetChangeStatus.getUser(), is(equalTo("john.doe")));
         assertThat(GetChangeStatus.getPassword(), is(equalTo("openSesame")));
-        assertThat(GetChangeStatus.getHost(), is(equalTo("https://example.org/endpoint/")));
-
-        assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(byteOS.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
     }
+
+
 }
