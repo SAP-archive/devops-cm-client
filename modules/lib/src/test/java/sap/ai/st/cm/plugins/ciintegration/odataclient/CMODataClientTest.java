@@ -70,11 +70,28 @@ public class CMODataClientTest {
     }
 
     @Test
+    public void testChangeDoesNotExist() throws Exception {
+
+        thrown.expect(ODataClientErrorException.class);
+        thrown.expectMessage("400");  // Would prefer 404, not found.
+
+        CMODataClient examinee = new CMODataClient(
+                "https://example.org/endpoint",
+                "john.doe",
+                "openSesame");
+
+        // comment line below for testing against real backend.
+        // Assert for the captures below needs to be commented also in this case.
+        setMock(examinee, setupChangeDoesNotExistMock());
+
+        examinee.getChange("001");
+    }
+
+    @Test
     public void testChangeBadCredentials() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("401");
-
 
         CMODataClient examinee = new CMODataClient(
                 "https://example.org/endpoint",
@@ -119,15 +136,23 @@ public class CMODataClientTest {
 
         return clientMock;
     }
-    
-    @SuppressWarnings("unchecked")
+
     private ODataClient setupBadCredentialsMock() {
+        return setupExceptionMock(401, "Unauthorized");
+    }
+
+    private ODataClient setupChangeDoesNotExistMock() {
+        return setupExceptionMock(400,  "Bad request");
+    }
+
+    @SuppressWarnings("unchecked")
+    private ODataClient setupExceptionMock(int errorCode, String message) {
 
         ODataEntityRequest<ClientEntity> oDataEntityRequestMock = createMock(ODataEntityRequest.class);
         expect(oDataEntityRequestMock.setAccept(capture(contentType))).andReturn(oDataEntityRequestMock);
         expect(oDataEntityRequestMock.execute()).andThrow(
                 new ODataClientErrorException(
-                        new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 401, "Unauthorized")));
+                        new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), errorCode, message)));
 
         RetrieveRequestFactory retrieveRequestFactoryMock = createMock(RetrieveRequestFactory.class);
         expect(retrieveRequestFactoryMock.getEntityRequest(capture(address))).andReturn(oDataEntityRequestMock);
@@ -144,8 +169,8 @@ public class CMODataClientTest {
         replay(oDataEntityRequestMock, retrieveRequestFactoryMock, clientMock);
 
         return clientMock;
+        
     }
-
     private static void setMock(CMODataClient examinee, ODataClient mock) throws Exception {
         Field client = CMODataClient.class.getDeclaredField("client");
         client.setAccessible(true);
