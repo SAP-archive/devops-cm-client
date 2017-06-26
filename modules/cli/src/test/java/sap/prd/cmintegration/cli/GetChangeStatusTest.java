@@ -15,8 +15,10 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 
 import org.apache.commons.cli.MissingOptionException;
+import org.apache.commons.io.IOUtils;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,6 +76,13 @@ public class GetChangeStatusTest {
         result = new ByteArrayOutputStream();
         oldOut = System.out;
         System.setOut(new PrintStream(result));
+    }
+
+    @Test
+    public void testPrintHelp() throws Exception {
+        GetChangeStatus.main(new String[] {"--help"});
+        String help = IOUtils.toString(result.toByteArray(), "UTF-8");
+        assertThat(help, Matchers.containsString("Prints this help."));
     }
 
     @Test
