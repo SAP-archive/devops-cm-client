@@ -9,6 +9,7 @@
       <module>modules/jenkins-plugin</module>
       <module>modules/lib</module>
       <module>modules/cli</module>
+      <module>modules/dist.cli</module>
     </modules>
 
 </project>
