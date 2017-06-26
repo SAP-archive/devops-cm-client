@@ -13,7 +13,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 public class GetChangeStatus {
 
-    /* private */ static CMODataClient client;
+    private static CMODataClient client;
 
     private static String changeId;
     private static String user;

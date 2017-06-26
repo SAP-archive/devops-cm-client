@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.easymock.EasyMock;
@@ -66,7 +67,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        GetChangeStatus.client = clientMock;
+        setMock(clientMock);
 
         GetChangeStatus.main(new String[] {
         "-c", "8000038673",
@@ -90,7 +91,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        GetChangeStatus.client = clientMock;
+        setMock(clientMock);
 
         try {
           GetChangeStatus.main(new String[] {
@@ -113,12 +114,19 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        GetChangeStatus.client = clientMock;
+        setMock(clientMock);
 
         GetChangeStatus.main(new String[] {
         "-c", "8000038673",
         "-u", "john.doe",
         "-h", "https://example.org/endpoint/"});
+    }
+
+    private static void setMock(CMODataClient mock) throws Exception {
+        Field field = GetChangeStatus.class.getDeclaredField("client");
+        field.setAccessible(true);
+        field.set(null, mock);
+        field.setAccessible(false);
     }
 
 }
