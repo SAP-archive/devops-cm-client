@@ -1,0 +1,47 @@
+#!/bin/sh
+
+_SN=`basename "$0"` # script name
+
+reject_unsupported_environment() {
+    case "`uname`" in
+        CYGWIN*)
+            echo "Cygwin is not supported" 1>&2
+            exit 1
+    esac
+}
+
+determine_dir() {
+    if [ -z "$CMCLIENT_HOME" ]; then
+        if [ `echo $0 | cut -c1` = "/" ]; then
+            CMCLIENT_HOME=$0
+        else
+            CMCLIENT_HOME=`pwd`/$0
+        fi
+        CMCLIENT_HOME=`dirname $CMCLIENT_HOME`/..
+    fi
+}
+
+check_env() {
+    if [ -z "$CMCLIENT_HOME" ]; then
+        echo "$_SN: error: CMCLIENT_HOME must be set to the directory containing the cm client tool" 1>&2
+        exit 1
+    fi
+    if [ ! -d "$CMCLIENT_HOME" ]; then
+        echo "$_SN: error: CMCLIENT_HOME does not denote a directory: $CM_CLIENT_HOME" 1>&2
+        exit 1
+    fi
+}
+
+java_executable() {
+    if [ -n "$JAVA_HOME" ]; then
+        echo "${JAVA_HOME}/bin/java"
+    else
+        echo "java"
+    fi
+}
+
+reject_unsupported_environment
+determine_dir
+check_env
+
+"`java_executable`" $CMCLIENT_OPTS -jar "$CMCLIENT_HOME/lib/ci-integration-cli.jar" "$@"
