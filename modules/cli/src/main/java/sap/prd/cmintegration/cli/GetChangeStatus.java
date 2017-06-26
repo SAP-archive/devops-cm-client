@@ -17,22 +17,6 @@ public class GetChangeStatus {
     private static String password;
     private static String host;
 
-    static String getChangeId() {
-        return changeId;
-    }
-
-    static String getUser() {
-        return user;
-    }
-
-    static String getPassword() {
-        return password;
-    }
-
-    static String getHost() {
-        return host;
-    }
-
     public final static void main(String[] args) throws Exception {
 
         Options options = new Options();

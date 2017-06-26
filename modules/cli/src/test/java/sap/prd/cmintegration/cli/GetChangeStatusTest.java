@@ -1,6 +1,6 @@
 package sap.prd.cmintegration.cli;
 
-import static org.easymock.EasyMock.anyString;
+import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -15,6 +15,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 
 import org.apache.commons.cli.MissingOptionException;
+import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -37,6 +38,11 @@ public class GetChangeStatusTest {
     private PrintStream oldOut;
     private ByteArrayOutputStream result;
 
+    Capture<String> host = Capture.newInstance(),
+            user = Capture.newInstance(),
+            password = Capture.newInstance(),
+            changeId = Capture.newInstance();
+
     @Before
     public void setup() throws Exception{
         setupMock();
@@ -53,13 +59,13 @@ public class GetChangeStatusTest {
         expect(changeMock.getStatus()).andReturn("E0002");
 
         clientMock = EasyMock.createMock(CMODataClient.class);
-        expect(clientMock.getChange("8000038673")).andReturn(changeMock);
+        expect(clientMock.getChange(capture(changeId))).andReturn(changeMock);
 
         factoryMock = EasyMock.createMock(ClientFactory.class);
         expect(factoryMock
-                .newClient(anyString(),
-                        anyString(),
-                        anyString())).andReturn(clientMock);
+                .newClient(capture(host),
+                        capture(user),
+                        capture(password))).andReturn(clientMock);
 
         EasyMock.replay(changeMock, clientMock, factoryMock);
     }
@@ -83,10 +89,10 @@ public class GetChangeStatusTest {
         "-p", "openSesame",
         "-h", "https://example.org/endpoint/"});
 
-        assertThat(GetChangeStatus.getChangeId(), is(equalTo("8000038673")));
-        assertThat(GetChangeStatus.getUser(), is(equalTo("john.doe")));
-        assertThat(GetChangeStatus.getPassword(), is(equalTo("openSesame")));
-        assertThat(GetChangeStatus.getHost(), is(equalTo("https://example.org/endpoint/")));
+        assertThat(changeId.getValue(), is(equalTo("8000038673")));
+        assertThat(user.getValue(), is(equalTo("john.doe")));
+        assertThat(password.getValue(), is(equalTo("openSesame")));
+        assertThat(host.getValue(), is(equalTo("https://example.org/endpoint/")));
 
         assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
     }
@@ -111,7 +117,7 @@ public class GetChangeStatusTest {
             System.setIn(oldIn);
         }
 
-        assertThat(GetChangeStatus.getPassword(), is(equalTo("openSesame")));
+        assertThat(password.getValue(), is(equalTo("openSesame")));
     }
 
     @Test
