@@ -12,10 +12,23 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 
 public class GetChangeStatus {
 
-    private static String changeId;
-    private static String user;
-    private static String password;
-    private static String host;
+    private String changeId;
+    private String user;
+    private String password;
+    private String host;
+
+    GetChangeStatus(String host, String user, String password, String changeId) {
+        this.host = host;
+        this.user = user;
+        this.password = password;
+        this.changeId = changeId;
+    }
+
+    void execute() throws Exception {
+        CMODataChange change = ClientFactory.getInstance().newClient(host, user, password).getChange(changeId);
+        String status = change.getStatus();
+        System.out.println(status);
+    }
 
     public final static void main(String[] args) throws Exception {
 
@@ -27,15 +40,15 @@ public class GetChangeStatus {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        changeId = commandLine.getOptionValue('c');
-        user = commandLine.getOptionValue('u');
-        password = commandLine.getOptionValue('p');
-        if(password.equals("-")) password = readPassword();
-        host = commandLine.getOptionValue('h');
+        String host = commandLine.getOptionValue('h');
+        String user = commandLine.getOptionValue('u');
 
-        CMODataChange change = ClientFactory.getInstance().newClient(host, user, password).getChange(changeId);
-        String status = change.getStatus();
-        System.out.println(status);
+        String password = commandLine.getOptionValue('p');
+        if(password.equals("-")) password = readPassword();
+
+        String changeId = commandLine.getOptionValue('c');
+
+        new GetChangeStatus(host, user, password, changeId).execute();
     }
 
     private static String readPassword() throws IOException {
