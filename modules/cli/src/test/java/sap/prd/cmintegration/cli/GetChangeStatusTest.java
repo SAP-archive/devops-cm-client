@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -29,6 +30,7 @@ public class GetChangeStatusTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    private ClientFactory factoryMock;
     private CMODataClient clientMock;
     private CMODataChange changeMock;
 
@@ -53,7 +55,13 @@ public class GetChangeStatusTest {
         clientMock = EasyMock.createMock(CMODataClient.class);
         expect(clientMock.getChange("8000038673")).andReturn(changeMock);
 
-        EasyMock.replay(changeMock, clientMock);
+        factoryMock = EasyMock.createMock(ClientFactory.class);
+        expect(factoryMock
+                .newClient(anyString(),
+                        anyString(),
+                        anyString())).andReturn(clientMock);
+
+        EasyMock.replay(changeMock, clientMock, factoryMock);
     }
 
     private void prepareOutputStream(){
@@ -67,7 +75,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(clientMock);
+        setMock(factoryMock);
 
         GetChangeStatus.main(new String[] {
         "-c", "8000038673",
@@ -91,7 +99,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(clientMock);
+        setMock(factoryMock);
 
         try {
           GetChangeStatus.main(new String[] {
@@ -114,7 +122,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(clientMock);
+        setMock(factoryMock);
 
         GetChangeStatus.main(new String[] {
         "-c", "8000038673",
@@ -122,11 +130,10 @@ public class GetChangeStatusTest {
         "-h", "https://example.org/endpoint/"});
     }
 
-    private static void setMock(CMODataClient mock) throws Exception {
-        Field field = GetChangeStatus.class.getDeclaredField("client");
+    private static void setMock(ClientFactory mock) throws Exception {
+        Field field = ClientFactory.class.getDeclaredField("instance");
         field.setAccessible(true);
         field.set(null, mock);
         field.setAccessible(false);
     }
-
 }

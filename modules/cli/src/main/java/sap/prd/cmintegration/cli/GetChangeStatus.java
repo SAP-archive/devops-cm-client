@@ -9,11 +9,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 public class GetChangeStatus {
-
-    private static CMODataClient client;
 
     private static String changeId;
     private static String user;
@@ -52,8 +49,7 @@ public class GetChangeStatus {
         if(password.equals("-")) password = readPassword();
         host = commandLine.getOptionValue('h');
 
-        if(client == null) client = new CMODataClient(host, user, password);
-        CMODataChange change = client.getChange(changeId);
+        CMODataChange change = ClientFactory.getInstance().newClient(host, user, password).getChange(changeId);
         String status = change.getStatus();
         System.out.println(status);
     }
