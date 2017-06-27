@@ -38,14 +38,11 @@ public class GetChangeTransports {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        String host = getHost(commandLine);
-        String user = getUser(commandLine);
-
-        String password = getPassword(commandLine);
-
-        String changeId = getChangeId(commandLine);
-
-        new GetChangeTransports(host, user,  password, changeId).execute();
+        new GetChangeTransports(
+                getHost(commandLine),
+                getUser(commandLine),
+                getPassword(commandLine),
+                getChangeId(commandLine)).execute();
     }
 
     public void execute() throws Exception {
