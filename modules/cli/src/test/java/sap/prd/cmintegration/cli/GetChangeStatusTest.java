@@ -34,8 +34,6 @@ public class GetChangeStatusTest {
     public ExpectedException thrown = ExpectedException.none();
 
     private ClientFactory factoryMock;
-    private CMODataClient clientMock;
-    private CMODataChange changeMock;
 
     private PrintStream oldOut;
     private ByteArrayOutputStream result;
@@ -57,10 +55,10 @@ public class GetChangeStatusTest {
     }
 
     private void setupMock() throws Exception {
-        changeMock = EasyMock.createMock(CMODataChange.class);
+        CMODataChange changeMock = EasyMock.createMock(CMODataChange.class);
         expect(changeMock.getStatus()).andReturn("E0002");
 
-        clientMock = EasyMock.createMock(CMODataClient.class);
+        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         expect(clientMock.getChange(capture(changeId))).andReturn(changeMock);
 
         factoryMock = EasyMock.createMock(ClientFactory.class);
