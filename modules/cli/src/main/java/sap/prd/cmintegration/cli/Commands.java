@@ -85,7 +85,7 @@ public class Commands {
         }
     }
 
-    private final static Map<String, Class<?>> commands = Maps.newHashMap();
+    private final static Map<String, Class<? extends Command>> commands = Maps.newHashMap();
 
     static {
         commands.put("change-status", GetChangeStatus.class);
@@ -111,7 +111,7 @@ public class Commands {
 
     private static void printHelp() throws Exception {
         PrintStream ps = new PrintStream(System.out);
-        for(Map.Entry<String, Class<?>> e : commands.entrySet()) {
+        for(Map.Entry<String, Class<? extends Command>> e : commands.entrySet()) {
             ps.print(e.getKey() + ":: ");
             e.getValue().getDeclaredMethod("main", String[].class).invoke(null, new Object[] {new String[] {"--help"}} );
         }
