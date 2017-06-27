@@ -12,6 +12,7 @@ public class Command {
 
     static {
         commands.put("change-status", GetChangeStatus.class);
+        commands.put("transports", GetChangeTransports.class);
     }
 
     public final static void main(String[] args) throws Exception {
