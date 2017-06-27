@@ -16,6 +16,9 @@ import java.lang.reflect.Field;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.message.BasicStatusLine;
+import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.hamcrest.Matchers;
@@ -52,12 +55,19 @@ public class GetChangeStatusTest {
     }
 
     private ClientFactory setupMock() throws Exception {
+        return setupMock(null);
+    }
+
+    private ClientFactory setupMock(Exception ex) throws Exception {
         CMODataChange changeMock = EasyMock.createMock(CMODataChange.class);
         expect(changeMock.getStatus()).andReturn("E0002");
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
-        expect(clientMock.getChange(capture(changeId))).andReturn(changeMock);
-
+        if(ex == null) {
+            expect(clientMock.getChange(capture(changeId))).andReturn(changeMock);
+        } else {
+            expect(clientMock.getChange(capture(changeId))).andThrow(ex);
+        }
         ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
@@ -100,6 +110,30 @@ public class GetChangeStatusTest {
         assertThat(host.getValue(), is(equalTo("https://example.org/endpoint/")));
 
         assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
+    }
+
+    @Test
+    public void testGetChangeStatusForNotExistingChange() throws Exception {
+
+        thrown.expect(ODataClientErrorException.class);
+        thrown.expectMessage("400");
+        //
+        // Comment statement below in order to go against the real back-end as specified via -h
+        setMock(
+            setupMock(
+                new ODataClientErrorException(
+                    new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
+
+        try {
+            GetChangeStatus.main(new String[] {
+            "-u", "john.doe",
+            "-p", "openSesame",
+            "-h", "https://example.org/endpoint/",
+            "DOES_NOT_EXIST"});
+        } catch(Exception e) {
+            assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
+            throw e;
+        }
     }
 
     @Test
