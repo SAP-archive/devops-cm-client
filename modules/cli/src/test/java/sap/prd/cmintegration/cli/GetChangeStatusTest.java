@@ -33,8 +33,6 @@ public class GetChangeStatusTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private ClientFactory factoryMock;
-
     private PrintStream oldOut;
     private ByteArrayOutputStream result;
 
@@ -45,7 +43,6 @@ public class GetChangeStatusTest {
 
     @Before
     public void setup() throws Exception{
-        setupMock();
         prepareOutputStream();
     }
 
@@ -54,20 +51,21 @@ public class GetChangeStatusTest {
         System.setOut(oldOut);
     }
 
-    private void setupMock() throws Exception {
+    private ClientFactory setupMock() throws Exception {
         CMODataChange changeMock = EasyMock.createMock(CMODataChange.class);
         expect(changeMock.getStatus()).andReturn("E0002");
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         expect(clientMock.getChange(capture(changeId))).andReturn(changeMock);
 
-        factoryMock = EasyMock.createMock(ClientFactory.class);
+        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),
                         capture(password))).andReturn(clientMock);
 
         EasyMock.replay(changeMock, clientMock, factoryMock);
+        return factoryMock;
     }
 
     private void prepareOutputStream(){
@@ -88,7 +86,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(factoryMock);
+        setMock(setupMock());
 
         GetChangeStatus.main(new String[] {
         "-u", "john.doe",
@@ -111,7 +109,7 @@ public class GetChangeStatusTest {
         thrown.expectMessage("No changeId specified.");
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(factoryMock);
+        setMock(setupMock());
 
         GetChangeStatus.main(new String[] {
         "-u", "john.doe",
@@ -127,7 +125,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(factoryMock);
+        setMock(setupMock());
 
         try {
           GetChangeStatus.main(new String[] {
@@ -150,7 +148,7 @@ public class GetChangeStatusTest {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(factoryMock);
+        setMock(setupMock());
 
         GetChangeStatus.main(new String[] {
         "-u", "john.doe",
