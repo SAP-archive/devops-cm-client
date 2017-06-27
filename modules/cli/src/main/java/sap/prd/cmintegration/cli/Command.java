@@ -33,6 +33,10 @@ public class Command {
             return commandLine.getOptionValue('u');
         }
 
+        static String getHost(CommandLine commandLine) {
+            return commandLine.getOptionValue('h');
+        }
+
         private static String readPassword() throws IOException {
             return new BufferedReader(
                new InputStreamReader(System.in, "UTF-8")).readLine();

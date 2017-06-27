@@ -33,7 +33,7 @@ public class GetChangeTransports {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        String host = commandLine.getOptionValue('h');
+        String host = Command.Helpers.getHost(commandLine);
         String user = Command.Helpers.getUser(commandLine);
 
         String password = Command.Helpers.getPassword(commandLine);
