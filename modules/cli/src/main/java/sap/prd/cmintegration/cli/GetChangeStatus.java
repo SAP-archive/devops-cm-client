@@ -35,7 +35,6 @@ public class GetChangeStatus {
     public final static void main(String[] args) throws Exception {
 
         Options options = new Options();
-        options.addRequiredOption("c", "change", true, "The ID of the change for that the status should be retrieved.");
         options.addRequiredOption("u", "user", true, "Service user.");
         options.addRequiredOption("p", "password", true, "Service password, if '-' if provided, password will be read from stdin.");
         options.addRequiredOption("h", "host", true, "Host");
@@ -43,7 +42,7 @@ public class GetChangeStatus {
 
         if(args.length >= 1 && args[0].equals("--help")) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(" ", options);
+            formatter.printHelp("[options...] <changeId>", options);
             return;
         }
 
@@ -55,7 +54,11 @@ public class GetChangeStatus {
         String password = commandLine.getOptionValue('p');
         if(password.equals("-")) password = readPassword();
 
-        String changeId = commandLine.getOptionValue('c');
+        String[] _args = commandLine.getArgs();
+        if(_args.length != 1) {
+            throw new CMCommandLineException("No changeId specified.");
+        }
+        String changeId = _args[0];
 
         new GetChangeStatus(host, user, password, changeId).execute();
     }

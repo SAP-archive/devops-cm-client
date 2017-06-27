@@ -93,10 +93,10 @@ public class GetChangeStatusTest {
         setMock(factoryMock);
 
         GetChangeStatus.main(new String[] {
-        "-c", "8000038673",
         "-u", "john.doe",
         "-p", "openSesame",
-        "-h", "https://example.org/endpoint/"});
+        "-h", "https://example.org/endpoint/",
+        "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(user.getValue(), is(equalTo("john.doe")));
@@ -104,6 +104,21 @@ public class GetChangeStatusTest {
         assertThat(host.getValue(), is(equalTo("https://example.org/endpoint/")));
 
         assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
+    }
+
+    @Test
+    public void testGetChangeStatusWithoutChangeId() throws Exception {
+
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("No changeId specified.");
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(factoryMock);
+
+        GetChangeStatus.main(new String[] {
+        "-u", "john.doe",
+        "-p", "openSesame",
+        "-h", "https://example.org/endpoint/"});
     }
 
     @Test
@@ -118,10 +133,10 @@ public class GetChangeStatusTest {
 
         try {
           GetChangeStatus.main(new String[] {
-          "-c", "8000038673",
           "-u", "john.doe",
           "-p", "-",
-          "-h", "https://example.org/endpoint/"});
+          "-h", "https://example.org/endpoint/",
+          "8000038673"});
         } finally {
             System.setIn(oldIn);
         }
@@ -140,9 +155,9 @@ public class GetChangeStatusTest {
         setMock(factoryMock);
 
         GetChangeStatus.main(new String[] {
-        "-c", "8000038673",
         "-u", "john.doe",
-        "-h", "https://example.org/endpoint/"});
+        "-h", "https://example.org/endpoint/",
+        "8000038673"});
     }
 
     private static void setMock(ClientFactory mock) throws Exception {
