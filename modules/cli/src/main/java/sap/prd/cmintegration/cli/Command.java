@@ -1,9 +1,13 @@
 package sap.prd.cmintegration.cli;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
@@ -17,6 +21,17 @@ public class Command {
             options.addRequiredOption("p", "password", true, "Service password, if '-' if provided, password will be read from stdin.");
             options.addRequiredOption("h", "host", true, "Host");
             options.addOption(new Option("help", "help", false, "Prints this help."));
+        }
+
+        static String getPassword(CommandLine commandLine) throws IOException {
+            String password = commandLine.getOptionValue('p');
+            if(password.equals("-")) password = readPassword();
+            return password;
+        }
+
+        private static String readPassword() throws IOException {
+            return new BufferedReader(
+               new InputStreamReader(System.in, "UTF-8")).readLine();
         }
     }
 

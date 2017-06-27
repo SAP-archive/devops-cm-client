@@ -1,14 +1,10 @@
 package sap.prd.cmintegration.cli;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
@@ -40,8 +36,7 @@ public class GetChangeTransports {
         String host = commandLine.getOptionValue('h');
         String user = commandLine.getOptionValue('u');
 
-        String password = commandLine.getOptionValue('p');
-        if(password.equals("-")) password = readPassword();
+        String password = Command.Helpers.getPassword(commandLine);
 
         String[] _args = commandLine.getArgs();
         if(_args.length != 1) {
@@ -50,12 +45,6 @@ public class GetChangeTransports {
         String changeId = _args[0];
 
         new GetChangeTransports(host, user,  password, changeId).execute();
-    }
-
-
-    private static String readPassword() throws IOException {
-        return new BufferedReader(
-                new InputStreamReader(System.in, "UTF-8")).readLine();
     }
 
     public void execute() throws Exception {

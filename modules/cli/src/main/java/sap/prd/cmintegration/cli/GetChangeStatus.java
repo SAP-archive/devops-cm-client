@@ -48,8 +48,7 @@ public class GetChangeStatus {
         String host = commandLine.getOptionValue('h');
         String user = commandLine.getOptionValue('u');
 
-        String password = commandLine.getOptionValue('p');
-        if(password.equals("-")) password = readPassword();
+        String password = Command.Helpers.getPassword(commandLine);
 
         String[] _args = commandLine.getArgs();
         if(_args.length != 1) {
@@ -58,10 +57,5 @@ public class GetChangeStatus {
         String changeId = _args[0];
 
         new GetChangeStatus(host, user, password, changeId).execute();
-    }
-
-    private static String readPassword() throws IOException {
-        return new BufferedReader(
-                new InputStreamReader(System.in, "UTF-8")).readLine();
     }
 }
