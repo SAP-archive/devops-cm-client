@@ -35,10 +35,7 @@ public class GetChangeStatus {
     public final static void main(String[] args) throws Exception {
 
         Options options = new Options();
-        options.addRequiredOption("u", "user", true, "Service user.");
-        options.addRequiredOption("p", "password", true, "Service password, if '-' if provided, password will be read from stdin.");
-        options.addRequiredOption("h", "host", true, "Host");
-        options.addOption(new Option("help", "help", false, "Prints this help."));
+        Command.Helpers.addStandardParameters(options);
 
         if(args.length >= 1 && args[0].equals("--help")) {
             HelpFormatter formatter = new HelpFormatter();

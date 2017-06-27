@@ -4,9 +4,21 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+
 import com.google.common.collect.Maps;
 
 public class Command {
+
+    static class Helpers {
+        static void addStandardParameters(Options options) {
+            options.addRequiredOption("u", "user", true, "Service user.");
+            options.addRequiredOption("p", "password", true, "Service password, if '-' if provided, password will be read from stdin.");
+            options.addRequiredOption("h", "host", true, "Host");
+            options.addOption(new Option("help", "help", false, "Prints this help."));
+        }
+    }
 
     private final static Map<String, Class<?>> commands = Maps.newHashMap();
 
