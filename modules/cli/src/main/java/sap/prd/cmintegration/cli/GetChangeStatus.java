@@ -1,10 +1,10 @@
 package sap.prd.cmintegration.cli;
 
-import static sap.prd.cmintegration.cli.Command.Helpers.getChangeId;
-import static sap.prd.cmintegration.cli.Command.Helpers.getHost;
-import static sap.prd.cmintegration.cli.Command.Helpers.getPassword;
-import static sap.prd.cmintegration.cli.Command.Helpers.getUser;
-import static sap.prd.cmintegration.cli.Command.Helpers.handleHelpOption;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
+import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -12,20 +12,16 @@ import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 
-public class GetChangeStatus {
+public class GetChangeStatus extends Command {
 
     private String changeId;
-    private String user;
-    private String password;
-    private String host;
 
     GetChangeStatus(String host, String user, String password, String changeId) {
-        this.host = host;
-        this.user = user;
-        this.password = password;
+        super(host, user, password);
         this.changeId = changeId;
     }
 
+    @Override
     void execute() throws Exception {
         CMODataChange change = ClientFactory.getInstance().newClient(host, user, password).getChange(changeId);
         String status = change.getStatus();
@@ -35,7 +31,7 @@ public class GetChangeStatus {
     public final static void main(String[] args) throws Exception {
 
         Options options = new Options();
-        Command.Helpers.addStandardParameters(options);
+        Commands.Helpers.addStandardParameters(options);
 
         if(handleHelpOption(args, options)) return;
 
