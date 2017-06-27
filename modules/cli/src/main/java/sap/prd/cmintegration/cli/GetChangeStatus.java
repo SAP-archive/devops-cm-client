@@ -1,5 +1,10 @@
 package sap.prd.cmintegration.cli;
 
+import static sap.prd.cmintegration.cli.Command.Helpers.getHost;
+import static sap.prd.cmintegration.cli.Command.Helpers.getUser;
+import static sap.prd.cmintegration.cli.Command.Helpers.getPassword;
+import static sap.prd.cmintegration.cli.Command.Helpers.getChangeId;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -40,12 +45,12 @@ public class GetChangeStatus {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        String host = Command.Helpers.getHost(commandLine);
-        String user = Command.Helpers.getUser(commandLine);
+        String host = getHost(commandLine);
+        String user = getUser(commandLine);
 
-        String password = Command.Helpers.getPassword(commandLine);
+        String password = getPassword(commandLine);
 
-        String changeId = Command.Helpers.getChangeId(commandLine);
+        String changeId = getChangeId(commandLine);
 
         new GetChangeStatus(host, user, password, changeId).execute();
     }
