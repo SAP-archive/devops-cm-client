@@ -12,7 +12,7 @@
   <description>SAP Change Management Integration</description>
 
     <properties>
-      <java.level>1.7</java.level>
+      <java.level>1.8</java.level>
     </properties>
 
       <dependencies>

@@ -42,8 +42,6 @@ public class GetChangeTransports extends Command {
     @Override
     public void execute() throws Exception {
         ArrayList<CMODataTransport> transports = ClientFactory.getInstance().newClient(host, user, password).getChangeTransports(changeId);
-        for(CMODataTransport transport : transports) {
-            System.out.println(transport.getTransportID());
-        }
+        transports.stream().forEach(it -> System.out.println(it.getTransportID()));
     }
 }
