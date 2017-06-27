@@ -1,5 +1,7 @@
 package sap.prd.cmintegration.cli;
 
+import static java.util.Arrays.asList;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
@@ -47,6 +50,17 @@ public class Command {
 
         static String getArg(CommandLine commandLine, int index) throws ArrayIndexOutOfBoundsException {
             return commandLine.getArgs()[index];
+        }
+
+        /**
+         * @return <code>true</code> when the help option was detected and handled.
+         */
+        static boolean handleHelpOption(String[] args, Options options) {
+            if(!asList(args).contains("--help"))
+                return false;
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("[options...] <changeId>", options);
+            return true;
         }
 
         private static String readPassword() throws IOException {

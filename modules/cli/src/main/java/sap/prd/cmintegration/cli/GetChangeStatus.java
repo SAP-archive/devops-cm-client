@@ -1,13 +1,13 @@
 package sap.prd.cmintegration.cli;
 
-import static sap.prd.cmintegration.cli.Command.Helpers.getHost;
-import static sap.prd.cmintegration.cli.Command.Helpers.getUser;
-import static sap.prd.cmintegration.cli.Command.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Command.Helpers.getChangeId;
+import static sap.prd.cmintegration.cli.Command.Helpers.getHost;
+import static sap.prd.cmintegration.cli.Command.Helpers.getPassword;
+import static sap.prd.cmintegration.cli.Command.Helpers.getUser;
+import static sap.prd.cmintegration.cli.Command.Helpers.handleHelpOption;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
@@ -37,11 +37,7 @@ public class GetChangeStatus {
         Options options = new Options();
         Command.Helpers.addStandardParameters(options);
 
-        if(args.length >= 1 && args[0].equals("--help")) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("[options...] <changeId>", options);
-            return;
-        }
+        if(handleHelpOption(args, options)) return;
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
