@@ -36,7 +36,7 @@ public class Command {
         PrintStream ps = new PrintStream(System.out);
         for(Map.Entry<String, Class<?>> e : commands.entrySet()) {
             ps.print(e.getKey() + ":: ");
-            ps.print(e.getValue().getDeclaredMethod("main", String[].class).invoke(null, new Object[] {new String[] {"--help"}} ));
+            e.getValue().getDeclaredMethod("main", String[].class).invoke(null, new Object[] {new String[] {"--help"}} );
         }
     }
 
