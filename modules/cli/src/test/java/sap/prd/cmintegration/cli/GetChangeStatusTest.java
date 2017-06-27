@@ -8,51 +8,22 @@ import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.lang.reflect.Field;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
-import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
-public class GetChangeStatusTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    private PrintStream oldOut;
-    private ByteArrayOutputStream result;
-
-    Capture<String> host = Capture.newInstance(),
-            user = Capture.newInstance(),
-            password = Capture.newInstance(),
-            changeId = Capture.newInstance();
-
-    @Before
-    public void setup() throws Exception{
-        prepareOutputStream();
-    }
-
-    @After
-    public void tearDown() {
-        System.setOut(oldOut);
-    }
+public class GetChangeStatusTest extends CMTestBase {
 
     private ClientFactory setupMock() throws Exception {
         return setupMock(null);
@@ -74,12 +45,6 @@ public class GetChangeStatusTest {
 
         EasyMock.replay(clientMock, factoryMock);
         return factoryMock;
-    }
-
-    private void prepareOutputStream(){
-        result = new ByteArrayOutputStream();
-        oldOut = System.out;
-        System.setOut(new PrintStream(result));
     }
 
     @Test
@@ -205,12 +170,5 @@ public class GetChangeStatusTest {
         "-u", "john.doe",
         "-h", "https://example.org/endpoint/",
         "8000038673"});
-    }
-
-    private static void setMock(ClientFactory mock) throws Exception {
-        Field field = ClientFactory.class.getDeclaredField("instance");
-        field.setAccessible(true);
-        field.set(null, mock);
-        field.setAccessible(false);
     }
 }

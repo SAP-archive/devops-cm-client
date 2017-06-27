@@ -8,51 +8,24 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
-import org.easymock.Capture;
 import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class GetChangeTransportsTest {
-
-    private ClientFactory factoryMock;
-
-    Capture<String> host = Capture.newInstance(),
-            user = Capture.newInstance(),
-            password = Capture.newInstance(),
-            changeId = Capture.newInstance();
-
-    private PrintStream oldOut;
-    private ByteArrayOutputStream result;
-
-    @Before
-    public void setup() throws Exception {
-        setupMock();
-        prepareOutputStream();
-    }
-
-    @After
-    public void tearDown() {
-        System.setOut(oldOut);
-    }
+public class GetChangeTransportsTest extends CMTestBase {
 
     @Test
     public void testStraightForward() throws Exception{
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(factoryMock);
+        setMock(setupMock());
 
         GetChangeTransports.main(new String[] {
         "-u", "john.doe",
@@ -75,20 +48,7 @@ public class GetChangeTransportsTest {
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
     }
 
-    private void prepareOutputStream(){
-        result = new ByteArrayOutputStream();
-        oldOut = System.out;
-        System.setOut(new PrintStream(result));
-    }
-
-    private static void setMock(ClientFactory mock) throws Exception {
-        Field field = ClientFactory.class.getDeclaredField("instance");
-        field.setAccessible(true);
-        field.set(null, mock);
-        field.setAccessible(false);
-    }
-
-    private void setupMock() throws Exception {
+    private ClientFactory setupMock() throws Exception {
 
         ArrayList<CMODataTransport> transports = new ArrayList<>();
         transports.add(new CMODataTransport("L21K900026", false));
@@ -103,13 +63,15 @@ public class GetChangeTransportsTest {
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
 
-        factoryMock = EasyMock.createMock(ClientFactory.class);
+        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),
                         capture(password))).andReturn(clientMock);
 
         EasyMock.replay(clientMock, factoryMock);
+
+        return factoryMock;
     }
 
 
