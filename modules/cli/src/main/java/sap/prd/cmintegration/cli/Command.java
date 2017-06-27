@@ -18,26 +18,42 @@ import com.google.common.collect.Maps;
 
 public class Command {
 
+    static class CMOptions {
+
+        static Option USER = new Option("u", "user", true, "Service user."),
+                      PASSWORD = new Option("p", "password", true, "Service password, if '-' if provided, password will be read from stdin."),
+                      HOST = new Option("h", "host", true, "Host"),
+                      HELP = new Option("help", "help", false, "Prints this help.");
+
+        static {
+            USER.setRequired(true);
+            PASSWORD.setRequired(true);
+            HOST.setRequired(true);
+            HELP.setRequired(false);
+        }
+    }
+
     static class Helpers {
+
         static void addStandardParameters(Options options) {
-            options.addRequiredOption("u", "user", true, "Service user.");
-            options.addRequiredOption("p", "password", true, "Service password, if '-' if provided, password will be read from stdin.");
-            options.addRequiredOption("h", "host", true, "Host");
-            options.addOption(new Option("help", "help", false, "Prints this help."));
+            options.addOption(CMOptions.USER);
+            options.addOption(CMOptions.PASSWORD);
+            options.addOption(CMOptions.HOST);
+            options.addOption(CMOptions.HELP);
         }
 
         static String getPassword(CommandLine commandLine) throws IOException {
-            String password = commandLine.getOptionValue('p');
+            String password = commandLine.getOptionValue(CMOptions.PASSWORD.getOpt());
             if(password.equals("-")) password = readPassword();
             return password;
         }
 
         static String getUser(CommandLine commandLine) {
-            return commandLine.getOptionValue('u');
+            return commandLine.getOptionValue(CMOptions.USER.getOpt());
         }
 
         static String getHost(CommandLine commandLine) {
-            return commandLine.getOptionValue('h');
+            return commandLine.getOptionValue(CMOptions.HOST.getOpt());
         }
 
         static String getChangeId(CommandLine commandLine) {
