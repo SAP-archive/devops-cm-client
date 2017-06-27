@@ -113,6 +113,25 @@ public class GetChangeStatusTest {
     }
 
     @Test
+    public void testGetChangeStatusWithBadCredentials() throws Exception {
+
+        thrown.expect(ODataClientErrorException.class);
+        thrown.expectMessage("401");
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(
+                setupMock(
+                    new ODataClientErrorException(
+                        new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 401, "Unauthorized"))));
+
+        GetChangeStatus.main(new String[] {
+        "-u", "DOES_NOT_EXIST",
+        "-p", "********",
+        "-h", "https://example.org/endpoint/",
+        "8000038673"});
+    }
+
+    @Test
     public void testGetChangeStatusForNotExistingChange() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
