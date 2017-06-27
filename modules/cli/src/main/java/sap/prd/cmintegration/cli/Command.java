@@ -29,6 +29,10 @@ public class Command {
             return password;
         }
 
+        static String getUser(CommandLine commandLine) {
+            return commandLine.getOptionValue('u');
+        }
+
         private static String readPassword() throws IOException {
             return new BufferedReader(
                new InputStreamReader(System.in, "UTF-8")).readLine();
