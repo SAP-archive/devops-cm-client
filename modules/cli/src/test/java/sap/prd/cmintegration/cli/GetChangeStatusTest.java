@@ -59,12 +59,10 @@ public class GetChangeStatusTest {
     }
 
     private ClientFactory setupMock(Exception ex) throws Exception {
-        CMODataChange changeMock = EasyMock.createMock(CMODataChange.class);
-        expect(changeMock.getStatus()).andReturn("E0002");
-
+        CMODataChange change = new CMODataChange("8000038673", "E0002");
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         if(ex == null) {
-            expect(clientMock.getChange(capture(changeId))).andReturn(changeMock);
+            expect(clientMock.getChange(capture(changeId))).andReturn(change);
         } else {
             expect(clientMock.getChange(capture(changeId))).andThrow(ex);
         }
@@ -74,7 +72,7 @@ public class GetChangeStatusTest {
                         capture(user),
                         capture(password))).andReturn(clientMock);
 
-        EasyMock.replay(changeMock, clientMock, factoryMock);
+        EasyMock.replay(clientMock, factoryMock);
         return factoryMock;
     }
 
