@@ -1,13 +1,8 @@
 package sap.prd.cmintegration.cli;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
@@ -50,11 +45,7 @@ public class GetChangeStatus {
 
         String password = Command.Helpers.getPassword(commandLine);
 
-        String[] _args = commandLine.getArgs();
-        if(_args.length != 1) {
-            throw new CMCommandLineException("No changeId specified.");
-        }
-        String changeId = _args[0];
+        String changeId = Command.Helpers.getChangeId(commandLine);
 
         new GetChangeStatus(host, user, password, changeId).execute();
     }

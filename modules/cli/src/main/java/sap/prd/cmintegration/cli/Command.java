@@ -37,6 +37,18 @@ public class Command {
             return commandLine.getOptionValue('h');
         }
 
+        static String getChangeId(CommandLine commandLine) {
+            try {
+                return getArg(commandLine, 0);
+            } catch(ArrayIndexOutOfBoundsException ex) {
+                throw new CMCommandLineException("No changeId specified.", ex);
+            }
+        }
+
+        static String getArg(CommandLine commandLine, int index) throws ArrayIndexOutOfBoundsException {
+            return commandLine.getArgs()[index];
+        }
+
         private static String readPassword() throws IOException {
             return new BufferedReader(
                new InputStreamReader(System.in, "UTF-8")).readLine();
