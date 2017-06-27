@@ -59,9 +59,9 @@ public class GetChangeStatusTest {
     }
 
     private ClientFactory setupMock(Exception ex) throws Exception {
-        CMODataChange change = new CMODataChange("8000038673", "E0002");
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         if(ex == null) {
+            CMODataChange change = new CMODataChange("8000038673", "E0002");
             expect(clientMock.getChange(capture(changeId))).andReturn(change);
         } else {
             expect(clientMock.getChange(capture(changeId))).andThrow(ex);
