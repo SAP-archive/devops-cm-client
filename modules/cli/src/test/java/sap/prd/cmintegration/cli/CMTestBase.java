@@ -29,8 +29,9 @@ public class CMTestBase {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         System.setOut(oldOut);
+        setMock(null);
     }
 
     protected void prepareOutputStream(){
