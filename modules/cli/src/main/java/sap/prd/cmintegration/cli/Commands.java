@@ -93,6 +93,7 @@ public class Commands {
     static {
         commands.put("change-status", GetChangeStatus.class);
         commands.put("transports", GetChangeTransports.class);
+        commands.put("transport-modifiable", GetTransportModifiable.class);
     }
 
     public final static void main(String[] args) throws Exception {
