@@ -157,6 +157,53 @@ public class GetChangeStatusTest extends CMTestBase {
     }
 
     @Test
+    public void testGetChangeStatusMultilinePasswordViaStdin() throws Exception {
+
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Multiline passwords are not supported.");
+
+        InputStream oldIn = System.in;
+        System.setIn(new ByteArrayInputStream("openSesame\r\nTESTAGAIN".getBytes()));
+
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock());
+
+        try {
+          GetChangeStatus.main(new String[] {
+          "-u", "john.doe",
+          "-p", "-",
+          "-h", "https://example.org/endpoint/",
+          "8000038673"});
+        } finally {
+            System.setIn(oldIn);
+        }
+    }
+    @Test
+    public void testGetChangeStatusEmptyPasswordViaStdin() throws Exception {
+
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Empty password found.");
+
+        InputStream oldIn = System.in;
+        System.setIn(new ByteArrayInputStream("".getBytes()));
+
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock());
+
+        try {
+          GetChangeStatus.main(new String[] {
+          "-u", "john.doe",
+          "-p", "-",
+          "-h", "https://example.org/endpoint/",
+          "8000038673"});
+        } finally {
+            System.setIn(oldIn);
+        }
+    }
+
+    @Test
     public void testGetChangeStatusNoPassword() throws Exception {
 
         thrown.expect(MissingOptionException.class);

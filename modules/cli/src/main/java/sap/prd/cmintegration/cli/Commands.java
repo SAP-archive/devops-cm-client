@@ -84,8 +84,14 @@ public class Commands {
         }
 
         private static String readPassword() throws IOException {
-            return new BufferedReader(
-               new InputStreamReader(System.in, "UTF-8")).readLine();
+            BufferedReader buff = new BufferedReader(
+                    new InputStreamReader(System.in, "UTF-8"));
+            String passwd = buff.readLine();
+            if(passwd == null || passwd.isEmpty())
+                throw new CMCommandLineException("Empty password found.");
+            if(buff.readLine() != null)
+                throw new CMCommandLineException("Multiline passwords are not supported.");
+            return passwd;
         }
     }
 
