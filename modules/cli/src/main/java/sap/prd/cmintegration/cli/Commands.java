@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
@@ -93,7 +94,7 @@ public class Commands {
     }
 
     public final static void main(String[] args) throws Exception {
-        if(args.length == 1 && args[0].equals("--help")) {
+        if(Arrays.asList(args).contains("--help")) {
             printHelp();
             return;
         }
