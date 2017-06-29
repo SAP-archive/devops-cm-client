@@ -99,8 +99,9 @@ public class Commands {
 
     public final static void main(String[] args) throws Exception {
         Collection<String> _args = Arrays.asList(args);
-        if(_args.contains("--help") && _args.size() == 1) {
+        if((_args.contains("--help") && _args.size() == 1) || _args.isEmpty()) {
             printHelp();
+            if(_args.isEmpty()) throw new CMCommandLineException("Called without arguments.");
             return;
         }
 
@@ -110,6 +111,9 @@ public class Commands {
         }
 
         try {
+            if(! commands.keySet().contains(args[0])) {
+                throw new CMCommandLineException(String.format("Command '%s' not found.", args[0]));
+            }
             commands.get(args[0]).getDeclaredMethod("main", String[].class)
               .invoke(null, new Object[] { shift(args) });
         } catch (InvocationTargetException e) {

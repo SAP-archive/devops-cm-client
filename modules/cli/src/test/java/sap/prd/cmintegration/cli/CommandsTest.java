@@ -28,6 +28,20 @@ public class CommandsTest extends CMTestBase {
                 is(equalTo(removeCRLF(FileUtils.readFileToString(version)))));
     }
 
+    @Test
+    public void testExecuteNotExistingCommand() throws Exception {
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Command 'does-not-exist' not found.");
+        Commands.main(new String[] {"does-not-exist"});
+    }
+
+    @Test
+    public void testExecuteWithoutParameters() throws Exception {
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Called without arguments.");
+        Commands.main(new String[] {});
+    }
+
     /*
      * Intended for being used with a single line string.
      */
