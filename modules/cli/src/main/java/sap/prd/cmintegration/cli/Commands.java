@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
@@ -74,11 +75,11 @@ public class Commands {
         /**
          * @return <code>true</code> when the help option was detected and handled.
          */
-        static boolean handleHelpOption(String[] args, Options options) {
+        static boolean handleHelpOption(String[] args, String usage, Options options) {
             if(!asList(args).contains("--help"))
                 return false;
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("[options...] <changeId>", options);
+            formatter.printHelp(String.format("[options] %s", usage), options);
             return true;
         }
 
@@ -97,7 +98,8 @@ public class Commands {
     }
 
     public final static void main(String[] args) throws Exception {
-        if(Arrays.asList(args).contains("--help")) {
+        Collection<String> _args = Arrays.asList(args);
+        if(_args.contains("--help") && _args.size() == 1) {
             printHelp();
             return;
         }

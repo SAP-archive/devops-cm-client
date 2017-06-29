@@ -28,7 +28,7 @@ public class GetChangeTransports extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        if(handleHelpOption(args, options)) return;
+        if(handleHelpOption(args, "<changeId>", options)) return;
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 

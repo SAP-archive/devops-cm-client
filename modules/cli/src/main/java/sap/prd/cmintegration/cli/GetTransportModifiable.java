@@ -40,7 +40,7 @@ public class GetTransportModifiable extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        if(handleHelpOption(args, options)) return;
+        if(handleHelpOption(args, "<changeId> <transportId>", options)) return;
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
         new GetTransportModifiable(Commands.Helpers.getHost(commandLine),
