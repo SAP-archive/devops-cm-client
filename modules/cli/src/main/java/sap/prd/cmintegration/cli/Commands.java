@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +15,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.Maps;
 
@@ -99,6 +101,11 @@ public class Commands {
             return;
         }
 
+        if(Arrays.asList(args).contains("--version")) {
+            printVersion();
+            return;
+        }
+
         try {
             commands.get(args[0]).getDeclaredMethod("main", String[].class)
               .invoke(null, new Object[] { shift(args) });
@@ -107,6 +114,12 @@ public class Commands {
               throw (Exception)e.getTargetException();
             else
               throw e;
+        }
+    }
+
+    private static void printVersion() throws IOException {
+        try(InputStream version = Commands.class.getResourceAsStream("/VERSION")) {
+            System.out.println(IOUtils.toString(version).replaceAll("\\r?\\n$", ""));
         }
     }
 
