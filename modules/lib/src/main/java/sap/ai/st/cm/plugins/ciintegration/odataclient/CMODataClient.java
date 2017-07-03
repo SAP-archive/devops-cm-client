@@ -1,12 +1,12 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
-import com.google.common.net.UrlEscapers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
@@ -22,6 +22,8 @@ import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
+
+import com.google.common.net.UrlEscapers;
 
 public class CMODataClient {
 
@@ -114,17 +116,11 @@ public class CMODataClient {
 
     public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
 
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("releaseTransport").build();
-
-        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
+        URI functionUri = getFunctionURI("releaseTransport", "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
-        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
-
-        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-
-        checkStatus(response, 200);
+        executeRequest(functionInvokeRequest, 200);
     }
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
@@ -136,20 +132,21 @@ public class CMODataClient {
     }
 
     private CMODataTransport _createDevelopmentTransport(String segment, String query) throws IOException {
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment(segment).build();
 
-        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape(query));
+        URI functionUri = getFunctionURI(segment, query);
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
-        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
-
-        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-
-        checkStatus(response, 200);
+        ODataInvokeResponse<ClientEntity> response = executeRequest(functionInvokeRequest, 200);
 
         return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+    }
 
+    private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws IOException {
+        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
+        checkStatus(response, 200);
+        return response;
     }
 
     private String getCSRFToken() {
@@ -167,11 +164,15 @@ public class CMODataClient {
         return response.getHeader("X-CSRF-Token").iterator().next();
 
     }
-    private void checkStatus(ODataResponse response, int expectedStatusCode) throws IOException {
 
+    private URI getFunctionURI(String segment, String query) {
+        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment(segment).build();
+        return URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape(query));
+    }
+
+    private void checkStatus(ODataResponse response, int expectedStatusCode) throws IOException {
         if (response.getStatusCode() != expectedStatusCode) {
             throw new IOException(response.getRawResponse().toString());
         }
-        
     }
 }
