@@ -105,11 +105,7 @@ public class CMODataClient {
 
             ODataResponse createMediaResponse = streamManager.getResponse();
 
-            if (createMediaResponse.getStatusCode() != 204) {
-
-                throw new IOException(createMediaResponse.getRawResponse().toString());
-
-            }
+            checkStatus(createMediaResponse, 204);
 
             createMediaResponse.close();
 
@@ -128,11 +124,7 @@ public class CMODataClient {
 
         ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
 
-        if (response.getStatusCode() != 200) {
-
-            throw new IOException(response.getRawResponse().toString());
-
-        }
+        checkStatus(response, 200);
     }
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
@@ -147,11 +139,7 @@ public class CMODataClient {
 
         ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
 
-        if (response.getStatusCode() != 200) {
-
-            throw new IOException(response.getRawResponse().toString());
-
-        }
+        checkStatus(response, 200);
 
         return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
     }
@@ -168,11 +156,7 @@ public class CMODataClient {
 
         ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
 
-        if (response.getStatusCode() != 200) {
-
-            throw new IOException(response.getRawResponse().toString());
-
-        }
+        checkStatus(response, 200);
 
         return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
     }
@@ -191,5 +175,12 @@ public class CMODataClient {
 
         return response.getHeader("X-CSRF-Token").iterator().next();
 
+    }
+    private void checkStatus(ODataResponse response, int expectedStatusCode) throws IOException {
+
+        if (response.getStatusCode() != expectedStatusCode) {
+            throw new IOException(response.getRawResponse().toString());
+        }
+        
     }
 }
