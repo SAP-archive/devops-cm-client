@@ -128,27 +128,17 @@ public class CMODataClient {
     }
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
-
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("createTransport").build();
-
-        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'"));
-
-        ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
-
-        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
-
-        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-
-        checkStatus(response, 200);
-
-        return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+        return _createDevelopmentTransport("createTransport", "?ChangeID='" + ChangeID + "'");
     }
 
     public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
+        return _createDevelopmentTransport("createTransportAdvanced", "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
+    }
 
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("createTransportAdvanced").build();
+    private CMODataTransport _createDevelopmentTransport(String segment, String query) throws IOException {
+        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment(segment).build();
 
-        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'"));
+        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape(query));
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
@@ -159,6 +149,7 @@ public class CMODataClient {
         checkStatus(response, 200);
 
         return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+
     }
 
     private String getCSRFToken() {
