@@ -47,10 +47,15 @@ public class CMODataClient {
 
         request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
-        ODataRetrieveResponse<ClientEntity> response = request.execute();
-
-        return new CMODataChange(ChangeID, response.getBody().getProperty("Status").getValue().toString());
-
+        ODataRetrieveResponse<ClientEntity> response = null;
+        try {
+            response = request.execute();
+            return new CMODataChange(ChangeID, response.getBody().getProperty("Status").getValue().toString());
+        } finally {
+            if(response != null) {
+                response.close();
+            }
+        }
     }
 
     public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
@@ -62,20 +67,28 @@ public class CMODataClient {
 
         request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
-        ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = request.execute();
+        ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = null;
 
-        ClientEntitySetIterator<ClientEntitySet, ClientEntity> iterator = response.getBody();
+        try {
+            response = request.execute();
 
-        ArrayList<CMODataTransport> transportList = new ArrayList<>();
+            ClientEntitySetIterator<ClientEntitySet, ClientEntity> iterator = response.getBody();
 
-        while (iterator.hasNext()) {
+            ArrayList<CMODataTransport> transportList = new ArrayList<>();
 
-            ClientEntity transport = iterator.next();
+            while (iterator.hasNext()) {
 
-            transportList.add(new CMODataTransport(transport.getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(transport.getProperty("IsModifiable").getValue().toString())));
+                ClientEntity transport = iterator.next();
+
+                transportList.add(new CMODataTransport(transport.getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(transport.getProperty("IsModifiable").getValue().toString())));
+            }
+
+            return transportList;
+        } finally {
+            if(response != null) {
+                response.close();
+            }
         }
-
-        return transportList;
     }
 
     public void uploadFileToTransport(String TransportID, String filePath, String ApplicationID) throws IOException {
@@ -88,6 +101,7 @@ public class CMODataClient {
 
         fileStreamUri = URI.create(fileStreamUri.toString() + "(TransportID='" + TransportID + "',FileID='" + file.getName() + "',ApplicationID='" + ApplicationID + "')");
 
+        ODataResponse createMediaResponse = null;
         try (FileInputStream fileStream = new FileInputStream(file)) {
 
             ODataMediaEntityUpdateRequest createMediaRequest = this.client.getCUDRequestFactory().getMediaEntityUpdateRequest(fileStreamUri, fileStream);
@@ -105,12 +119,13 @@ public class CMODataClient {
 
             ODataPayloadManager streamManager = createMediaRequest.payloadManager();
 
-            ODataResponse createMediaResponse = streamManager.getResponse();
-
+            createMediaResponse = streamManager.getResponse();
             checkStatus(createMediaResponse, 204);
 
-            createMediaResponse.close();
-
+        } finally {
+            if(createMediaResponse != null) {
+                createMediaResponse.close();
+            }
         }
     }
 
@@ -120,7 +135,15 @@ public class CMODataClient {
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
-        executeRequest(functionInvokeRequest, 200);
+        ODataInvokeResponse<ClientEntity> response = null;
+
+        try {
+            response = executeRequest(functionInvokeRequest, 200);
+        } finally {
+            if(response != null) {
+                response.close();
+            }
+        }
     }
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
@@ -137,9 +160,16 @@ public class CMODataClient {
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
-        ODataInvokeResponse<ClientEntity> response = executeRequest(functionInvokeRequest, 200);
+        ODataInvokeResponse<ClientEntity> response = null;
+        try {
+            response = executeRequest(functionInvokeRequest, 200);
+            return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+        } finally {
+            if(response != null) {
+                response.close();
+            }
+        }
 
-        return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
     }
 
     private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws IOException {
