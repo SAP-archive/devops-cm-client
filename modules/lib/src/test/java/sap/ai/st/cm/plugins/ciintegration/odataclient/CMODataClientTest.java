@@ -10,9 +10,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Field;
-import java.net.URI;
 
-import org.apache.http.ProtocolVersion;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
@@ -28,32 +26,28 @@ import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
 import org.apache.olingo.client.core.domain.ClientPropertyImpl;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.easymock.Capture;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-public class CMODataClientTest {
+public class CMODataClientTest extends CMODataClientBaseTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    Capture<URI> address;
-    Capture<String> contentType;
+    private Capture<String> contentType;
 
     @Before
-    public void setup() {
-        address = Capture.newInstance();
+    public void setup() throws Exception {
+        super.setup();
         contentType = Capture.newInstance();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        contentType = null;
+        super.tearDown();
     }
 
     @Test
     public void testChangeStraightForward() throws Exception {
-
-        CMODataClient examinee = new CMODataClient(
-                "https://example.org/endpoint",
-                "john.doe",
-                "openSesame");
 
         // comment line below for testing against real backend.
         // Assert for the captures below needs to be commented also in this case.
@@ -74,11 +68,6 @@ public class CMODataClientTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("400");  // Would prefer 404, not found.
-
-        CMODataClient examinee = new CMODataClient(
-                "https://example.org/endpoint",
-                "john.doe",
-                "openSesame");
 
         // comment line below for testing against real backend.
         // Assert for the captures below needs to be commented also in this case.
@@ -152,7 +141,7 @@ public class CMODataClientTest {
         expect(oDataEntityRequestMock.setAccept(capture(contentType))).andReturn(oDataEntityRequestMock);
         expect(oDataEntityRequestMock.execute()).andThrow(
                 new ODataClientErrorException(
-                        new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), errorCode, message)));
+                        new BasicStatusLine(HTTP_1_1, errorCode, message)));
 
         RetrieveRequestFactory retrieveRequestFactoryMock = createMock(RetrieveRequestFactory.class);
         expect(retrieveRequestFactoryMock.getEntityRequest(capture(address))).andReturn(oDataEntityRequestMock);
@@ -169,8 +158,8 @@ public class CMODataClientTest {
         replay(oDataEntityRequestMock, retrieveRequestFactoryMock, clientMock);
 
         return clientMock;
-        
     }
+
     private static void setMock(CMODataClient examinee, ODataClient mock) throws Exception {
         Field client = CMODataClient.class.getDeclaredField("client");
         client.setAccessible(true);
