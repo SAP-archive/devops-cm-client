@@ -23,6 +23,7 @@ import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
 
+import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
 
 public class CMODataClient {
@@ -111,7 +112,7 @@ public class CMODataClient {
 
             String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 
-            if (!mimeType.isEmpty()) {
+            if (! Strings.isNullOrEmpty(mimeType)) {
 
                 createMediaRequest.setContentType(mimeType);
 
