@@ -1,12 +1,12 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
-import com.google.common.net.UrlEscapers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
@@ -22,6 +22,9 @@ import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
+
+import com.google.common.base.Strings;
+import com.google.common.net.UrlEscapers;
 
 public class CMODataClient {
 
@@ -45,10 +48,15 @@ public class CMODataClient {
 
         request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
-        ODataRetrieveResponse<ClientEntity> response = request.execute();
-
-        return new CMODataChange(ChangeID, response.getBody().getProperty("Status").getValue().toString());
-
+        ODataRetrieveResponse<ClientEntity> response = null;
+        try {
+            response = request.execute();
+            return new CMODataChange(ChangeID, response.getBody().getProperty("Status").getValue().toString());
+        } finally {
+            if(response != null) {
+                response.close();
+            }
+        }
     }
 
     public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
@@ -60,20 +68,28 @@ public class CMODataClient {
 
         request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
 
-        ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = request.execute();
+        ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = null;
 
-        ClientEntitySetIterator<ClientEntitySet, ClientEntity> iterator = response.getBody();
+        try {
+            response = request.execute();
 
-        ArrayList<CMODataTransport> transportList = new ArrayList<>();
+            ClientEntitySetIterator<ClientEntitySet, ClientEntity> iterator = response.getBody();
 
-        while (iterator.hasNext()) {
+            ArrayList<CMODataTransport> transportList = new ArrayList<>();
 
-            ClientEntity transport = iterator.next();
+            while (iterator.hasNext()) {
 
-            transportList.add(new CMODataTransport(transport.getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(transport.getProperty("IsModifiable").getValue().toString())));
+                ClientEntity transport = iterator.next();
+
+                transportList.add(new CMODataTransport(transport.getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(transport.getProperty("IsModifiable").getValue().toString())));
+            }
+
+            return transportList;
+        } finally {
+            if(response != null) {
+                response.close();
+            }
         }
-
-        return transportList;
     }
 
     public void uploadFileToTransport(String TransportID, String filePath, String ApplicationID) throws IOException {
@@ -86,6 +102,7 @@ public class CMODataClient {
 
         fileStreamUri = URI.create(fileStreamUri.toString() + "(TransportID='" + TransportID + "',FileID='" + file.getName() + "',ApplicationID='" + ApplicationID + "')");
 
+        ODataResponse createMediaResponse = null;
         try (FileInputStream fileStream = new FileInputStream(file)) {
 
             ODataMediaEntityUpdateRequest createMediaRequest = this.client.getCUDRequestFactory().getMediaEntityUpdateRequest(fileStreamUri, fileStream);
@@ -95,7 +112,7 @@ public class CMODataClient {
 
             String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 
-            if (!mimeType.isEmpty()) {
+            if (! Strings.isNullOrEmpty(mimeType)) {
 
                 createMediaRequest.setContentType(mimeType);
 
@@ -103,78 +120,64 @@ public class CMODataClient {
 
             ODataPayloadManager streamManager = createMediaRequest.payloadManager();
 
-            ODataResponse createMediaResponse = streamManager.getResponse();
+            createMediaResponse = streamManager.getResponse();
+            checkStatus(createMediaResponse, 204);
 
-            if (createMediaResponse.getStatusCode() != 204) {
-
-                throw new IOException(createMediaResponse.getRawResponse().toString());
-
+        } finally {
+            if(createMediaResponse != null) {
+                createMediaResponse.close();
             }
-
-            createMediaResponse.close();
-
         }
     }
 
     public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
 
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("releaseTransport").build();
-
-        functionUri = URI.create(functionUri.toString() + "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
+        URI functionUri = getFunctionURI("releaseTransport", "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
-        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+        ODataInvokeResponse<ClientEntity> response = null;
 
-        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-
-        if (response.getStatusCode() != 200) {
-
-            throw new IOException(response.getRawResponse().toString());
-
+        try {
+            response = executeRequest(functionInvokeRequest, 200);
+        } finally {
+            if(response != null) {
+                response.close();
+            }
         }
     }
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
-
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("createTransport").build();
-
-        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'"));
-
-        ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
-
-        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
-
-        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-
-        if (response.getStatusCode() != 200) {
-
-            throw new IOException(response.getRawResponse().toString());
-
-        }
-
-        return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+        return _createDevelopmentTransport("createTransport", "?ChangeID='" + ChangeID + "'");
     }
 
     public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
+        return _createDevelopmentTransport("createTransportAdvanced", "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
+    }
 
-        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment("createTransportAdvanced").build();
+    private CMODataTransport _createDevelopmentTransport(String segment, String query) throws IOException {
 
-        functionUri = URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape("?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'"));
+        URI functionUri = getFunctionURI(segment, query);
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
-        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
-
-        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-
-        if (response.getStatusCode() != 200) {
-
-            throw new IOException(response.getRawResponse().toString());
-
+        ODataInvokeResponse<ClientEntity> response = null;
+        try {
+            response = executeRequest(functionInvokeRequest, 200);
+            return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+        } finally {
+            if(response != null) {
+                response.close();
+            }
         }
 
-        return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+    }
+
+    private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws IOException {
+        functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+        ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
+        checkStatus(response, 200);
+        return response;
     }
 
     private String getCSRFToken() {
@@ -191,5 +194,16 @@ public class CMODataClient {
 
         return response.getHeader("X-CSRF-Token").iterator().next();
 
+    }
+
+    private URI getFunctionURI(String segment, String query) {
+        URI functionUri = this.client.newURIBuilder(serviceUrl).appendActionCallSegment(segment).build();
+        return URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape(query));
+    }
+
+    private void checkStatus(ODataResponse response, int expectedStatusCode) throws IOException {
+        if (response.getStatusCode() != expectedStatusCode) {
+            throw new IOException(response.getRawResponse().toString());
+        }
     }
 }
