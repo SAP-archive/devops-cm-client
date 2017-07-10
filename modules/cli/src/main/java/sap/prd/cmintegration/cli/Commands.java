@@ -106,6 +106,7 @@ public class Commands {
         commands.put("change-status", GetChangeStatus.class);
         commands.put("transports", GetChangeTransports.class);
         commands.put("transport-modifiable", GetTransportModifiable.class);
+        commands.put("upload-file", UploadFileToTransport.class);
     }
 
     public final static void main(String[] args) throws Exception {
