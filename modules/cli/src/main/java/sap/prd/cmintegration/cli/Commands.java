@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
 import java.io.BufferedReader;
@@ -61,10 +62,14 @@ public class Commands {
         }
 
         static String getChangeId(CommandLine commandLine) {
+            return getArg(commandLine, 0, "changeId");
+        }
+
+        static String getArg(CommandLine commandLine, int index, String name) {
             try {
-                return getArg(commandLine, 0);
+                return getArg(commandLine, index);
             } catch(ArrayIndexOutOfBoundsException ex) {
-                throw new CMCommandLineException("No changeId specified.", ex);
+                throw new CMCommandLineException(format("No %s specified.", name), ex);
             }
         }
 
