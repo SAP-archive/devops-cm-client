@@ -11,6 +11,7 @@ import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.apache.olingo.client.api.communication.ODataClientErrorException;
 
 public class UploadFileToTransport extends Command {
 
@@ -48,7 +49,11 @@ public class UploadFileToTransport extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
-        ClientFactory.getInstance().newClient(host,  user, password)
-            .uploadFileToTransport(transportId, upload.getAbsolutePath(), applicationId);
+        try {
+            ClientFactory.getInstance().newClient(host,  user, password)
+                .uploadFileToTransport(transportId, upload.getAbsolutePath(), applicationId);
+        } catch(Exception e) {
+            throw new ExitException(e, 1);
+        }
     }
 }
