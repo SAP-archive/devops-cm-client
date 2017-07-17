@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
@@ -70,6 +71,10 @@ public class CMODataClient {
     }
 
     public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
+
+        if(StringUtils.isEmpty(ChangeID)) {
+            throw new IllegalArgumentException(format("ChangeID was null or empty: '%s'.", ChangeID));
+        }
 
         URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes"
         ).appendKeySegment(ChangeID).appendNavigationSegment("Transports").build();
