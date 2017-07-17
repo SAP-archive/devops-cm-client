@@ -28,7 +28,6 @@ import org.apache.olingo.client.core.domain.ClientPropertyImpl;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.easymock.Capture;
 import org.junit.After;
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +56,7 @@ public class CMODataClientTest extends CMODataClientBaseTest {
 
         CMODataChange change = examinee.getChange("8000038673");
 
-        assertThat(change.getStatus(), is(equalTo("E0002")));
+        assertThat(change.isInDevelopment(), is(equalTo(true)));
         assertThat(change.getChangeID(), is(equalTo("8000038673")));
         assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
         assertThat(address.getValue().toASCIIString(),
@@ -69,7 +68,7 @@ public class CMODataClientTest extends CMODataClientBaseTest {
     public void testChangeDoesNotExist() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400");  // Would prefer 404, not found.
+        thrown.expectMessage("404");
 
         // comment line below for testing against real backend.
         // Assert for the captures below needs to be commented also in this case.
@@ -100,9 +99,14 @@ public class CMODataClientTest extends CMODataClientBaseTest {
     private ODataClient setupStraightForwardMock() {
 
         ClientEntity clientEntity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
+
         clientEntity.getProperties().add(
-            new ClientPropertyImpl("Status",
-              new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("E0002").build()));
+                new ClientPropertyImpl("ChangeID",
+                  new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("8000038673").build()));
+
+        clientEntity.getProperties().add(
+                new ClientPropertyImpl("IsInDevelopment",
+                  new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build()));
 
         ODataRetrieveResponse<ClientEntity> responseMock = createMock(ODataRetrieveResponse.class);
         expect(responseMock.getBody()).andReturn(clientEntity);
@@ -135,7 +139,7 @@ public class CMODataClientTest extends CMODataClientBaseTest {
     }
 
     private ODataClient setupChangeDoesNotExistMock() {
-        return setupExceptionMock(400,  "Bad request");
+        return setupExceptionMock(404,  "Bad request");
     }
 
     @SuppressWarnings("unchecked")

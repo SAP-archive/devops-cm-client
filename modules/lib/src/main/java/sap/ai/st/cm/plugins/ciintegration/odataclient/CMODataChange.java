@@ -8,15 +8,15 @@ public class CMODataChange {
         return ChangeID;
     }
 
-    public String getStatus() {
-        return Status;
+    public boolean isInDevelopment() {
+        return isInDevelopment;
     }
-    private final String Status;
+    private final boolean isInDevelopment;
     
-    public CMODataChange(String ChangeID, String Status){
+    public CMODataChange(String ChangeID, boolean isInDevelopment){
         
         this.ChangeID = ChangeID;
-        this.Status = Status;
+        this.isInDevelopment = isInDevelopment;
         
     }
     

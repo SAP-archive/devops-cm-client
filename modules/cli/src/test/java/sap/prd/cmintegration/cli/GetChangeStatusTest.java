@@ -32,7 +32,7 @@ public class GetChangeStatusTest extends CMTestBase {
     private ClientFactory setupMock(Exception ex) throws Exception {
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         if(ex == null) {
-            CMODataChange change = new CMODataChange("8000038673", "E0002");
+            CMODataChange change = new CMODataChange("8000038673", true);
             expect(clientMock.getChange(capture(changeId))).andReturn(change);
         } else {
             expect(clientMock.getChange(capture(changeId))).andThrow(ex);
@@ -72,7 +72,7 @@ public class GetChangeStatusTest extends CMTestBase {
         assertThat(password.getValue(), is(equalTo("openSesame")));
         assertThat(host.getValue(), is(equalTo("https://example.org/endpoint/")));
 
-        assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("E0002"));
+        assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("true"));
     }
 
     @Test
@@ -98,13 +98,13 @@ public class GetChangeStatusTest extends CMTestBase {
     public void testGetChangeStatusForNotExistingChange() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400");
+        thrown.expectMessage("404");
         //
         // Comment statement below in order to go against the real back-end as specified via -h
         setMock(
             setupMock(
                 new ODataClientErrorException(
-                    new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
+                    new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 404, "Not Found."))));
 
         try {
             GetChangeStatus.main(new String[] {

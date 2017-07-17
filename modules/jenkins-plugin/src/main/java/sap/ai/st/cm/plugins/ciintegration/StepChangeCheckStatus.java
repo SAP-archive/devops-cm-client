@@ -15,18 +15,18 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 public class StepChangeCheckStatus extends StepAbstract {
 
-    private final String ChangeStatus;
+    private final boolean isInDevelopment;
 
-    public String getChangeStatus() {
-        return ChangeStatus;
+    public boolean isInDevelopment() {
+        return isInDevelopment;
     }
 
     @DataBoundConstructor
-    public StepChangeCheckStatus(String ChangeID, String ChangeStatus) {
+    public StepChangeCheckStatus(String ChangeID, boolean isInDevelopment) {
 
         super(ChangeID);
 
-        this.ChangeStatus = ChangeStatus;
+        this.isInDevelopment = isInDevelopment;
     }
 
     @Override
@@ -42,15 +42,15 @@ public class StepChangeCheckStatus extends StepAbstract {
 
             CMODataChange change = odataClient.getChange(run.getEnvironment(taskListener).expand(this.ChangeID));
 
-            String status = change.getStatus();
+            boolean isInDevelopment = change.isInDevelopment();
 
-            if (status.equals(run.getEnvironment(taskListener).expand(this.ChangeStatus))) {
+            if (isInDevelopment == this.isInDevelopment ) {
 
-                taskListener.getLogger().println("Change is in status " + status);
+                taskListener.getLogger().println("Change is in status 'development':" + isInDevelopment + ".");
 
             } else {
 
-                throw new InterruptedException("Change is in status " + status + ". Expected status " + run.getEnvironment(taskListener).expand(this.ChangeStatus) + ".");
+                throw new InterruptedException("Change is in unexpected development status: " + isInDevelopment + ".");
 
             }
 

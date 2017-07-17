@@ -24,8 +24,7 @@ public class GetChangeStatus extends Command {
     @Override
     void execute() throws Exception {
         CMODataChange change = ClientFactory.getInstance().newClient(host, user, password).getChange(changeId);
-        String status = change.getStatus();
-        System.out.println(status);
+        System.out.println(change.isInDevelopment());
     }
 
     public final static void main(String[] args) throws Exception {

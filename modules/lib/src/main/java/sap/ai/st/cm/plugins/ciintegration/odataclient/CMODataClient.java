@@ -1,5 +1,7 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,8 +14,10 @@ import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntityRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntitySetIteratorRequest;
+import org.apache.olingo.client.api.communication.request.streamed.MediaEntityUpdateStreamManager;
 import org.apache.olingo.client.api.communication.request.streamed.ODataMediaEntityUpdateRequest;
 import org.apache.olingo.client.api.communication.response.ODataInvokeResponse;
+import org.apache.olingo.client.api.communication.response.ODataMediaEntityUpdateResponse;
 import org.apache.olingo.client.api.communication.response.ODataResponse;
 import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse;
 import org.apache.olingo.client.api.domain.ClientEntity;
@@ -51,7 +55,13 @@ public class CMODataClient {
         ODataRetrieveResponse<ClientEntity> response = null;
         try {
             response = request.execute();
-            return new CMODataChange(ChangeID, response.getBody().getProperty("Status").getValue().toString());
+            ClientEntity body = response.getBody();
+            String changeId = body.getProperty("ChangeID").getValue().toString();
+            if(!ChangeID.equals(changeId))
+                throw new RuntimeException(
+                    format("ChangeId contained in server response ('%s') does not match request change (%s).", changeId, ChangeID));
+            boolean isInDevelopment = Boolean.valueOf(body.getProperty("IsInDevelopment").getValue().toString());
+            return new CMODataChange(ChangeID, isInDevelopment);
         } finally {
             if(response != null) {
                 response.close();
@@ -121,6 +131,8 @@ public class CMODataClient {
             ODataPayloadManager streamManager = createMediaRequest.payloadManager();
 
             createMediaResponse = streamManager.getResponse();
+
+
             checkStatus(createMediaResponse, 204);
 
         } finally {
