@@ -224,10 +224,4 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         return retrieveRequestFactoryMock;
     }
 
-    private static void setMock(CMODataClient examinee, ODataClient mock) throws Exception {
-        Field client = CMODataClient.class.getDeclaredField("client");
-        client.setAccessible(true);
-        client.set(examinee, mock);
-        client.setAccessible(false);
-    }
 }
