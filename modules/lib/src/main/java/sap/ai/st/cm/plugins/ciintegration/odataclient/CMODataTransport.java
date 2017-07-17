@@ -18,4 +18,9 @@ public class CMODataTransport {
         this.TransportID = TransportID;
         this.IsModifiable = IsModifiable;
     }
+
+    @Override
+    public String toString() {
+        return "CMODataTransport [TransportID=" + TransportID + ", IsModifiable=" + IsModifiable + "]";
+    }
 }
