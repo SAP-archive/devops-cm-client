@@ -203,7 +203,7 @@ public class CMODataClient {
     private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws IOException {
         functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
         ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
-        checkStatus(response, 200);
+        checkStatus(response, returnCode);
         return response;
     }
 
