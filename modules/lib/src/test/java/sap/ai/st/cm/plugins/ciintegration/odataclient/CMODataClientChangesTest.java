@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CMODataClientTest extends CMODataClientBaseTest {
+public class CMODataClientChangesTest extends CMODataClientBaseTest {
 
     private Capture<String> contentType;
 
