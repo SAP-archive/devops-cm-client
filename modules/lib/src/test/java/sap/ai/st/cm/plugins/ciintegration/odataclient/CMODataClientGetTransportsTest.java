@@ -36,7 +36,7 @@ import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
-public class CMODataClientTransportsTest extends CMODataClientBaseTest {
+public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
 
     private Capture<String> contentType = Capture.newInstance();
