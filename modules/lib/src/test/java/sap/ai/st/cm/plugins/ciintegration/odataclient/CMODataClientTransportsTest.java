@@ -124,23 +124,23 @@ public class CMODataClientTransportsTest extends CMODataClientBaseTest {
 
             ClientEntitySetIterator<ClientEntitySet, ClientEntity> iteratorMock = createMock(ClientEntitySetIterator.class);
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K900026", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K900026", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K900028", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K900028", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K900029", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K900029", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K90002A", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002A", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K90002B", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002B", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K90002C", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002C", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K90002D", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002D", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K90002E", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002E", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(createTransportMock("L21K90002H", true));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002H", true));
 
             expect(iteratorMock.hasNext()).andReturn(false);
 
@@ -170,7 +170,7 @@ public class CMODataClientTransportsTest extends CMODataClientBaseTest {
         return clientMock;
     }
 
-    private ClientEntity createTransportMock(String transportId, boolean isModifiable) {
+    private static ClientEntity setupTransportMock(String transportId, boolean isModifiable) {
 
         ClientEntity transportMock = createMock(ClientEntity.class);
 
