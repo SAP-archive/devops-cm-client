@@ -62,6 +62,9 @@ public class CMODataClientTransportsTest extends CMODataClientBaseTest {
                 "L21K90002D", "L21K90002E", "L21K90002H"));
         assertThat(changeTransports.size(), is(equalTo(9)));
 
+        assertThat(changeTransports.get(0).getDescription(), is(equalTo("The description goes here.")));
+        assertThat(changeTransports.get(0).getOwner(), is(equalTo("d999999")));
+
         assertThat(address.getValue().toASCIIString(),
                 is(equalTo("https://example.org/endpoint/Changes('8000038673')/Transports")));
     }
@@ -177,8 +180,16 @@ public class CMODataClientTransportsTest extends CMODataClientBaseTest {
         ClientProperty m = new ClientPropertyImpl("IsModifiable",
             new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build());
 
+        ClientProperty d = new ClientPropertyImpl("Description",
+                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("The description goes here.").build());
+
+        ClientProperty o = new ClientPropertyImpl("Owner",
+                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("d999999").build());
+
         expect(transportMock.getProperty("TransportID")).andReturn(t);
         expect(transportMock.getProperty("IsModifiable")).andReturn(m);
+        expect(transportMock.getProperty("Description")).andReturn(d);
+        expect(transportMock.getProperty("Owner")).andReturn(o);
 
         replay(transportMock);
         return transportMock;

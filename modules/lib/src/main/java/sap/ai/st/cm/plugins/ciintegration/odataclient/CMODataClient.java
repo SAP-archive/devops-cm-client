@@ -24,6 +24,7 @@ import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse
 import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
+import org.apache.olingo.client.api.domain.ClientProperty;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.commons.api.format.ContentType;
@@ -96,7 +97,11 @@ public class CMODataClient {
 
                 ClientEntity transport = iterator.next();
 
-                transportList.add(new CMODataTransport(transport.getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(transport.getProperty("IsModifiable").getValue().toString())));
+                transportList.add(new CMODataTransport(
+                        getValueAsString("TransportID", transport),
+                        Boolean.parseBoolean(getValueAsString("IsModifiable", transport)),
+                        getValueAsString("Description", transport),
+                        getValueAsString("Owner", transport)));
             }
 
             return transportList;
@@ -181,7 +186,12 @@ public class CMODataClient {
         ODataInvokeResponse<ClientEntity> response = null;
         try {
             response = executeRequest(functionInvokeRequest, 200);
-            return new CMODataTransport(response.getBody().getProperty("TransportID").getValue().toString(), Boolean.parseBoolean(response.getBody().getProperty("IsModifiable").getValue().toString()));
+            ClientEntity transport = response.getBody();
+            return new CMODataTransport(
+                    getValueAsString("TransportID", transport),
+                    Boolean.parseBoolean(getValueAsString("IsModifiable", transport)),
+                    getValueAsString("Description", transport), 
+                    getValueAsString("Owner", transport));
         } finally {
             if(response != null) {
                 response.close();
@@ -222,5 +232,9 @@ public class CMODataClient {
         if (response.getStatusCode() != expectedStatusCode) {
             throw new IOException(response.getRawResponse().toString());
         }
+    }
+
+    private static String getValueAsString(String key, ClientEntity transport) {
+        return transport.getProperty(key).getValue().toString();
     }
 }

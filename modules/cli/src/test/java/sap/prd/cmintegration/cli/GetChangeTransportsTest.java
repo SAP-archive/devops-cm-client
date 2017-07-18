@@ -51,14 +51,14 @@ public class GetChangeTransportsTest extends CMTestBase {
     private ClientFactory setupMock() throws Exception {
 
         ArrayList<CMODataTransport> transports = new ArrayList<>();
-        transports.add(new CMODataTransport("L21K900026", false));
-        transports.add(new CMODataTransport("L21K900028", false));
-        transports.add(new CMODataTransport("L21K900029", false));
-        transports.add(new CMODataTransport("L21K90002A", false));
-        transports.add(new CMODataTransport("L21K90002B", false));
-        transports.add(new CMODataTransport("L21K90002C", false));
-        transports.add(new CMODataTransport("L21K90002D", false));
-        transports.add(new CMODataTransport("L21K90002E", false));
+        transports.add(new CMODataTransport("L21K900026", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K900028", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K900029", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002A", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002B", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002C", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002D", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002E", false, "Description", "Owner"));
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);

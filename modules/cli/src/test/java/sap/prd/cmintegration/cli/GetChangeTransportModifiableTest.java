@@ -118,7 +118,7 @@ public class GetChangeTransportModifiableTest extends CMTestBase {
         CMODataClient clientMock = createMock(CMODataClient.class);
         if(ex == null) {
             ArrayList<CMODataTransport> transports = new ArrayList<>();
-            transports.add(new CMODataTransport("L21K900026", isModifiable));
+            transports.add(new CMODataTransport("L21K900026", isModifiable, "Description", "Owner"));
             expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
         } else {
             expect(clientMock.getChangeTransports(capture(changeId))).andThrow(ex);
