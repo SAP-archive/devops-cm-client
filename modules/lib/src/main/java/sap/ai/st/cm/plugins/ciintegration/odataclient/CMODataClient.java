@@ -31,6 +31,8 @@ import com.google.common.net.UrlEscapers;
 
 public class CMODataClient {
 
+    private final static ContentType contentType = ContentType.APPLICATION_ATOM_XML;
+
     private String serviceUrl; //REVISIT: uri instead of string?
     private final ODataClient client;
 
@@ -49,7 +51,7 @@ public class CMODataClient {
 
         ODataEntityRequest<ClientEntity> request = this.client.getRetrieveRequestFactory().getEntityRequest(entityUri);
 
-        request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+        request.setAccept(contentType.toContentTypeString());
 
         ODataRetrieveResponse<ClientEntity> response = null;
         try {
@@ -79,7 +81,7 @@ public class CMODataClient {
 
         ODataEntitySetIteratorRequest<ClientEntitySet, ClientEntity> request = this.client.getRetrieveRequestFactory().getEntitySetIteratorRequest(entityUri);
 
-        request.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
+        request.setAccept(contentType.toContentTypeString());
 
         ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = null;
 
@@ -125,7 +127,7 @@ public class CMODataClient {
             ODataMediaEntityUpdateRequest createMediaRequest = this.client.getCUDRequestFactory().getMediaEntityUpdateRequest(fileStreamUri, fileStream);
 
             createMediaRequest.addCustomHeader("x-csrf-token", getCSRFToken());
-            createMediaRequest.setFormat(ContentType.APPLICATION_ATOM_XML);
+            createMediaRequest.setFormat(contentType);
 
             String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 
@@ -215,6 +217,7 @@ public class CMODataClient {
 
         request.addCustomHeader("X-CSRF-Token", "Fetch");
 
+        // here we have in fact xml rather than atom+xml
         request.setAccept(ContentType.APPLICATION_XML.toContentTypeString());
 
         ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> response = request.execute();
