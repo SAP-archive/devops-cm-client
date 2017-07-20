@@ -75,7 +75,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
          *  Comment line below and the captures later on in order to run against
          *  real back-end.
          */
-        setMock(examinee, setupExceptionMock());
+        setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("400"); // TODO 404 would be better ...
@@ -92,60 +92,56 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
 
     }
 
-    @SuppressWarnings("unchecked")
+    private static class MockHelpers {
+        final static ClientEntity getClientEntity() {
+
+            ClientObjectFactoryImpl factory = new ClientObjectFactoryImpl();
+
+            ClientEntity clientEntity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
+
+            clientEntity.getProperties().add(new ClientPropertyImpl("TransportID",
+                    factory.newPrimitiveValueBuilder().setValue("L21K90002H").build()));
+
+            clientEntity.getProperties().add(new ClientPropertyImpl("IsModifiable",
+                    factory.newPrimitiveValueBuilder().setValue("true").build()));
+
+            clientEntity.getProperties().add(new ClientPropertyImpl("Owner",
+                    factory.newPrimitiveValueBuilder().setValue("me").build()));
+
+            clientEntity.getProperties().add(new ClientPropertyImpl("Description",
+                    factory.newPrimitiveValueBuilder().setValue("Lorem ipsum").build()));
+
+            return clientEntity;
+        }
+
+        @SuppressWarnings("unchecked")
+        final static ODataInvokeResponse<ClientEntity> setupResponseMock() {
+
+            ODataInvokeResponse<ClientEntity> responseMock = createMock(ODataInvokeResponse.class);
+            expect(responseMock.getStatusCode()).andReturn(200);
+            expect(responseMock.getBody()).andReturn(MockHelpers.getClientEntity());
+            responseMock.close();
+            expectLastCall();
+            replay(responseMock);
+            return responseMock;
+        }
+    }
+
     private ODataClient setupStraightForwardMock() {
-
-        ClientObjectFactoryImpl factory = new ClientObjectFactoryImpl();
-
-        ClientEntity clientEntity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
-
-        clientEntity.getProperties().add(new ClientPropertyImpl("TransportID",
-                factory.newPrimitiveValueBuilder().setValue("L21K90002H").build()));
-
-        clientEntity.getProperties().add(new ClientPropertyImpl("IsModifiable",
-                factory.newPrimitiveValueBuilder().setValue("true").build()));
-
-        clientEntity.getProperties().add(new ClientPropertyImpl("Owner",
-                factory.newPrimitiveValueBuilder().setValue("me").build()));
-
-        clientEntity.getProperties().add(new ClientPropertyImpl("Description",
-                factory.newPrimitiveValueBuilder().setValue("Lorem ipsum").build()));
-
-        ODataInvokeResponse<ClientEntity> responseMock = createMock(ODataInvokeResponse.class);
-        expect(responseMock.getStatusCode()).andReturn(200);
-
-        ODataInvokeRequest<ClientEntity> functionInvokeRequest = createMock(ODataInvokeRequest.class);
-        expect(functionInvokeRequest.setAccept(capture(contentType))).andReturn(functionInvokeRequest);
-        expect(functionInvokeRequest.execute()).andReturn(responseMock);
-        responseMock.close();
-        expectLastCall();
-        expect(responseMock.getBody()).andReturn(clientEntity);
-
-        InvokeRequestFactory invokeRequestFactoryMock = createMock(InvokeRequestFactory.class);
-        expect(invokeRequestFactoryMock.getFunctionInvokeRequest(capture(address), eq(ClientEntity.class))).andReturn(functionInvokeRequest);
-
-        Configuration config = new ConfigurationImpl();
-        config.setKeyAsSegment(false); // with that we get .../Changes('<ChangeId>'), otherwise .../Changes/'<ChangeId>'
-
-        ODataClient clientMock = createMockBuilder(ODataClientImpl.class)
-                .addMockedMethod("getInvokeRequestFactory")
-                .addMockedMethod("getConfiguration").createMock();
-        expect(clientMock.getInvokeRequestFactory()).andReturn(invokeRequestFactoryMock);
-        expect(clientMock.getConfiguration()).andReturn(config);
-
-        replay(responseMock, functionInvokeRequest, invokeRequestFactoryMock, clientMock);
-
-        return clientMock;
+        return setupMock(null);
     }
 
     @SuppressWarnings("unchecked")
-    private ODataClient setupExceptionMock() {
+    private ODataClient setupMock(ODataClientErrorException e) {
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = createMock(ODataInvokeRequest.class);
         expect(functionInvokeRequest.setAccept(capture(contentType))).andReturn(functionInvokeRequest);
-        expect(functionInvokeRequest.execute())
-            .andThrow(new ODataClientErrorException(
-                StatusLines.BAD_REQUEST));
+
+        if(e == null) {
+            expect(functionInvokeRequest.execute()).andReturn(MockHelpers.setupResponseMock());
+        } else {
+            expect(functionInvokeRequest.execute()).andThrow(e);
+        }
 
         InvokeRequestFactory invokeRequestFactoryMock = createMock(InvokeRequestFactory.class);
         expect(invokeRequestFactoryMock.getFunctionInvokeRequest(capture(address), eq(ClientEntity.class))).andReturn(functionInvokeRequest);
