@@ -16,7 +16,6 @@ import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasRootCau
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.UUID;
@@ -78,10 +77,10 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         // Assert for the captures below needs to be commented also in this case.
         setMock(examinee, setupUploadFileSucceedsMock());
 
-        examinee.uploadFileToTransport("L21K90002G", testFile.getAbsolutePath(), "HCP");
+        examinee.uploadFileToTransport("8000042445", "L21K90002J", testFile.getAbsolutePath(), "HCP");
 
         assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/Files(TransportID='L21K90002G',FileID='" +
+                is(equalTo("https://example.org/endpoint/Files(ChangeID='8000042445',TransportID='L21K90002J',FileID='" +
                    testFile.getName() + "',ApplicationID='HCP')")));
     }
 
@@ -105,7 +104,7 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
 
         try {
             //transport 'L21K900026' exists, but is closed.
-             examinee.uploadFileToTransport("L21K900026", testFile.getAbsolutePath(), "HCP");
+             examinee.uploadFileToTransport("8000038673", "L21K900026", testFile.getAbsolutePath(), "HCP");
         } catch (HttpClientException e) {
             assertThat(e, hasRootCause(ODataClientErrorException.class));
             assertThat(e, carriesStatusCode(400));
@@ -133,7 +132,7 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
 
         try {
             //transport 'L21K900XFG' does not exist
-            examinee.uploadFileToTransport("L21K900XFG", testFile.getAbsolutePath(), "HCP"); 
+            examinee.uploadFileToTransport("8000042445", "L21K900XFG", testFile.getAbsolutePath(), "HCP"); 
         } catch (HttpClientException e) {
             assertThat(e, hasRootCause(ODataClientErrorException.class));
             assertThat(e, carriesStatusCode(400));

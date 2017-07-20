@@ -37,14 +37,6 @@ public class UploadFileToTransportTest extends CMTestBase {
     @Test
     public void testUploadFileStraightForward() throws Exception {
 
-        //
-        // TODO: This test case has not been verified against the real backend.
-        // At the moment when writing this the response was http 400 with message
-        // "L21K90002G not found.". Despite this message such an transport request exists.
-        // According to the resposibles backend developers this is caused by the fact that
-        // this transport request was not created in the context of a change request.
-        // Discussion pending.
-        //
         setMock(setupMock());
 
         String fileName = UUID.randomUUID().toString() + ".txt";
@@ -55,10 +47,11 @@ public class UploadFileToTransportTest extends CMTestBase {
         "-u", "john.doe",
         "-p", "openSesame",
         "-h", "https://example.org/endpoint/",
-        "L21K90002G", "HCP", upload.getAbsolutePath()
+        "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
-        assertThat(transportId.getValue(), is(equalTo("L21K90002G")));
+        assertThat(changeId.getValue(), is(equalTo("8000042445")));
+        assertThat(transportId.getValue(), is(equalTo("L21K90002J")));
         assertThat(filePath.getValue(), endsWith(fileName));
         assertThat(applicationId.getValue(), is(equalTo("HCP")));
     }
@@ -99,12 +92,11 @@ public class UploadFileToTransportTest extends CMTestBase {
 
         setMock(setupMock());
 
-
         UploadFileToTransport.main(new String[] {
         "-u", "john.doe",
         "-p", "openSesame",
         "-h", "https://example.org/endpoint/",
-        "L21K90002G", "HCP", upload.getAbsolutePath()
+        "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
     }
@@ -112,7 +104,7 @@ public class UploadFileToTransportTest extends CMTestBase {
     private ClientFactory setupMock() throws IOException {
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
-        clientMock.uploadFileToTransport(capture(transportId),
+        clientMock.uploadFileToTransport(capture(changeId), capture(transportId),
             capture(filePath), capture(applicationId));
         expectLastCall();
 

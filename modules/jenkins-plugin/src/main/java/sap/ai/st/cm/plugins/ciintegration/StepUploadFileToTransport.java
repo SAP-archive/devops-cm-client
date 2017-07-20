@@ -56,7 +56,7 @@ public class StepUploadFileToTransport extends StepAbstract {
 
             taskListener.getLogger().println("Uploading " + filePath + " to transport " + transportID + " for application " + applicationID);
 
-            odataClient.uploadFileToTransport(transportID, filePath, applicationID);
+            odataClient.uploadFileToTransport(getChangeID(), transportID, filePath, applicationID);
 
             taskListener.getLogger().println("Uploaded " + filePath + " to transport " + transportID + " for application " + applicationID);
 

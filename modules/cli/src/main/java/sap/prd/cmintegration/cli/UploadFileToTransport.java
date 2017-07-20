@@ -15,12 +15,13 @@ import org.apache.olingo.client.api.communication.ODataClientErrorException;
 
 public class UploadFileToTransport extends Command {
 
-    private final String transportId, applicationId;
+    private final String changeId, transportId, applicationId;
     private final File upload;
 
     public UploadFileToTransport(String host, String user, String password,
-            String transportId, String applicationId, String filePath) {
+            String changeId, String transportId, String applicationId, String filePath) {
         super(host, user, password);
+        this.changeId = changeId;
         this.transportId = transportId;
         this.applicationId = applicationId;
         this.upload = new File(filePath);
@@ -30,16 +31,17 @@ public class UploadFileToTransport extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        if(handleHelpOption(args, "<transportId> <applicationId> <filePath>", options)) return;
+        if(handleHelpOption(args, "<changeId> <transportId> <applicationId> <filePath>", options)) return;
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
         new UploadFileToTransport(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getArg(commandLine, 0, "transportId"),
-                getArg(commandLine, 1, "applicationId"),
-                getArg(commandLine, 2, "filePath")).execute();
+                getArg(commandLine, 0, "changeId"),
+                getArg(commandLine, 1, "transportId"),
+                getArg(commandLine, 2, "applicationId"),
+                getArg(commandLine, 3, "filePath")).execute();
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UploadFileToTransport extends Command {
 
         try {
             ClientFactory.getInstance().newClient(host,  user, password)
-                .uploadFileToTransport(transportId, upload.getAbsolutePath(), applicationId);
+                .uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
         } catch(Exception e) {
             throw new ExitException(e, 1);
         }

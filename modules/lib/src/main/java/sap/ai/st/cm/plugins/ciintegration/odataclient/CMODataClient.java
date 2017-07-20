@@ -111,7 +111,7 @@ public class CMODataClient {
         }
     }
 
-    public void uploadFileToTransport(String TransportID, String filePath, String ApplicationID) throws IOException {
+    public void uploadFileToTransport(String ChangeID, String TransportID, String filePath, String ApplicationID) throws IOException {
 
         File file = new File(filePath);
 
@@ -119,7 +119,7 @@ public class CMODataClient {
 
         URI fileStreamUri = uribuilder.build();
 
-        fileStreamUri = URI.create(fileStreamUri.toString() + "(TransportID='" + TransportID + "',FileID='" + file.getName() + "',ApplicationID='" + ApplicationID + "')");
+        fileStreamUri = URI.create(fileStreamUri.toString() + "(ChangeID='" + ChangeID + "',TransportID='" + TransportID + "',FileID='" + file.getName() + "',ApplicationID='" + ApplicationID + "')");
 
         ODataResponse createMediaResponse = null;
         try (FileInputStream fileStream = new FileInputStream(file)) {
