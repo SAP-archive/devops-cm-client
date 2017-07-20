@@ -104,6 +104,7 @@ public class Commands {
         commands.put("change-status", GetChangeStatus.class);
         commands.put("transports", GetChangeTransports.class);
         commands.put("transport-modifiable", GetTransportModifiable.class);
+        commands.put("transport-owner", GetTransportOwner.class);
         commands.put("upload-file", UploadFileToTransport.class);
         commands.put("create-transport", CreateTransport.class);
     }
