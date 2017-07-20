@@ -1,5 +1,9 @@
 package sap.prd.cmintegration.cli;
 
+import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
@@ -46,10 +50,10 @@ public class GetTransportModifiable extends Command {
         }
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        new GetTransportModifiable(Commands.Helpers.getHost(commandLine),
-                Commands.Helpers.getUser(commandLine),
-                Commands.Helpers.getPassword(commandLine),
-                Commands.Helpers.getChangeId(commandLine),
+        new GetTransportModifiable(getHost(commandLine),
+                getUser(commandLine),
+                getPassword(commandLine),
+                getChangeId(commandLine),
                 getTransportId(commandLine)).execute();
     }
 
