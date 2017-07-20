@@ -15,7 +15,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
     @Test
     public void getChangeTransportModifiableStraighForwardForNotModifiableTransport() throws Exception {
 
-        setMock(setupMock("xOwner", false));
+        setMock(setupMock("xOwner", "xDescription", false));
         GetTransportModifiable.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
@@ -31,7 +31,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
     @Test
     public void getChangeTransportModifiableStraighForwardForModifiableTransport() throws Exception {
 
-        setMock(setupMock("xOwner", true));
+        setMock(setupMock("xOwner", "xDescription", true));
         GetTransportModifiable.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
@@ -50,7 +50,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("Transport 'DOES_NOT_EXIST' not found for change '8000038673'.");
 
-        setMock(setupMock("xOwner", false));
+        setMock(setupMock("xOwner", "xDescription", false));
         GetTransportModifiable.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
@@ -64,7 +64,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("400");
 
-        setMock(setupMock("xOwner", false, new ODataClientErrorException(
+        setMock(setupMock("xOwner", "xDescription", false, new ODataClientErrorException(
                 new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
 
         try {
@@ -85,7 +85,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("No transportId specified.");
 
-        setMock(setupMock("xOwner", false, new ODataClientErrorException(
+        setMock(setupMock("xOwner", "xDescription", false, new ODataClientErrorException(
                 new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
 
         GetTransportModifiable.main(new String[] {

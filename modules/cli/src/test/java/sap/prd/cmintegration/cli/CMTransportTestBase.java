@@ -25,15 +25,15 @@ public class CMTransportTestBase extends CMTestBase {
         super.tearDown();
     }
 
-    protected ClientFactory setupMock(String owner, boolean isModifiable) throws Exception {
-        return setupMock(owner, isModifiable, null);
+    protected ClientFactory setupMock(String owner, String description, boolean isModifiable) throws Exception {
+        return setupMock(owner, description, isModifiable, null);
     }
 
-    protected ClientFactory setupMock(String owner, boolean isModifiable, Exception ex) throws Exception {
+    protected ClientFactory setupMock(String owner, String description, boolean isModifiable, Exception ex) throws Exception {
         CMODataClient clientMock = createMock(CMODataClient.class);
         if(ex == null) {
             ArrayList<CMODataTransport> transports = new ArrayList<>();
-            transports.add(new CMODataTransport("L21K900026", isModifiable, "Description", owner));
+            transports.add(new CMODataTransport("L21K900026", isModifiable, description, owner));
             expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
         } else {
             expect(clientMock.getChangeTransports(capture(changeId))).andThrow(ex);
