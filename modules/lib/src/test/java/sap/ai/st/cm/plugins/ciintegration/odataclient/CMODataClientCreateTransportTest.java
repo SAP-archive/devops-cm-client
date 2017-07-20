@@ -11,7 +11,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -146,7 +145,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         expect(functionInvokeRequest.setAccept(capture(contentType))).andReturn(functionInvokeRequest);
         expect(functionInvokeRequest.execute())
             .andThrow(new ODataClientErrorException(
-                new BasicStatusLine(HTTP_1_1, 400, "Bad request.")));
+                StatusLines.BAD_REQUEST));
 
         InvokeRequestFactory invokeRequestFactoryMock = createMock(InvokeRequestFactory.class);
         expect(invokeRequestFactoryMock.getFunctionInvokeRequest(capture(address), eq(ClientEntity.class))).andReturn(functionInvokeRequest);

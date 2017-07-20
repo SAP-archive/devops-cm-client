@@ -106,7 +106,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     }
 
     private ODataClient setupExceptionMock() throws Exception {
-        return setupMock(new ODataClientErrorException(new BasicStatusLine(HTTP_1_1, 400, "Bad Request.")));
+        return setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST));
     }
 
     private ODataClient setupStraightForwardMock() throws Exception {

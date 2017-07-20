@@ -133,21 +133,21 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
     }
 
     private ODataClient setupBadCredentialsMock() {
-        return setupExceptionMock(401, "Unauthorized");
+        return setupExceptionMock(StatusLines.UNAUTHORIZED);
     }
 
     private ODataClient setupChangeDoesNotExistMock() {
-        return setupExceptionMock(404,  "Bad request");
+        return setupExceptionMock(StatusLines.NOT_FOUND);
     }
 
     @SuppressWarnings("unchecked")
-    private ODataClient setupExceptionMock(int errorCode, String message) {
+    private ODataClient setupExceptionMock(BasicStatusLine statusLine) {
 
         ODataEntityRequest<ClientEntity> oDataEntityRequestMock = createMock(ODataEntityRequest.class);
         expect(oDataEntityRequestMock.setAccept(capture(contentType))).andReturn(oDataEntityRequestMock);
         expect(oDataEntityRequestMock.execute()).andThrow(
                 new ODataClientErrorException(
-                        new BasicStatusLine(HTTP_1_1, errorCode, message)));
+                        statusLine));
 
         RetrieveRequestFactory retrieveRequestFactoryMock = createMock(RetrieveRequestFactory.class);
         expect(retrieveRequestFactoryMock.getEntityRequest(capture(address))).andReturn(oDataEntityRequestMock);

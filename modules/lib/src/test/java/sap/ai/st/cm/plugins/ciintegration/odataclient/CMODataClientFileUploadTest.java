@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -172,7 +171,7 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         expect(payloadManagerMock.getResponse()).andThrow(
                 new HttpClientException(
                     new RuntimeException(new ODataClientErrorException(
-                        new BasicStatusLine(HTTP_1_1, 400, "Bad request")))));
+                        StatusLines.BAD_REQUEST))));
 
         ODataMediaEntityUpdateRequest entityUpdateRequestMock = createMock(ODataMediaEntityUpdateRequest.class);
         expect(entityUpdateRequestMock.addCustomHeader("x-csrf-token", "yyy")).andReturn(entityUpdateRequestMock);
