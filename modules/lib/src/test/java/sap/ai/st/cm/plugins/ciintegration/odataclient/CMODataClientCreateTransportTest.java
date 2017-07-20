@@ -92,41 +92,6 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
 
     }
 
-    private static class MockHelpers {
-        final static ClientEntity getClientEntity() {
-
-            ClientObjectFactoryImpl factory = new ClientObjectFactoryImpl();
-
-            ClientEntity clientEntity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
-
-            clientEntity.getProperties().add(new ClientPropertyImpl("TransportID",
-                    factory.newPrimitiveValueBuilder().setValue("L21K90002H").build()));
-
-            clientEntity.getProperties().add(new ClientPropertyImpl("IsModifiable",
-                    factory.newPrimitiveValueBuilder().setValue("true").build()));
-
-            clientEntity.getProperties().add(new ClientPropertyImpl("Owner",
-                    factory.newPrimitiveValueBuilder().setValue("me").build()));
-
-            clientEntity.getProperties().add(new ClientPropertyImpl("Description",
-                    factory.newPrimitiveValueBuilder().setValue("Lorem ipsum").build()));
-
-            return clientEntity;
-        }
-
-        @SuppressWarnings("unchecked")
-        final static ODataInvokeResponse<ClientEntity> setupResponseMock() {
-
-            ODataInvokeResponse<ClientEntity> responseMock = createMock(ODataInvokeResponse.class);
-            expect(responseMock.getStatusCode()).andReturn(200);
-            expect(responseMock.getBody()).andReturn(MockHelpers.getClientEntity());
-            responseMock.close();
-            expectLastCall();
-            replay(responseMock);
-            return responseMock;
-        }
-    }
-
     private ODataClient setupStraightForwardMock() {
         return setupMock(null);
     }
@@ -134,11 +99,45 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
     @SuppressWarnings("unchecked")
     private ODataClient setupMock(ODataClientErrorException e) {
 
+        class MockHelpers {
+            ClientEntity getClientEntity() {
+
+                ClientObjectFactoryImpl factory = new ClientObjectFactoryImpl();
+
+                ClientEntity clientEntity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
+
+                clientEntity.getProperties().add(new ClientPropertyImpl("TransportID",
+                        factory.newPrimitiveValueBuilder().setValue("L21K90002H").build()));
+
+                clientEntity.getProperties().add(new ClientPropertyImpl("IsModifiable",
+                        factory.newPrimitiveValueBuilder().setValue("true").build()));
+
+                clientEntity.getProperties().add(new ClientPropertyImpl("Owner",
+                        factory.newPrimitiveValueBuilder().setValue("me").build()));
+
+                clientEntity.getProperties().add(new ClientPropertyImpl("Description",
+                        factory.newPrimitiveValueBuilder().setValue("Lorem ipsum").build()));
+
+                return clientEntity;
+            }
+
+            ODataInvokeResponse<ClientEntity> setupResponseMock() {
+
+                ODataInvokeResponse<ClientEntity> responseMock = createMock(ODataInvokeResponse.class);
+                expect(responseMock.getStatusCode()).andReturn(200);
+                expect(responseMock.getBody()).andReturn(getClientEntity());
+                responseMock.close();
+                expectLastCall();
+                replay(responseMock);
+                return responseMock;
+            }
+        }
+
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = createMock(ODataInvokeRequest.class);
         expect(functionInvokeRequest.setAccept(capture(contentType))).andReturn(functionInvokeRequest);
 
         if(e == null) {
-            expect(functionInvokeRequest.execute()).andReturn(MockHelpers.setupResponseMock());
+            expect(functionInvokeRequest.execute()).andReturn(new MockHelpers().setupResponseMock());
         } else {
             expect(functionInvokeRequest.execute()).andThrow(e);
         }
