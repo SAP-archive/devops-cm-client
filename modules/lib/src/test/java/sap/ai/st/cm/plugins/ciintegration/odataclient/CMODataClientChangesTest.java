@@ -10,8 +10,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.lang.reflect.Field;
-
 import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
