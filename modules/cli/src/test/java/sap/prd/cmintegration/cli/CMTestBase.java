@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
+import org.apache.commons.io.IOUtils;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
