@@ -4,7 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.message.BasicStatusLine;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
@@ -12,6 +13,13 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 public class CMTestBase {
+
+    protected static class StatusLines {
+        private final static ProtocolVersion HTTP_1_1 = new ProtocolVersion("HTTP", 1, 1);
+        protected final static BasicStatusLine BAD_REQUEST = new BasicStatusLine(HTTP_1_1, 400, "Bad Request");
+        protected final static BasicStatusLine UNAUTHORIZED = new BasicStatusLine(HTTP_1_1, 401, "Unauthorized");
+        protected final static BasicStatusLine NOT_FOUND = new BasicStatusLine(HTTP_1_1, 404, "Not Found.");
+    }
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();

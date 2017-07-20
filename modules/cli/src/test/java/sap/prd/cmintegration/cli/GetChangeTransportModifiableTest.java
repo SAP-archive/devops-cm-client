@@ -64,8 +64,8 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("400");
 
-        setMock(setupMock(new ODataClientErrorException(
-                new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
+        //Comment line and asserts for the captures below in order to run against real back-end.
+        setMock(setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
 
         try {
             GetTransportModifiable.main(new String[] {
@@ -84,9 +84,6 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
 
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("No transportId specified.");
-
-        setMock(setupMock(new ODataClientErrorException(
-                new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
 
         GetTransportModifiable.main(new String[] {
                 "-u", "john.doe",

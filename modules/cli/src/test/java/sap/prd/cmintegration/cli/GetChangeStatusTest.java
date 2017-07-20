@@ -82,10 +82,7 @@ public class GetChangeStatusTest extends CMTestBase {
         thrown.expectMessage("401");
         //
         // Comment line below in order to go against the real back-end as specified via -h
-        setMock(
-                setupMock(
-                    new ODataClientErrorException(
-                        new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 401, "Unauthorized"))));
+        setMock(setupMock(new ODataClientErrorException(StatusLines.UNAUTHORIZED)));
 
         GetChangeStatus.main(new String[] {
         "-u", "DOES_NOT_EXIST",
@@ -100,11 +97,8 @@ public class GetChangeStatusTest extends CMTestBase {
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("404");
         //
-        // Comment statement below in order to go against the real back-end as specified via -h
-        setMock(
-            setupMock(
-                new ODataClientErrorException(
-                    new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 404, "Not Found."))));
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock(new ODataClientErrorException(StatusLines.NOT_FOUND)));
 
         try {
             GetChangeStatus.main(new String[] {
