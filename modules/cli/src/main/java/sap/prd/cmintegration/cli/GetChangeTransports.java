@@ -5,6 +5,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
+import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,9 @@ public class GetChangeTransports extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        if(handleHelpOption(args, "<changeId>", options)) return;
+        if(helpRequested(args)) {
+            handleHelpOption("<changeId>", options); return;
+        }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 

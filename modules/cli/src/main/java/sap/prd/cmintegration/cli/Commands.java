@@ -77,15 +77,13 @@ public class Commands {
             return commandLine.getArgs()[index];
         }
 
-        /**
-         * @return <code>true</code> when the help option was detected and handled.
-         */
-        static boolean handleHelpOption(String[] args, String usage, Options options) {
-            if(!asList(args).contains("--help"))
-                return false;
+        static boolean helpRequested(String[] args) {
+            return asList(args).contains("--help");
+        }
+
+        static void handleHelpOption(String usage, Options options) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp(String.format("[options] %s", usage), options);
-            return true;
         }
 
         private static String readPassword() throws IOException {

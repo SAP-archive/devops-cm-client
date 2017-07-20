@@ -8,6 +8,7 @@ import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -27,7 +28,9 @@ public class CreateTransport extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        if(handleHelpOption(args, "<changeId>", options)) return;
+        if(helpRequested(args)) {
+            handleHelpOption("<changeId>", options); return;
+        }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 

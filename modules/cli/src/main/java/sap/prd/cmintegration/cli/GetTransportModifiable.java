@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
+import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -40,7 +41,9 @@ public class GetTransportModifiable extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        if(handleHelpOption(args, "<changeId> <transportId>", options)) return;
+        if(helpRequested(args)) {
+            handleHelpOption("<changeId> <transportId>", options); return;
+        }
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
         new GetTransportModifiable(Commands.Helpers.getHost(commandLine),
