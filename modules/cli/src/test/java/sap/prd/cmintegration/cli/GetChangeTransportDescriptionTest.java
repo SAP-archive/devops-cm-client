@@ -12,7 +12,7 @@ public class GetChangeTransportDescriptionTest extends CMTransportTestBase {
     @Test
     public void getChangeTransportDesciptionStraightForward() throws Exception {
 
-        setMock(setupMock("xOwner", "xDescription", false));
+        setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
         GetTransportDescription.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
