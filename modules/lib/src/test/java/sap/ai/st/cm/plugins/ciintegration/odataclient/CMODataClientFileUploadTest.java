@@ -139,56 +139,68 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     private ODataClient setupUploadFileSucceedsMock() {
-
-        ODataResponse responseMock = createMock(ODataResponse.class);
-        expect(responseMock.getStatusCode()).andReturn(204);
-        responseMock.close();
-
-        ODataPayloadManager payloadManagerMock = createMock(ODataPayloadManager.class);
-        expect(payloadManagerMock.getResponse()).andReturn(responseMock);
-
-        ODataMediaEntityUpdateRequest entityUpdateRequestMock = createMock(ODataMediaEntityUpdateRequest.class);
-        expect(entityUpdateRequestMock.addCustomHeader("x-csrf-token", "yyy")).andReturn(entityUpdateRequestMock);
-        entityUpdateRequestMock.setFormat(ContentType.APPLICATION_ATOM_XML);
-        expectLastCall();
-        expect(entityUpdateRequestMock.setContentType("text/plain")).andReturn(entityUpdateRequestMock);
-        expect(entityUpdateRequestMock.payloadManager()).andReturn(payloadManagerMock);
-
-        CUDRequestFactory cudRequestFactoryMock = createMock(CUDRequestFactory.class);
-        expect(cudRequestFactoryMock.getMediaEntityUpdateRequest(capture(address), anyObject(InputStream.class))).andReturn(entityUpdateRequestMock);
-
-        ODataClient clientMock = setupODataClientMock(cudRequestFactoryMock);
-        replay(responseMock, payloadManagerMock, entityUpdateRequestMock, cudRequestFactoryMock, clientMock);
-        return clientMock;
+        return setupMock(null);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     private ODataClient setupUploadFileFailsMock() {
-
-        ODataPayloadManager payloadManagerMock = createMock(ODataPayloadManager.class);
-        expect(payloadManagerMock.getResponse()).andThrow(
-                new HttpClientException(
+        return setupMock(new HttpClientException(
                     new RuntimeException(new ODataClientErrorException(
                         StatusLines.BAD_REQUEST))));
-
-        ODataMediaEntityUpdateRequest entityUpdateRequestMock = createMock(ODataMediaEntityUpdateRequest.class);
-        expect(entityUpdateRequestMock.addCustomHeader("x-csrf-token", "yyy")).andReturn(entityUpdateRequestMock);
-        entityUpdateRequestMock.setFormat(ContentType.APPLICATION_ATOM_XML);
-        expectLastCall();
-        expect(entityUpdateRequestMock.setContentType("text/plain")).andReturn(entityUpdateRequestMock);
-        expect(entityUpdateRequestMock.payloadManager()).andReturn(payloadManagerMock);
-
-        CUDRequestFactory cudRequestFactoryMock = createMock(CUDRequestFactory.class);
-        expect(cudRequestFactoryMock.getMediaEntityUpdateRequest(capture(address), anyObject(InputStream.class))).andReturn(entityUpdateRequestMock);
-
-        ODataClient clientMock = setupODataClientMock(cudRequestFactoryMock);
-        replay(payloadManagerMock, entityUpdateRequestMock, cudRequestFactoryMock, clientMock);
-        return clientMock;
     }
 
-    private static ODataClient setupODataClientMock(CUDRequestFactory cudRequestFactoryMock) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private ODataClient setupMock(Exception e) {
+
+        class MockHelpers {
+
+            ODataResponse setupResponseMock() {
+                ODataResponse responseMock = createMock(ODataResponse.class);
+                expect(responseMock.getStatusCode()).andReturn(204);
+                responseMock.close(); expectLastCall();
+                replay(responseMock);
+                return responseMock;
+            }
+
+            RetrieveRequestFactory setupCSRFResponseMock() {
+                ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> responseMock = createMock(ODataRetrieveResponse.class);
+                expect(responseMock.getHeader("X-CSRF-Token")).andReturn(Arrays.asList("yyy"));
+
+                ODataEntitySetIteratorRequest<ClientEntitySet,ClientEntity> oDataEntitySetIteratorRequestMock = createMock(ODataEntitySetIteratorRequest.class);
+                expect(oDataEntitySetIteratorRequestMock.addCustomHeader("X-CSRF-Token", "Fetch")).andReturn(oDataEntitySetIteratorRequestMock);
+                expect(oDataEntitySetIteratorRequestMock.setAccept("application/xml")).andReturn(oDataEntitySetIteratorRequestMock);
+                expect(oDataEntitySetIteratorRequestMock.execute()).andReturn(responseMock);
+
+                RetrieveRequestFactory retrieveRequestFactoryMock = createMock(RetrieveRequestFactory.class);
+                expect(retrieveRequestFactoryMock.getEntitySetIteratorRequest(EasyMock.anyObject(URI.class))).andReturn(oDataEntitySetIteratorRequestMock);
+
+                replay(responseMock, oDataEntitySetIteratorRequestMock, retrieveRequestFactoryMock);
+                return retrieveRequestFactoryMock;
+            }
+
+            ODataMediaEntityUpdateRequest setupEntityUpdateRequestMock(ODataPayloadManager payloadManagerMock) {
+                ODataMediaEntityUpdateRequest entityUpdateRequestMock = createMock(ODataMediaEntityUpdateRequest.class);
+                expect(entityUpdateRequestMock.addCustomHeader("x-csrf-token", "yyy")).andReturn(entityUpdateRequestMock);
+                entityUpdateRequestMock.setFormat(ContentType.APPLICATION_ATOM_XML); expectLastCall();
+                expect(entityUpdateRequestMock.setContentType("text/plain")).andReturn(entityUpdateRequestMock);
+                expect(entityUpdateRequestMock.payloadManager()).andReturn(payloadManagerMock);
+                replay(entityUpdateRequestMock);
+                return entityUpdateRequestMock;
+            }
+        }
+
+        MockHelpers helpers = new MockHelpers();
+
+        ODataPayloadManager payloadManagerMock = createMock(ODataPayloadManager.class);
+        if(e != null) {
+            expect(payloadManagerMock.getResponse()).andThrow(e);
+        } else {
+            expect(payloadManagerMock.getResponse()).andReturn(helpers.setupResponseMock());
+        }
+
+        CUDRequestFactory cudRequestFactoryMock = createMock(CUDRequestFactory.class);
+        expect(cudRequestFactoryMock.getMediaEntityUpdateRequest(capture(address), anyObject(InputStream.class)))
+            .andReturn(helpers.setupEntityUpdateRequestMock(payloadManagerMock));
 
         Configuration configuration = new ConfigurationImpl();
         configuration.setKeyAsSegment(false); // with that we get .../Changes('<ChangeId>'), otherwise .../Changes/'<ChangeId>'
@@ -200,26 +212,9 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
 
         expect(clientMock.getCUDRequestFactory()).andReturn(cudRequestFactoryMock);
         expect(clientMock.getConfiguration()).andReturn(configuration).times(2);
-        expect(clientMock.getRetrieveRequestFactory()).andReturn(setupCSRFResponseMock());
+        expect(clientMock.getRetrieveRequestFactory()).andReturn(helpers.setupCSRFResponseMock());
+
+        replay(payloadManagerMock, cudRequestFactoryMock, clientMock);
         return clientMock;
     }
-
-    @SuppressWarnings("unchecked")
-    private static RetrieveRequestFactory setupCSRFResponseMock() {
-
-        ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> responseMock = createMock(ODataRetrieveResponse.class);
-        expect(responseMock.getHeader("X-CSRF-Token")).andReturn(Arrays.asList("yyy"));
-
-        ODataEntitySetIteratorRequest<ClientEntitySet,ClientEntity> oDataEntitySetIteratorRequestMock = createMock(ODataEntitySetIteratorRequest.class);
-        expect(oDataEntitySetIteratorRequestMock.addCustomHeader("X-CSRF-Token", "Fetch")).andReturn(oDataEntitySetIteratorRequestMock);
-        expect(oDataEntitySetIteratorRequestMock.setAccept("application/xml")).andReturn(oDataEntitySetIteratorRequestMock);
-        expect(oDataEntitySetIteratorRequestMock.execute()).andReturn(responseMock);
-
-        RetrieveRequestFactory retrieveRequestFactoryMock = createMock(RetrieveRequestFactory.class);
-        expect(retrieveRequestFactoryMock.getEntitySetIteratorRequest(EasyMock.anyObject(URI.class))).andReturn(oDataEntitySetIteratorRequestMock);
-
-        replay(responseMock, oDataEntitySetIteratorRequestMock, retrieveRequestFactoryMock);
-        return retrieveRequestFactoryMock;
-    }
-
 }
