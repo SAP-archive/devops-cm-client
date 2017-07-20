@@ -29,7 +29,11 @@ public class CMTransportTestBase extends CMTestBase {
         return setupMock(transportId, owner, description, isModifiable, null);
     }
 
-    protected ClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable, Exception ex) throws Exception {
+    protected ClientFactory setupMock(Exception e) throws Exception {
+        return setupMock(null, null, null, false, e);
+    }
+
+    private ClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable, Exception ex) throws Exception {
         CMODataClient clientMock = createMock(CMODataClient.class);
         if(ex == null) {
             ArrayList<CMODataTransport> transports = new ArrayList<>();

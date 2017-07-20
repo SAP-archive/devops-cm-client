@@ -64,7 +64,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(ODataClientErrorException.class);
         thrown.expectMessage("400");
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", false, new ODataClientErrorException(
+        setMock(setupMock(new ODataClientErrorException(
                 new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
 
         try {
@@ -85,7 +85,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("No transportId specified.");
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", false, new ODataClientErrorException(
+        setMock(setupMock(new ODataClientErrorException(
                 new BasicStatusLine(new ProtocolVersion("HTTP", 1, 1), 400, "Bad Request"))));
 
         GetTransportModifiable.main(new String[] {
