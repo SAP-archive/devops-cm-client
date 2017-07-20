@@ -10,15 +10,14 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
-import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.apache.olingo.client.api.communication.request.invoke.InvokeRequestFactory;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
 import org.apache.olingo.client.api.communication.response.ODataInvokeResponse;
 import org.apache.olingo.client.api.domain.ClientEntity;
-import org.apache.olingo.client.core.ConfigurationImpl;
 import org.apache.olingo.client.core.ODataClientImpl;
 import org.apache.olingo.client.core.domain.ClientEntityImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
@@ -145,14 +144,11 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         InvokeRequestFactory invokeRequestFactoryMock = createMock(InvokeRequestFactory.class);
         expect(invokeRequestFactoryMock.getFunctionInvokeRequest(capture(address), eq(ClientEntity.class))).andReturn(functionInvokeRequest);
 
-        Configuration config = new ConfigurationImpl();
-        config.setKeyAsSegment(false); // with that we get .../Changes('<ChangeId>'), otherwise .../Changes/'<ChangeId>'
-
         ODataClient clientMock = createMockBuilder(ODataClientImpl.class)
                 .addMockedMethod("getInvokeRequestFactory")
                 .addMockedMethod("getConfiguration").createMock();
         expect(clientMock.getInvokeRequestFactory()).andReturn(invokeRequestFactoryMock);
-        expect(clientMock.getConfiguration()).andReturn(config);
+        expect(clientMock.getConfiguration()).andReturn(getConfiguration());
 
         replay(functionInvokeRequest, invokeRequestFactoryMock, clientMock);
 

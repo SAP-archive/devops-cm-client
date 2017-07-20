@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
@@ -35,7 +34,6 @@ import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.http.HttpClientException;
-import org.apache.olingo.client.core.ConfigurationImpl;
 import org.apache.olingo.client.core.ODataClientImpl;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.easymock.EasyMock;
@@ -202,16 +200,13 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         expect(cudRequestFactoryMock.getMediaEntityUpdateRequest(capture(address), anyObject(InputStream.class)))
             .andReturn(helpers.setupEntityUpdateRequestMock(payloadManagerMock));
 
-        Configuration configuration = new ConfigurationImpl();
-        configuration.setKeyAsSegment(false); // with that we get .../Changes('<ChangeId>'), otherwise .../Changes/'<ChangeId>'
-
         ODataClient clientMock = createMockBuilder(ODataClientImpl.class)
                 .addMockedMethod("getConfiguration")
                 .addMockedMethod("getRetrieveRequestFactory")
                 .addMockedMethod("getCUDRequestFactory").createMock();
 
         expect(clientMock.getCUDRequestFactory()).andReturn(cudRequestFactoryMock);
-        expect(clientMock.getConfiguration()).andReturn(configuration).times(2);
+        expect(clientMock.getConfiguration()).andReturn(MockHelper.getConfiguration()).times(2);
         expect(clientMock.getRetrieveRequestFactory()).andReturn(helpers.setupCSRFResponseMock());
 
         replay(payloadManagerMock, cudRequestFactoryMock, clientMock);

@@ -9,6 +9,7 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -158,14 +159,11 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         RetrieveRequestFactory retrieveRequestFactoryMock = createMock(RetrieveRequestFactory.class);
         expect(retrieveRequestFactoryMock.getEntitySetIteratorRequest(capture(address))).andReturn(oDataEntityRequestMock);
 
-        Configuration config = new ConfigurationImpl();
-        config.setKeyAsSegment(false); // with that we get .../Changes('<ChangeId>'), otherwise .../Changes/'<ChangeId>'
-
         ODataClient clientMock = createMockBuilder(ODataClientImpl.class)
                 .addMockedMethod("getRetrieveRequestFactory")
                 .addMockedMethod("getConfiguration").createMock();
         expect(clientMock.getRetrieveRequestFactory()).andReturn(retrieveRequestFactoryMock);
-        expect(clientMock.getConfiguration()).andReturn(config);
+        expect(clientMock.getConfiguration()).andReturn(getConfiguration());
         replay(responseMock, oDataEntityRequestMock, retrieveRequestFactoryMock, clientMock);
         return clientMock;
     }

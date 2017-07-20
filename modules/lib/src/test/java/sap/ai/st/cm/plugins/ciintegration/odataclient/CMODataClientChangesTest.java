@@ -9,15 +9,14 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
-import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntityRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.RetrieveRequestFactory;
 import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse;
 import org.apache.olingo.client.api.domain.ClientEntity;
-import org.apache.olingo.client.core.ConfigurationImpl;
 import org.apache.olingo.client.core.ODataClientImpl;
 import org.apache.olingo.client.core.domain.ClientEntityImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
@@ -154,9 +153,7 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
                 .addMockedMethod("getConfiguration")
                 .addMockedMethod("getRetrieveRequestFactory").createMock();
 
-        Configuration config = new ConfigurationImpl();
-        config.setKeyAsSegment(false); // with that we get .../Changes('<ChangeId>'), otherwise .../Changes/'<ChangeId>'
-        expect(clientMock.getConfiguration()).andReturn(config);
+        expect(clientMock.getConfiguration()).andReturn(getConfiguration());
         expect(clientMock.getRetrieveRequestFactory()).andReturn(retrieveRequestFactoryMock);
 
         replay(oDataEntityRequestMock, retrieveRequestFactoryMock, clientMock);
