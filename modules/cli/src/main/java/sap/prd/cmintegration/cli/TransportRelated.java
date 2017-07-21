@@ -74,7 +74,7 @@ abstract class TransportRelated extends Command {
         }
     }
 
-    private static String getTransportId(CommandLine commandLine) {
+    static String getTransportId(CommandLine commandLine) {
         try {
             return Commands.Helpers.getArg(commandLine, 1);
         } catch (ArrayIndexOutOfBoundsException ex) {
