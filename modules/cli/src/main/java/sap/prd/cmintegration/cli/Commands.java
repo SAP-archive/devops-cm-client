@@ -126,11 +126,12 @@ class Commands {
             return;
         }
 
+        final String cmdWithoutLeadingDashes = args[0].substring(TWO_DASHES.length());
         try {
-            if(! commands.keySet().contains(TWO_DASHES + args[0])) {
+            if(! commands.keySet().contains(cmdWithoutLeadingDashes)) {
                 throw new CMCommandLineException(String.format("Command '%s' not found.", args[0]));
             }
-            commands.get(args[0]).getDeclaredMethod("main", String[].class)
+            commands.get(cmdWithoutLeadingDashes).getDeclaredMethod("main", String[].class)
               .invoke(null, new Object[] { shift(args) });
         } catch (InvocationTargetException e) {
             if(e.getTargetException() instanceof Exception)
