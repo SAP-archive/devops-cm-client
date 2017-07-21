@@ -101,12 +101,12 @@ class Commands {
     private final static Map<String, Class<? extends Command>> commands = Maps.newHashMap();
 
     static {
-        commands.put("change-status", GetChangeStatus.class);
-        commands.put("transports", GetChangeTransports.class);
+        commands.put("is-change-in-development", GetChangeStatus.class);
+        commands.put("get-change-transports", GetChangeTransports.class);
         commands.put("transport-modifiable", GetTransportModifiable.class);
         commands.put("transport-owner", GetTransportOwner.class);
         commands.put("transport-description", GetTransportDescription.class);
-        commands.put("upload-file", UploadFileToTransport.class);
+        commands.put("upload-file-to-transport", UploadFileToTransport.class);
         commands.put("create-transport", CreateTransport.class);
         commands.put("release-transport", ReleaseTransport.class);
     }
