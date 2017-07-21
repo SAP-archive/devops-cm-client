@@ -1,18 +1,17 @@
 package sap.prd.cmintegration.cli;
 
+import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
 
 import java.io.File;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.olingo.client.api.communication.ODataClientErrorException;
 
 public class UploadFileToTransport extends Command {
 

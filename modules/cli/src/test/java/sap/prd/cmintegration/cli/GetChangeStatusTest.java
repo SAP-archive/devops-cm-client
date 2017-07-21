@@ -13,8 +13,6 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.easymock.EasyMock;
 import org.hamcrest.Matchers;

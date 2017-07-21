@@ -5,8 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.message.BasicStatusLine;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.junit.Test;
 
