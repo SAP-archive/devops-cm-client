@@ -23,6 +23,8 @@ import com.google.common.collect.Maps;
 
 class Commands {
 
+    private final static String TWO_DASHES = "--";
+
     static class CMOptions {
 
         static Option USER = new Option("u", "user", true, "Service user."),
@@ -113,19 +115,19 @@ class Commands {
 
     public final static void main(String[] args) throws Exception {
         Collection<String> _args = Arrays.asList(args);
-        if((_args.contains("--help") && _args.size() == 1) || _args.isEmpty()) {
+        if((_args.contains(TWO_DASHES + "help") && _args.size() == 1) || _args.isEmpty()) {
             printHelp();
             if(_args.isEmpty()) throw new CMCommandLineException("Called without arguments.");
             return;
         }
 
-        if(Arrays.asList(args).contains("--version")) {
+        if(Arrays.asList(args).contains(TWO_DASHES + "version")) {
             printVersion();
             return;
         }
 
         try {
-            if(! commands.keySet().contains(args[0])) {
+            if(! commands.keySet().contains(TWO_DASHES + args[0])) {
                 throw new CMCommandLineException(String.format("Command '%s' not found.", args[0]));
             }
             commands.get(args[0]).getDeclaredMethod("main", String[].class)
