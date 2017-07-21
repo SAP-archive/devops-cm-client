@@ -1,6 +1,6 @@
 package sap.prd.cmintegration.cli;
 
-public class ExitWrapper {
+class ExitWrapper {
 
     public final static void main(String[] args) throws Exception {
         try {

@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class GetTransportOwner extends TransportRelated {
+class GetTransportOwner extends TransportRelated {
 
-    public GetTransportOwner(String host, String user, String password, String changeId, String transportId) {
+    GetTransportOwner(String host, String user, String password, String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
     }
 

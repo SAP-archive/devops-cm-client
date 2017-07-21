@@ -14,7 +14,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 
-public class CreateTransport extends Command {
+class CreateTransport extends Command {
 
     private final String changeId;
 

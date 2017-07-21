@@ -13,7 +13,7 @@ import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 
-public class GetChangeStatus extends Command {
+class GetChangeStatus extends Command {
 
     private String changeId;
 

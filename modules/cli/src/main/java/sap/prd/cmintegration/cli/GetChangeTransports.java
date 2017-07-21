@@ -15,10 +15,10 @@ import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class GetChangeTransports extends Command {
+class GetChangeTransports extends Command {
 
     private final String changeId;
-    
+
     GetChangeTransports(String host, String user, String password, String changeId) {
         super(host, user, password);
         this.changeId = changeId;

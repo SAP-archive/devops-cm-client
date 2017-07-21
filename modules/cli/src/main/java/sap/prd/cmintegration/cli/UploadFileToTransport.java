@@ -13,12 +13,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
-public class UploadFileToTransport extends Command {
+class UploadFileToTransport extends Command {
 
     private final String changeId, transportId, applicationId;
     private final File upload;
 
-    public UploadFileToTransport(String host, String user, String password,
+    UploadFileToTransport(String host, String user, String password,
             String changeId, String transportId, String applicationId, String filePath) {
         super(host, user, password);
         this.changeId = changeId;

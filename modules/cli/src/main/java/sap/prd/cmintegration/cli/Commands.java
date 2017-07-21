@@ -21,7 +21,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.common.collect.Maps;
 
-public class Commands {
+class Commands {
 
     static class CMOptions {
 

@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class GetTransportModifiable extends TransportRelated {
+class GetTransportModifiable extends TransportRelated {
 
     GetTransportModifiable(String host, String user, String password, String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
