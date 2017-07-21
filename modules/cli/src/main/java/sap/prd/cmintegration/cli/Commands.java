@@ -121,7 +121,7 @@ class Commands {
             return;
         }
 
-        if(Arrays.asList(args).contains(TWO_DASHES + "version")) {
+        if(_args.contains(TWO_DASHES + "version")) {
             printVersion();
             return;
         }
