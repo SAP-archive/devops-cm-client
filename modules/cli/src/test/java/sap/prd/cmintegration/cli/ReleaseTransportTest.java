@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -32,9 +33,10 @@ public class ReleaseTransportTest extends CMTestBase {
     }
 
     @Test
-    public void testStraightForward() throws Exception {
+    public void testReleaseTransportStraightForward() throws Exception {
 
-        setMock(setupMock());
+        // comment line below in order to run against real back-end
+        setMock(setupMock(null));
 
         ReleaseTransport.main(new String[] {
                 "-u", "john.doe",
@@ -46,10 +48,28 @@ public class ReleaseTransportTest extends CMTestBase {
         assertThat(transportId.getValue(), is(equalTo("L21K90002K")));
     }
 
-    private ClientFactory setupMock() throws Exception {
+    @Test
+    public void testReleaseTransportFailsSinceTransportHasAlreadyBeenReleased() throws Exception {
+
+        thrown.expect(ODataClientErrorException.class);
+        thrown.expectMessage("400");
+
+        // comment line below in order to run against real back-end
+        setMock(setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
+
+        ReleaseTransport.main(new String[] {
+                "-u", "john.doe",
+                "-p", "openSesame",
+                "-h", "https://example.org/endpoint/",
+                "8000038673", "L21K900026"});
+    }
+
+    private ClientFactory setupMock(Exception e) throws Exception {
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
-        clientMock.releaseDevelopmentTransport(capture(changeId), capture(transportId)); expectLastCall();
+        clientMock.releaseDevelopmentTransport(capture(changeId), capture(transportId));
+        if(e == null) expectLastCall(); else expectLastCall().andThrow(e);
+
         ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
         expect(factoryMock
             .newClient(capture(host),
