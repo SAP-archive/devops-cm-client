@@ -8,7 +8,6 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -16,6 +15,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 abstract class TransportRelated extends Command {
@@ -33,17 +33,17 @@ abstract class TransportRelated extends Command {
 
     @Override
     final void execute() throws Exception {
-        Collection<CMODataTransport> changeTransports = ClientFactory.getInstance()
-                .newClient(host,  user,  password)
-                    .getChangeTransports(changeId);
 
-        Optional<CMODataTransport> transport = changeTransports.stream()
+        try(CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+
+            Optional<CMODataTransport> transport = client.getChangeTransports(changeId).stream()
                 .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
 
-        if(transport.isPresent()) {
-            getOutputPredicate().test(transport.get());
-        }  else {
-            throw new CMCommandLineException(String.format("Transport '%s' not found for change '%s'.", transportId, changeId));
+            if(transport.isPresent()) {
+                getOutputPredicate().test(transport.get());
+            }  else {
+                throw new CMCommandLineException(String.format("Transport '%s' not found for change '%s'.", transportId, changeId));
+            }
         }
     }
 

@@ -2,7 +2,10 @@ package sap.prd.cmintegration.cli;
 
 import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -60,7 +63,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         transports.add(new CMODataTransport("L21K90002D", false, "Description", "Owner"));
         transports.add(new CMODataTransport("L21K90002E", false, "Description", "Owner"));
 
-        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
+        CMODataClient clientMock = createMock(CMODataClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
 
         ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
@@ -68,8 +71,9 @@ public class GetChangeTransportsTest extends CMTestBase {
                 .newClient(capture(host),
                         capture(user),
                         capture(password))).andReturn(clientMock);
+        clientMock.close(); expectLastCall();
 
-        EasyMock.replay(clientMock, factoryMock);
+        replay(clientMock, factoryMock);
 
         return factoryMock;
     }

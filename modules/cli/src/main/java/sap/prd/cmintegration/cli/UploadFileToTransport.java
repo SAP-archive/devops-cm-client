@@ -13,6 +13,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+
 class UploadFileToTransport extends Command {
 
     private final String changeId, transportId, applicationId;
@@ -54,9 +56,8 @@ class UploadFileToTransport extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
-        try {
-            ClientFactory.getInstance().newClient(host,  user, password)
-                .uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+        try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+            client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
         } catch(Exception e) {
             throw new ExitException(e, 1);
         }

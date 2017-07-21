@@ -106,6 +106,14 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
         examinee.releaseDevelopmentTransport("xx", "");
     }
 
+    @Test
+    public void testReleaseTransportOnClosedClient() throws Exception{
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("This instance of CMODataClient has been closed");
+        examinee.close();
+        examinee.releaseDevelopmentTransport("xx", "xx");
+    }
+
     private ODataClient setupMock() {
         return setupMock(null);
     }

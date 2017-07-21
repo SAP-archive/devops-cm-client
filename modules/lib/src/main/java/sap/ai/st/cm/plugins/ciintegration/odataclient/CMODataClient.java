@@ -29,7 +29,9 @@ import org.apache.olingo.commons.api.format.ContentType;
 import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
 
-public class CMODataClient {
+public class CMODataClient implements AutoCloseable {
+
+    private boolean isClosed = false;
 
     private final static ContentType contentType = ContentType.APPLICATION_ATOM_XML;
 
@@ -39,13 +41,13 @@ public class CMODataClient {
     public CMODataClient(String serviceUrl, String serviceUser, String servicePassword) {
 
         this.serviceUrl = serviceUrl;
-
         this.client = ODataClientFactory.getClient();
         this.client.getConfiguration().setHttpClientFactory(new CMOdataHTTPFactory(serviceUser, servicePassword));
-
     }
 
     public CMODataChange getChange(String ChangeID) throws Exception {
+
+        checkClosed();
 
         URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes").appendKeySegment(ChangeID).build();
 
@@ -71,6 +73,8 @@ public class CMODataClient {
     }
 
     public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
+
+        checkClosed();
 
         if(StringUtils.isEmpty(ChangeID)) {
             throw new IllegalArgumentException(format("ChangeID was null or empty: '%s'.", ChangeID));
@@ -113,6 +117,8 @@ public class CMODataClient {
 
     public void uploadFileToTransport(String ChangeID, String TransportID, String filePath, String ApplicationID) throws IOException {
 
+        checkClosed();
+
         File file = new File(filePath);
 
         URIBuilder uribuilder = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Files");
@@ -153,6 +159,8 @@ public class CMODataClient {
 
     public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
 
+        checkClosed();
+
         if(StringUtils.isBlank(ChangeID)) throw new IllegalArgumentException(format("ChangeID is null or blank: '%s'.", ChangeID));
         if(StringUtils.isBlank(TransportID)) throw new IllegalArgumentException(format("TransportID is null or blank: '%s'.", TransportID));
 
@@ -179,7 +187,39 @@ public class CMODataClient {
         return _createDevelopmentTransport("createTransportAdvanced", "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
     }
 
+    /**
+     * Releases any resources attached to this client.
+     * Was introduced due to issues with hanging threads as some kind of workaround.
+     * <b>Should <i>not</i> be used in case of server environments.</b>
+     * The synchronization mechanism is not perfect since the executor service might be shutdown
+     * while the client is used by other threads. Would be better to synchronize the methods in total.
+     * But this would sequentialize all the requests, which is not acceptable in case of server environments.
+     */
+    public void close() {
+        synchronized(this.client) {
+            if(!isClosed) {
+                this.isClosed = true;
+                this.client.getConfiguration().getExecutor().shutdown();
+            }
+        }
+        //not sure if there are other resources ...
+    }
+
+    public boolean isClosed() {
+        synchronized (this.client) {
+            return isClosed;
+        }
+    }
+
+    private void checkClosed() {
+        if(isClosed) throw new IllegalStateException(format("This instance of %s has been closed (%d);",
+                getClass().getSimpleName(),
+                System.identityHashCode(this)));
+    }
+
     private CMODataTransport _createDevelopmentTransport(String segment, String query) throws IOException {
+
+        checkClosed();
 
         URI functionUri = getFunctionURI(segment, query);
 
@@ -199,7 +239,6 @@ public class CMODataClient {
                 response.close();
             }
         }
-
     }
 
     private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws IOException {

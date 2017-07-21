@@ -1,13 +1,15 @@
 package sap.prd.cmintegration.cli;
 
 import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.apache.commons.io.IOUtils;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,15 +50,16 @@ public class CreateTransportTest extends CMTestBase {
 
         CMODataTransport transport = new CMODataTransport("myTransport", true, "Lorum ipsum", "me");
 
-        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
+        CMODataClient clientMock = createMock(CMODataClient.class);
         expect(clientMock.createDevelopmentTransport(capture(changeId))).andReturn(transport);
-        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
+        clientMock.close(); expectLastCall();
+        ClientFactory factoryMock = createMock(ClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),
                         capture(password))).andReturn(clientMock);
 
-        EasyMock.replay(clientMock, factoryMock);
+        replay(clientMock, factoryMock);
         return factoryMock;
     }
 }

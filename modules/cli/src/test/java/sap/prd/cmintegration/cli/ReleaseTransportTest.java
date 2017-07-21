@@ -68,6 +68,7 @@ public class ReleaseTransportTest extends CMTestBase {
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         clientMock.releaseDevelopmentTransport(capture(changeId), capture(transportId));
+        clientMock.close(); expectLastCall();
         if(e == null) expectLastCall(); else expectLastCall().andThrow(e);
 
         ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);

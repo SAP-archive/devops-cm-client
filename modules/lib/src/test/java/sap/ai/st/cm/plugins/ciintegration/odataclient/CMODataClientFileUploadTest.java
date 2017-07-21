@@ -137,6 +137,14 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         }
     }
 
+    @Test
+    public void testUploadFileCalledOnClosedClient() throws Exception{
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("This instance of CMODataClient has been closed");
+        examinee.close();
+        examinee.uploadFileToTransport("xx", "xx", "xx", "xx");
+    }
+
     private ODataClient setupUploadFileSucceedsMock() {
         return setupMock(null);
     }

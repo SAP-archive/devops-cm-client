@@ -103,6 +103,14 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         examinee.getChangeTransports(null);
     }
 
+    @Test
+    public void testGetChangeTransportsOnClosedClient() throws Exception{
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("This instance of CMODataClient has been closed");
+        examinee.close();
+        examinee.getChangeTransports("xx");
+    }
+
     private ODataClient setupExceptionMock() throws Exception {
         return setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST));
     }

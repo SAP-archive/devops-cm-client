@@ -12,6 +12,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 class GetChangeStatus extends Command {
 
@@ -24,8 +25,10 @@ class GetChangeStatus extends Command {
 
     @Override
     void execute() throws Exception {
-        CMODataChange change = ClientFactory.getInstance().newClient(host, user, password).getChange(changeId);
-        System.out.println(change.isInDevelopment());
+        try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+            CMODataChange change = client.getChange(changeId);
+            System.out.println(change.isInDevelopment());
+        }
     }
 
     public final static void main(String[] args) throws Exception {

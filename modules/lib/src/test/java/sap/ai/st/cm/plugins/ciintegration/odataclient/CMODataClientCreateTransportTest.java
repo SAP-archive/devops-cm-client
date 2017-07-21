@@ -88,7 +88,14 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
             assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
             throw e;
         }
+    }
 
+    @Test
+    public void testCreateTransportOnClosedClient() throws Exception{
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("This instance of CMODataClient has been closed");
+        examinee.close();
+        examinee.createDevelopmentTransport("xx");
     }
 
     private ODataClient setupStraightForwardMock() {

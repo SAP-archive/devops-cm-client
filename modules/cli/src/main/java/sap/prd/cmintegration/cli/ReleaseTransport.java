@@ -11,6 +11,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+
 class ReleaseTransport extends Command {
 
     private final String changeId, transportId;
@@ -43,8 +45,9 @@ class ReleaseTransport extends Command {
 
     @Override
     void execute() throws Exception {
-        ClientFactory.getInstance().newClient(host,  user,  password)
-            .releaseDevelopmentTransport(changeId, transportId);
+        try (CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+            client.releaseDevelopmentTransport(changeId, transportId);
+        }
     }
 
 }

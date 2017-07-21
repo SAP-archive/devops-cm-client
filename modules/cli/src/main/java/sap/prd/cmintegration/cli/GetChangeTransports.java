@@ -13,6 +13,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 class GetChangeTransports extends Command {
@@ -44,7 +45,9 @@ class GetChangeTransports extends Command {
 
     @Override
     public void execute() throws Exception {
-        ArrayList<CMODataTransport> transports = ClientFactory.getInstance().newClient(host, user, password).getChangeTransports(changeId);
-        transports.stream().forEach(it -> System.out.println(it.getTransportID()));
+        try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+            ArrayList<CMODataTransport> transports = client.getChangeTransports(changeId);
+            transports.stream().forEach(it -> System.out.println(it.getTransportID()));
+        }
     }
 }

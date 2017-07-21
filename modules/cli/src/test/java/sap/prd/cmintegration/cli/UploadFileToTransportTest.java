@@ -105,8 +105,8 @@ public class UploadFileToTransportTest extends CMTestBase {
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         clientMock.uploadFileToTransport(capture(changeId), capture(transportId),
-            capture(filePath), capture(applicationId));
-        expectLastCall();
+            capture(filePath), capture(applicationId)); expectLastCall();
+        clientMock.close(); expectLastCall();
 
         ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
             expect(factoryMock

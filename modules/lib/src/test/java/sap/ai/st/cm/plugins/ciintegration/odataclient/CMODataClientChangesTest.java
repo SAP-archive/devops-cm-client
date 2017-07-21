@@ -91,6 +91,14 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
         examinee.getChange("8000038673");
     }
 
+    @Test
+    public void testGetChangeOnClosedClient() throws Exception{
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("This instance of CMODataClient has been closed");
+        examinee.close();
+        examinee.getChange("xx");
+    }
+
     private ODataClient setupStraightForwardMock() {
         return setupMock(null);
     }

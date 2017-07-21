@@ -1,7 +1,10 @@
 package sap.prd.cmintegration.cli;
 
 import static org.easymock.EasyMock.capture;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -14,7 +17,6 @@ import java.io.InputStreamReader;
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
-import org.easymock.EasyMock;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -28,20 +30,21 @@ public class GetChangeStatusTest extends CMTestBase {
     }
 
     private ClientFactory setupMock(Exception ex) throws Exception {
-        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
+        CMODataClient clientMock = createMock(CMODataClient.class);
+        clientMock.close(); expectLastCall();
         if(ex == null) {
             CMODataChange change = new CMODataChange("8000038673", true);
             expect(clientMock.getChange(capture(changeId))).andReturn(change);
         } else {
             expect(clientMock.getChange(capture(changeId))).andThrow(ex);
         }
-        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
+        ClientFactory factoryMock = createMock(ClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),
                         capture(password))).andReturn(clientMock);
 
-        EasyMock.replay(clientMock, factoryMock);
+        replay(clientMock, factoryMock);
         return factoryMock;
     }
 

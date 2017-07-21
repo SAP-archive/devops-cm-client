@@ -3,6 +3,7 @@ package sap.prd.cmintegration.cli;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class CMTransportTestBase extends CMTestBase {
 
     private ClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable, Exception ex) throws Exception {
         CMODataClient clientMock = createMock(CMODataClient.class);
+        clientMock.close(); expectLastCall();
         if(ex == null) {
             ArrayList<CMODataTransport> transports = new ArrayList<>();
             transports.add(new CMODataTransport(transportId, isModifiable, description, owner));

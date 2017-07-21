@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
@@ -42,9 +43,10 @@ class CreateTransport extends Command {
 
     @Override
     void execute() throws Exception {
-        CMODataTransport transport = ClientFactory.getInstance().newClient(host, user,  password)
-            .createDevelopmentTransport(changeId);
-        System.out.println(transport.getTransportID());
-        System.out.flush();
+        try(CMODataClient client = ClientFactory.getInstance().newClient(host, user,  password)) {
+            CMODataTransport transport = client.createDevelopmentTransport(changeId);
+            System.out.println(transport.getTransportID());
+            System.out.flush();
+        }
     }
 }
