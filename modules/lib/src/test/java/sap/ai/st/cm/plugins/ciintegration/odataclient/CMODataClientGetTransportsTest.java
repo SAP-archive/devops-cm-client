@@ -14,8 +14,6 @@ import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfi
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.http.message.BasicStatusLine;
-import org.apache.olingo.client.api.Configuration;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntitySetIteratorRequest;
@@ -25,7 +23,6 @@ import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.domain.ClientProperty;
-import org.apache.olingo.client.core.ConfigurationImpl;
 import org.apache.olingo.client.core.ODataClientImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
 import org.apache.olingo.client.core.domain.ClientPropertyImpl;
