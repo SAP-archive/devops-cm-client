@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -149,9 +150,9 @@ class Commands {
 
     private static void printHelp() throws Exception {
         PrintStream ps = new PrintStream(System.out);
-        for(Map.Entry<String, Class<? extends Command>> e : commands.entrySet()) {
-            ps.print(e.getKey() + ":: ");
-            e.getValue().getDeclaredMethod("main", String[].class).invoke(null, new Object[] {new String[] {"--help"}} );
+        for(String key : new TreeSet<String>(commands.keySet())) {
+            ps.print(key + ":: ");
+            commands.get(key).getDeclaredMethod("main", String[].class).invoke(null, new Object[] {new String[] {"--help"}} );
         }
     }
 
