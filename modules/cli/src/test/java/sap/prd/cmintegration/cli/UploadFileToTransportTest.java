@@ -46,7 +46,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         UploadFileToTransport.main(new String[] {
         "-u", "john.doe",
         "-p", "openSesame",
-        "-h", "https://example.org/endpoint/",
+        "-e", "https://example.org/endpoint/",
         "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
@@ -95,7 +95,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         UploadFileToTransport.main(new String[] {
         "-u", "john.doe",
         "-p", "openSesame",
-        "-h", "https://example.org/endpoint/",
+        "-e", "https://example.org/endpoint/",
         "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 

@@ -41,7 +41,7 @@ public class ReleaseTransportTest extends CMTestBase {
         ReleaseTransport.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
-                "-h", "https://example.org/endpoint/",
+                "-e", "https://example.org/endpoint/",
                 "8000038673", "L21K90002K"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -60,7 +60,7 @@ public class ReleaseTransportTest extends CMTestBase {
         ReleaseTransport.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
-                "-h", "https://example.org/endpoint/",
+                "-e", "https://example.org/endpoint/",
                 "8000038673", "L21K900026"});
     }
 

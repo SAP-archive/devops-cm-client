@@ -16,7 +16,7 @@ public class GetChangeTransportDescriptionTest extends CMTransportTestBase {
         GetTransportDescription.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
-                "-h", "https://example.org/endpoint/",
+                "-e", "https://example.org/endpoint/",
                 "8000038673", "L21K900026"});
 
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")),

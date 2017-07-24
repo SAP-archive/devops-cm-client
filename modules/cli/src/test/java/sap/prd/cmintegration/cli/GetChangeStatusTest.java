@@ -65,7 +65,7 @@ public class GetChangeStatusTest extends CMTestBase {
         GetChangeStatus.main(new String[] {
         "-u", "john.doe",
         "-p", "openSesame",
-        "-h", "https://example.org/endpoint/",
+        "-e", "https://example.org/endpoint/",
         "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -88,7 +88,7 @@ public class GetChangeStatusTest extends CMTestBase {
         GetChangeStatus.main(new String[] {
         "-u", "DOES_NOT_EXIST",
         "-p", "********",
-        "-h", "https://example.org/endpoint/",
+        "-e", "https://example.org/endpoint/",
         "8000038673"});
     }
 
@@ -105,7 +105,7 @@ public class GetChangeStatusTest extends CMTestBase {
             GetChangeStatus.main(new String[] {
             "-u", "john.doe",
             "-p", "openSesame",
-            "-h", "https://example.org/endpoint/",
+            "-e", "https://example.org/endpoint/",
             "DOES_NOT_EXIST"});
         } catch(Exception e) {
             assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
@@ -125,7 +125,7 @@ public class GetChangeStatusTest extends CMTestBase {
         GetChangeStatus.main(new String[] {
         "-u", "john.doe",
         "-p", "openSesame",
-        "-h", "https://example.org/endpoint/"});
+        "-e", "https://example.org/endpoint/"});
     }
 
     @Test
@@ -142,7 +142,7 @@ public class GetChangeStatusTest extends CMTestBase {
           GetChangeStatus.main(new String[] {
           "-u", "john.doe",
           "-p", "-",
-          "-h", "https://example.org/endpoint/",
+          "-e", "https://example.org/endpoint/",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -168,7 +168,7 @@ public class GetChangeStatusTest extends CMTestBase {
           GetChangeStatus.main(new String[] {
           "-u", "john.doe",
           "-p", "-",
-          "-h", "https://example.org/endpoint/",
+          "-e", "https://example.org/endpoint/",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -191,7 +191,7 @@ public class GetChangeStatusTest extends CMTestBase {
           GetChangeStatus.main(new String[] {
           "-u", "john.doe",
           "-p", "-",
-          "-h", "https://example.org/endpoint/",
+          "-e", "https://example.org/endpoint/",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -210,7 +210,7 @@ public class GetChangeStatusTest extends CMTestBase {
 
         GetChangeStatus.main(new String[] {
         "-u", "john.doe",
-        "-h", "https://example.org/endpoint/",
+        "-e", "https://example.org/endpoint/",
         "8000038673"});
     }
 }

@@ -31,7 +31,7 @@ class Commands {
 
         static Option USER = new Option("u", "user", true, "Service user."),
                       PASSWORD = new Option("p", "password", true, "Service password, if '-' if provided, password will be read from stdin."),
-                      HOST = new Option("h", "host", true, "Service endpoint"),
+                      HOST = new Option("e", "endpoint", true, "Service endpoint"),
                       HELP = new Option("help", "help", false, "Prints this help."),
                       VERSION = new Option("v", "version", false, "Prints the version.");
 

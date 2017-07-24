@@ -33,7 +33,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         GetChangeTransports.main(new String[] {
         "-u", "john.doe",
         "-p", "openSesame",
-        "-h", "https://example.org/endpoint/",
+        "-e", "https://example.org/endpoint/",
         "8000038673"});
 
         Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));

@@ -37,7 +37,7 @@ public class CreateTransportTest extends CMTestBase {
         CreateTransport.main(new String[] {
                 "-u", "john.doe",
                 "-p", "openSesame",
-                "-h", "https://example.org/endpoint/",
+                "-e", "https://example.org/endpoint/",
                 "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
