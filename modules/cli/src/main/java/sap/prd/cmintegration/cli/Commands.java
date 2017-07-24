@@ -7,37 +7,40 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Maps;
 
 class Commands {
 
-    private final static String TWO_DASHES = "--";
+    private final static String DASH = "-";
+    private final static String TWO_DASHES = DASH+DASH;
 
     static class CMOptions {
 
         static Option USER = new Option("u", "user", true, "Service user."),
                       PASSWORD = new Option("p", "password", true, "Service password, if '-' if provided, password will be read from stdin."),
-                      HOST = new Option("h", "host", true, "Host"),
-                      HELP = new Option("help", "help", false, "Prints this help.");
+                      HOST = new Option("h", "host", true, "Service endpoint"),
+                      HELP = new Option("help", "help", false, "Prints this help."),
+                      VERSION = new Option("v", "version", false, "Prints the version.");
 
         static {
             USER.setRequired(true);
             PASSWORD.setRequired(true);
             HOST.setRequired(true);
             HELP.setRequired(false);
+            VERSION.setRequired(false);
         }
     }
 
@@ -48,6 +51,7 @@ class Commands {
             options.addOption(CMOptions.PASSWORD);
             options.addOption(CMOptions.HOST);
             options.addOption(CMOptions.HELP);
+            options.addOption(CMOptions.VERSION);
         }
 
         static String getPassword(CommandLine commandLine) throws IOException {
@@ -116,13 +120,17 @@ class Commands {
 
     public final static void main(String[] args) throws Exception {
         Collection<String> _args = Arrays.asList(args);
-        if((_args.contains(TWO_DASHES + "help") && _args.size() == 1) || _args.isEmpty()) {
+
+        if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
+           _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
+           args.length <= 1) || args.length == 0) {
             printHelp();
-            if(_args.isEmpty()) throw new CMCommandLineException("Called without arguments.");
+            if(args.length == 0) throw new CMCommandLineException("Called without arguments.");
             return;
         }
 
-        if(_args.contains(TWO_DASHES + "version")) {
+        if(_args.contains(DASH+CMOptions.VERSION.getOpt()) ||
+           _args.contains(TWO_DASHES+CMOptions.VERSION.getLongOpt())) {
             printVersion();
             return;
         }
@@ -149,11 +157,29 @@ class Commands {
     }
 
     private static void printHelp() throws Exception {
-        PrintStream ps = new PrintStream(System.out);
-        for(String key : new TreeSet<String>(commands.keySet())) {
-            ps.print(key + ":: ");
-            commands.get(key).getDeclaredMethod("main", String[].class).invoke(null, new Object[] {new String[] {"--help"}} );
-        }
+
+        String cmd = "cmcli";
+        String CRLF = "\r\n";
+        StringWriter subCommandsHelp = new StringWriter();
+
+            commands.keySet().stream().sorted().forEach(subcmd ->
+            subCommandsHelp.append(StringUtils.repeat(' ', 4))
+                           .append(TWO_DASHES)
+                           .append(subcmd)
+                           .append(CRLF)
+        );
+
+        String cmdLineSyntax = "cmcli <subcommand> [OPTIONS...] parameters...";
+        String header = "Manages communication with the SAP CM System.";
+        String footer = format("Subcommands:%s%s%sType '%s <subcommand> --help' for more details.%s",
+            CRLF, subCommandsHelp.toString(), CRLF, cmd, CRLF);
+
+        new HelpFormatter().printHelp(
+            cmdLineSyntax, header,
+            new Options()
+                .addOption(CMOptions.HELP)
+                .addOption(CMOptions.VERSION),
+            footer);
     }
 
     private static String[] shift(String[] args) {
