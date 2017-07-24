@@ -9,7 +9,6 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
 
@@ -46,6 +45,34 @@ public class CommandsTest extends CMTestBase {
     private void versionAsserts(File versionFile) throws Exception {
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")),
                 is(equalTo(removeCRLF(FileUtils.readFileToString(versionFile)))));
+    }
+
+
+    @Test
+    public void testGetGlobalHelpShortOption() throws Exception {
+
+        Commands.main(new String[] {"-h"});
+        globalHelpAssert(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")));
+    }
+
+    @Test
+    public void testGetGlobalHelpLongOption() throws Exception {
+
+        Commands.main(new String[] {"--help"});
+        globalHelpAssert(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")));
+    }
+
+    private void globalHelpAssert(String helpOutput) {
+        assertThat(helpOutput, containsString("usage: cmcli <subcommand> [OPTIONS...] <parameters...>"));
+        assertThat(helpOutput, containsString("Subcommands:"));
+        assertThat(helpOutput, containsString("Type 'cmcli <subcommand> --help' for more details."));
+    }
+
+    @Test
+    public void testGetCommandHelpLongOption() throws Exception {
+
+        Commands.main(new String[] {"--is-change-in-development", "--help"});
+        System.err.println(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")));
     }
 
     @Test

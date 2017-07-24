@@ -30,7 +30,11 @@ class CreateTransport extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId>", options); return;
+            handleHelpOption("<changeId>",
+            "Creates a new transport entity. " +
+            "Returns the ID of the transport entity. " +
+            "If there is already an open transport, the ID of the already existing open transport might be returned.",
+            options); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

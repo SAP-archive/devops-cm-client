@@ -23,6 +23,7 @@ class GetTransportOwner extends TransportRelated {
     }
 
     public final static void main(String[] args) throws Exception {
-        TransportRelated.main(GetTransportOwner.class, args);
+        TransportRelated.main(GetTransportOwner.class, args,
+                "Returns the owner of the transport represented by '<changeId>', '<transportId>'.");
     }
 }

@@ -34,7 +34,9 @@ class UploadFileToTransport extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId> <transportId> <applicationId> <filePath>", options); return;
+            handleHelpOption("<changeId> <transportId> <applicationId> <filePath>",
+                    "Uploads the file specified by '<filePath>' to transport <transportId> for change <changeId>. "
+                    + "<applicationId> specifies how the file needs to be handled on server side.", options); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

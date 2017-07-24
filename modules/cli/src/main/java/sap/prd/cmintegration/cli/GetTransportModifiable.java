@@ -19,6 +19,7 @@ class GetTransportModifiable extends TransportRelated {
     }
 
     public final static void main(String[] args) throws Exception {
-        TransportRelated.main(GetTransportModifiable.class, args);
+        TransportRelated.main(GetTransportModifiable.class, args,
+            "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }
 }

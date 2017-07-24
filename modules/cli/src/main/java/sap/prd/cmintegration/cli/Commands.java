@@ -88,9 +88,9 @@ class Commands {
             return asList(args).contains("--help");
         }
 
-        static void handleHelpOption(String usage, Options options) {
+        static void handleHelpOption(String usage, String header, Options options) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(String.format("[options] %s", usage), options);
+            formatter.printHelp(String.format("[options] %s", usage), header, options, "");
         }
 
         private static String readPassword() throws IOException {
@@ -110,9 +110,9 @@ class Commands {
     static {
         commands.put("is-change-in-development", GetChangeStatus.class);
         commands.put("get-change-transports", GetChangeTransports.class);
-        commands.put("transport-modifiable", GetTransportModifiable.class);
-        commands.put("transport-owner", GetTransportOwner.class);
-        commands.put("transport-description", GetTransportDescription.class);
+        commands.put("is-transport-modifiable", GetTransportModifiable.class);
+        commands.put("get-transport-owner", GetTransportOwner.class);
+        commands.put("get-transport-description", GetTransportDescription.class);
         commands.put("upload-file-to-transport", UploadFileToTransport.class);
         commands.put("create-transport", CreateTransport.class);
         commands.put("release-transport", ReleaseTransport.class);
@@ -169,7 +169,7 @@ class Commands {
                            .append(CRLF)
         );
 
-        String cmdLineSyntax = "cmcli <subcommand> [OPTIONS...] parameters...";
+        String cmdLineSyntax = "cmcli <subcommand> [OPTIONS...] <parameters...>";
         String header = "Manages communication with the SAP CM System.";
         String footer = format("Subcommands:%s%s%sType '%s <subcommand> --help' for more details.%s",
             CRLF, subCommandsHelp.toString(), CRLF, cmd, CRLF);

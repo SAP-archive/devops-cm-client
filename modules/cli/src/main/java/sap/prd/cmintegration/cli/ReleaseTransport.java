@@ -31,7 +31,7 @@ class ReleaseTransport extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId> <transportId>", options); return;
+            handleHelpOption("<changeId> <transportId>", "Releases the transport specified by <changeId>, <transportId>.", options); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

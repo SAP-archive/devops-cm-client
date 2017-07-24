@@ -23,6 +23,7 @@ class GetTransportDescription extends TransportRelated {
     }
 
     public final static void main(String[] args) throws Exception {
-        TransportRelated.main(GetTransportDescription.class, args);
+        TransportRelated.main(GetTransportDescription.class, args,
+                "Returns the description for the transport represented by '<changeId>', '<transportId>'.");
     }
 }

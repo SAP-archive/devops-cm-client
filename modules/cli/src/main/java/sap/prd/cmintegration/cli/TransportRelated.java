@@ -47,13 +47,13 @@ abstract class TransportRelated extends Command {
         }
     }
 
-    protected static void main(Class<? extends TransportRelated> clazz, String[] args) throws Exception {
+    protected static void main(Class<? extends TransportRelated> clazz, String[] args, String helpText) throws Exception {
 
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId> <transportId>", options); return;
+            handleHelpOption("<changeId> <transportId>", helpText, options); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
