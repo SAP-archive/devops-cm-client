@@ -13,10 +13,9 @@
 	<artifactId>dist.cli</artifactId>
 	<name>CM - CLI Distribution Package</name>
 	<packaging>pom</packaging>
-
         <dependencies>
             <dependency>
-                <groupId>sap.ai.st.cm</groupId>
+                <groupId>com.sap.ai.st.cm</groupId>
                 <artifactId>ci-integration-cli</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
