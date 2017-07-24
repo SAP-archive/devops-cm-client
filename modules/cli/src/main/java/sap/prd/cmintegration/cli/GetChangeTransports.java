@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -16,8 +18,11 @@ import org.apache.commons.cli.Options;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+@CommandDescriptor(name="get-change-transports")
 class GetChangeTransports extends Command {
 
+    final static String SUBCOMMAND_NAME = "get-change-transports";
+    
     private final String changeId;
 
     GetChangeTransports(String host, String user, String password, String changeId) {
@@ -31,7 +36,8 @@ class GetChangeTransports extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId>", "Returns the ids of the transports for the change represented by <changeId>.",options); return;
+            handleHelpOption(format("%s [options] <changeId>", getCommandName(GetChangeTransports.class)),
+                    "Returns the ids of the transports for the change represented by <changeId>.",options); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

@@ -11,7 +11,8 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -20,7 +21,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 class Commands {
 
@@ -90,7 +91,7 @@ class Commands {
 
         static void handleHelpOption(String usage, String header, Options options) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(String.format("[options] %s", usage), header, options, "");
+            formatter.printHelp("<CMD> "+ usage, header, options, "");
         }
 
         private static String readPassword() throws IOException {
@@ -103,19 +104,28 @@ class Commands {
                 throw new CMCommandLineException("Multiline passwords are not supported.");
             return passwd;
         }
+
+        static String getCommandName(Class<? extends Command> clazz) {
+            return TWO_DASHES + clazz.getAnnotation(CommandDescriptor.class).name();
+        }
     }
 
-    private final static Map<String, Class<? extends Command>> commands = Maps.newHashMap();
+    private final static Set<Class<? extends Command>> commands = Sets.newHashSet();
 
     static {
-        commands.put("is-change-in-development", GetChangeStatus.class);
-        commands.put("get-change-transports", GetChangeTransports.class);
-        commands.put("is-transport-modifiable", GetTransportModifiable.class);
-        commands.put("get-transport-owner", GetTransportOwner.class);
-        commands.put("get-transport-description", GetTransportDescription.class);
-        commands.put("upload-file-to-transport", UploadFileToTransport.class);
-        commands.put("create-transport", CreateTransport.class);
-        commands.put("release-transport", ReleaseTransport.class);
+        commands.add(GetChangeStatus.class);
+        commands.add(GetChangeTransports.class);
+        commands.add(GetTransportModifiable.class);
+        commands.add(GetTransportOwner.class);
+        commands.add(GetTransportDescription.class);
+        commands.add(UploadFileToTransport.class);
+        commands.add(CreateTransport.class);
+        commands.add(ReleaseTransport.class);
+
+        if(commands.stream()
+                .filter(it -> it.getAnnotation(CommandDescriptor.class) == null)
+                .findAny()
+                .isPresent()) throw new IllegalStateException(format("Command without %s annotation found.", CommandDescriptor.class.getSimpleName()));
     }
 
     public final static void main(String[] args) throws Exception {
@@ -137,11 +147,17 @@ class Commands {
 
         final String cmdWithoutLeadingDashes = args[0].substring(TWO_DASHES.length());
         try {
-            if(! commands.keySet().contains(cmdWithoutLeadingDashes)) {
+            Optional<Class<? extends Command>> command = commands.stream()
+                .filter( it -> it.getAnnotation(CommandDescriptor.class)
+                        .name().equals(cmdWithoutLeadingDashes)).findFirst();
+
+            if(command.isPresent()) {
+                command.get().getDeclaredMethod("main", String[].class)
+                .invoke(null, new Object[] { shift(args) });
+            } else {
                 throw new CMCommandLineException(String.format("Command '%s' not found.", args[0]));
             }
-            commands.get(cmdWithoutLeadingDashes).getDeclaredMethod("main", String[].class)
-              .invoke(null, new Object[] { shift(args) });
+
         } catch (InvocationTargetException e) {
             if(e.getTargetException() instanceof Exception)
               throw (Exception)e.getTargetException();
@@ -158,18 +174,19 @@ class Commands {
 
     private static void printHelp() throws Exception {
 
-        String cmd = "cmcli";
+        String cmd = "<CMD>";
         String CRLF = "\r\n";
         StringWriter subCommandsHelp = new StringWriter();
 
-            commands.keySet().stream().sorted().forEach(subcmd ->
+            commands.stream().map(it -> it.getAnnotation(CommandDescriptor.class).name())
+            .sorted().forEach(subcmd ->
             subCommandsHelp.append(StringUtils.repeat(' ', 4))
                            .append(TWO_DASHES)
                            .append(subcmd)
                            .append(CRLF)
         );
 
-        String cmdLineSyntax = "cmcli <subcommand> [OPTIONS...] <parameters...>";
+        String cmdLineSyntax = format("%s <subcommand> [OPTIONS...] <parameters...>", cmd);
         String header = "Manages communication with the SAP CM System.";
         String footer = format("Subcommands:%s%s%sType '%s <subcommand> --help' for more details.%s",
             CRLF, subCommandsHelp.toString(), CRLF, cmd, CRLF);

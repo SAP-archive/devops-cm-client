@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -15,6 +17,7 @@ import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
+@CommandDescriptor(name="upload-file-to-transport")
 class UploadFileToTransport extends Command {
 
     private final String changeId, transportId, applicationId;
@@ -34,8 +37,8 @@ class UploadFileToTransport extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId> <transportId> <applicationId> <filePath>",
-                    "Uploads the file specified by '<filePath>' to transport <transportId> for change <changeId>. "
+            handleHelpOption(format("%s [options] <changeId> <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
+                    "Uploads the file specified by <filePath> to transport <transportId> for change <changeId>. "
                     + "<applicationId> specifies how the file needs to be handled on server side.", options); return;
         }
 

@@ -63,16 +63,26 @@ public class CommandsTest extends CMTestBase {
     }
 
     private void globalHelpAssert(String helpOutput) {
-        assertThat(helpOutput, containsString("usage: cmcli <subcommand> [OPTIONS...] <parameters...>"));
+        assertThat(helpOutput, containsString("usage: <CMD> <subcommand> [OPTIONS...] <parameters...>"));
         assertThat(helpOutput, containsString("Subcommands:"));
-        assertThat(helpOutput, containsString("Type 'cmcli <subcommand> --help' for more details."));
+        assertThat(helpOutput, containsString("Type '<CMD> <subcommand> --help' for more details."));
     }
 
     @Test
     public void testGetCommandHelpLongOption() throws Exception {
 
         Commands.main(new String[] {"--is-change-in-development", "--help"});
-        System.err.println(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")));
+        commandHelpAssert();
+    }
+
+    @Test
+    public void testGetCommandHelpShortOption() throws Exception {
+
+        Commands.main(new String[] {"--is-change-in-development", "-h"});
+        commandHelpAssert();
+    }
+    private void commandHelpAssert() throws Exception {
+        assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")), containsString("usage"));
     }
 
     @Test

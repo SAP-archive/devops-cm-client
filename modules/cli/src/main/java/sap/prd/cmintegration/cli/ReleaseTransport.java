@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -12,7 +14,9 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.prd.cmintegration.cli.Commands.Helpers;
 
+@CommandDescriptor(name="release-transport")
 class ReleaseTransport extends Command {
 
     private final String changeId, transportId;
@@ -31,7 +35,9 @@ class ReleaseTransport extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption("<changeId> <transportId>", "Releases the transport specified by <changeId>, <transportId>.", options); return;
+            handleHelpOption(
+                format("%s [options] <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
+                "Releases the transport specified by <changeId>, <transportId>.", options); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

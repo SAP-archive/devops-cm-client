@@ -1,11 +1,15 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
+
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+@CommandDescriptor(name="get-transport-owner")
 class GetTransportOwner extends TransportRelated {
 
     GetTransportOwner(String host, String user, String password, String changeId, String transportId) {
@@ -24,6 +28,7 @@ class GetTransportOwner extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         TransportRelated.main(GetTransportOwner.class, args,
-                "Returns the owner of the transport represented by '<changeId>', '<transportId>'.");
+                format("%s [options] <changeId> <transportId>", getCommandName(GetTransportOwner.class)),
+                "Returns the owner of the transport represented by <changeId>, <transportId>.");
     }
 }
