@@ -15,9 +15,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,12 +49,17 @@ class Commands {
 
     static class Helpers {
 
-        static void addStandardParameters(Options options) {
+        static Options getStandardOptions() {
+            return addStandardParameters(new Options());
+        }
+
+        static Options addStandardParameters(Options options) {
             options.addOption(CMOptions.USER);
             options.addOption(CMOptions.PASSWORD);
             options.addOption(CMOptions.HOST);
             options.addOption(CMOptions.HELP);
             options.addOption(CMOptions.VERSION);
+            return options;
         }
 
         static String getPassword(CommandLine commandLine) throws IOException {
@@ -70,7 +77,7 @@ class Commands {
         }
 
         static String getChangeId(CommandLine commandLine) {
-            return getArg(commandLine, 0, "changeId");
+            return getArg(commandLine, 1, "changeId");
         }
 
         static String getArg(CommandLine commandLine, int index, String name) {
@@ -91,7 +98,7 @@ class Commands {
 
         static void handleHelpOption(String usage, String header, Options options) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("<CMD> "+ usage, header, options, "");
+            formatter.printHelp("<CMD> [COMMON_OPTIONS] "+ usage, header, options, "");
         }
 
         private static String readPassword() throws IOException {
@@ -106,7 +113,7 @@ class Commands {
         }
 
         static String getCommandName(Class<? extends Command> clazz) {
-            return TWO_DASHES + clazz.getAnnotation(CommandDescriptor.class).name();
+            return clazz.getAnnotation(CommandDescriptor.class).name();
         }
     }
 
@@ -129,6 +136,7 @@ class Commands {
     }
 
     public final static void main(String[] args) throws Exception {
+
         Collection<String> _args = Arrays.asList(args);
 
         if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
@@ -145,17 +153,17 @@ class Commands {
             return;
         }
 
-        final String cmdWithoutLeadingDashes = args[0].substring(TWO_DASHES.length());
+        final String commandName = getCommandName(args);
         try {
             Optional<Class<? extends Command>> command = commands.stream()
                 .filter( it -> it.getAnnotation(CommandDescriptor.class)
-                        .name().equals(cmdWithoutLeadingDashes)).findFirst();
+                        .name().equals(commandName)).findFirst();
 
             if(command.isPresent()) {
                 command.get().getDeclaredMethod("main", String[].class)
-                .invoke(null, new Object[] { shift(args) });
+                .invoke(null, new Object[] { args });
             } else {
-                throw new CMCommandLineException(String.format("Command '%s' not found.", args[0]));
+                throw new CMCommandLineException(String.format("Command '%s' not found.", commandName));
             }
 
         } catch (InvocationTargetException e) {
@@ -163,6 +171,18 @@ class Commands {
               throw (Exception)e.getTargetException();
             else
               throw e;
+        }
+    }
+
+    private static String getCommandName(String[] args) throws ParseException {
+        try {
+            return new DefaultParser().parse(
+                new Options()
+                    .addOption(CMOptions.HELP)
+                    .addOption(CMOptions.VERSION), args, true).getArgs()[0];
+        } catch(ArrayIndexOutOfBoundsException e) {
+            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+                    StringUtils.join(" ", args)), e);
         }
     }
 
@@ -181,27 +201,18 @@ class Commands {
             commands.stream().map(it -> it.getAnnotation(CommandDescriptor.class).name())
             .sorted().forEach(subcmd ->
             subCommandsHelp.append(StringUtils.repeat(' ', 4))
-                           .append(TWO_DASHES)
                            .append(subcmd)
                            .append(CRLF)
         );
 
-        String cmdLineSyntax = format("%s <subcommand> [OPTIONS...] <parameters...>", cmd);
-        String header = "Manages communication with the SAP CM System.";
+        String cmdLineSyntax = format("%s [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS] <parameters...>", cmd);
+        String header = "Manages communication with the SAP CM System.\r\nCOMMON OPTIONS:";
         String footer = format("Subcommands:%s%s%sType '%s <subcommand> --help' for more details.%s",
             CRLF, subCommandsHelp.toString(), CRLF, cmd, CRLF);
 
         new HelpFormatter().printHelp(
             cmdLineSyntax, header,
-            new Options()
-                .addOption(CMOptions.HELP)
-                .addOption(CMOptions.VERSION),
+            Helpers.getStandardOptions(),
             footer);
-    }
-
-    private static String[] shift(String[] args) {
-        String[] shifted = new String[args.length - 1];
-        System.arraycopy(args,  1,  shifted, 0, args.length - 1);
-        return shifted;
     }
 }

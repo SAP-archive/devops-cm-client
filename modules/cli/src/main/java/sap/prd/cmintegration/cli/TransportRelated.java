@@ -53,7 +53,7 @@ abstract class TransportRelated extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, options); return;
+            handleHelpOption(usage, helpText, new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -76,7 +76,7 @@ abstract class TransportRelated extends Command {
 
     static String getTransportId(CommandLine commandLine) {
         try {
-            return Commands.Helpers.getArg(commandLine, 1);
+            return Commands.Helpers.getArg(commandLine, 2);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new CMCommandLineException("No transportId specified.");
         }

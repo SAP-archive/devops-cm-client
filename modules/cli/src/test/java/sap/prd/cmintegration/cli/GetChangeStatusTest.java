@@ -49,13 +49,6 @@ public class GetChangeStatusTest extends CMTestBase {
     }
 
     @Test
-    public void testPrintHelp() throws Exception {
-        GetChangeStatus.main(new String[] {"--help"});
-        String help = IOUtils.toString(result.toByteArray(), "UTF-8");
-        assertThat(help, Matchers.containsString("Prints this help."));
-    }
-
-    @Test
     public void testGetChangeStatusStraightForward() throws Exception {
 
         //
@@ -66,6 +59,7 @@ public class GetChangeStatusTest extends CMTestBase {
         "-u", "john.doe",
         "-p", "openSesame",
         "-e", "https://example.org/endpoint/",
+        "dummy-cmd",
         "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -89,6 +83,7 @@ public class GetChangeStatusTest extends CMTestBase {
         "-u", "DOES_NOT_EXIST",
         "-p", "********",
         "-e", "https://example.org/endpoint/",
+        "dummy-cmd",
         "8000038673"});
     }
 
@@ -106,6 +101,7 @@ public class GetChangeStatusTest extends CMTestBase {
             "-u", "john.doe",
             "-p", "openSesame",
             "-e", "https://example.org/endpoint/",
+            "dummy-cmd",
             "DOES_NOT_EXIST"});
         } catch(Exception e) {
             assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
@@ -143,6 +139,7 @@ public class GetChangeStatusTest extends CMTestBase {
           "-u", "john.doe",
           "-p", "-",
           "-e", "https://example.org/endpoint/",
+          "dummy-cmd",
           "8000038673"});
         } finally {
             System.setIn(oldIn);

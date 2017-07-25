@@ -28,7 +28,7 @@ class GetTransportOwner extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         TransportRelated.main(GetTransportOwner.class, args,
-                format("%s [options] <changeId> <transportId>", getCommandName(GetTransportOwner.class)),
+                format("%s <changeId> <transportId>", getCommandName(GetTransportOwner.class)),
                 "Returns the owner of the transport represented by <changeId>, <transportId>.");
     }
 }

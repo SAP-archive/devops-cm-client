@@ -18,6 +18,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673", "L21K900026"});
 
         assertThat(Boolean.valueOf(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8"))),
@@ -34,6 +35,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673", "L21K900026"});
 
         assertThat(Boolean.valueOf(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8"))),
@@ -53,6 +55,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673", "DOES_NOT_EXIST"});
     }
 
@@ -70,6 +73,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "DOES_NOT_EXIST", "NOT_NEEDED"});
         } catch(ODataClientErrorException ex) {
             assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
@@ -87,6 +91,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673"});
     }
 }

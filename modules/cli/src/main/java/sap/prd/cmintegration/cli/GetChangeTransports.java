@@ -36,8 +36,8 @@ class GetChangeTransports extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [options] <changeId>", getCommandName(GetChangeTransports.class)),
-                    "Returns the ids of the transports for the change represented by <changeId>.",options); return;
+            handleHelpOption(format("%s <changeId>", getCommandName(GetChangeTransports.class)),
+                    "Returns the ids of the transports for the change represented by <changeId>.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

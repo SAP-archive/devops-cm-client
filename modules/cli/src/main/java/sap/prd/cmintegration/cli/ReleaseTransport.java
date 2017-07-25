@@ -36,8 +36,8 @@ class ReleaseTransport extends Command {
 
         if(helpRequested(args)) {
             handleHelpOption(
-                format("%s [options] <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
-                "Releases the transport specified by <changeId>, <transportId>.", options); return;
+                format("%s <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
+                "Releases the transport specified by <changeId>, <transportId>.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

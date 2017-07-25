@@ -38,6 +38,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));

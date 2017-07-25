@@ -28,7 +28,7 @@ class GetTransportDescription extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         TransportRelated.main(GetTransportDescription.class, args,
-                format("%s [options] <changeId> <transportId>", getCommandName(GetTransportDescription.class)),
+                format("%s <changeId> <transportId>", getCommandName(GetTransportDescription.class)),
                 "Returns the description for the transport represented by <changeId>, <transportId>.");
     }
 }

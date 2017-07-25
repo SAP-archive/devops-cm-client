@@ -17,6 +17,7 @@ public class GetChangeTransportOwnerTest extends CMTransportTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673", "L21K900026"});
 
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")),

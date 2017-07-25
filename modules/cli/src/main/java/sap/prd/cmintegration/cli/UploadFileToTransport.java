@@ -2,6 +2,7 @@ package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -37,9 +38,9 @@ class UploadFileToTransport extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [options] <changeId> <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
+            handleHelpOption(format("%s <changeId> <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
                     "Uploads the file specified by <filePath> to transport <transportId> for change <changeId>. "
-                    + "<applicationId> specifies how the file needs to be handled on server side.", options); return;
+                    + "<applicationId> specifies how the file needs to be handled on server side.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -48,10 +49,10 @@ class UploadFileToTransport extends Command {
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getArg(commandLine, 0, "changeId"),
-                getArg(commandLine, 1, "transportId"),
-                getArg(commandLine, 2, "applicationId"),
-                getArg(commandLine, 3, "filePath")).execute();
+                getChangeId(commandLine),
+                getArg(commandLine, 2, "transportId"),
+                getArg(commandLine, 3, "applicationId"),
+                getArg(commandLine, 4, "filePath")).execute();
     }
 
     @Override

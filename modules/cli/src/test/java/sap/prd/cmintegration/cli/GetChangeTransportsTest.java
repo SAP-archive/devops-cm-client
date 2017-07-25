@@ -34,6 +34,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         "-u", "john.doe",
         "-p", "openSesame",
         "-e", "https://example.org/endpoint/",
+        "dummy-cmd",
         "8000038673"});
 
         Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));

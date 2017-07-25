@@ -40,8 +40,8 @@ class GetChangeStatus extends Command {
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [options] <changeId>", getCommandName(GetChangeStatus.class)),
-                    "Returns 'true' if the transport specified by <changeId> is modifiable. Otherwise 'false'.",options); return;
+            handleHelpOption(format("%s <changeId>", getCommandName(GetChangeStatus.class)),
+                    "Returns 'true' if the transport specified by <changeId> is modifiable. Otherwise 'false'.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

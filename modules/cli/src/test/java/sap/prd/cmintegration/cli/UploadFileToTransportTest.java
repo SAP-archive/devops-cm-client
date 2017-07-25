@@ -47,6 +47,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         "-u", "john.doe",
         "-p", "openSesame",
         "-e", "https://example.org/endpoint/",
+        "dummy-cmd",
         "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
@@ -96,6 +97,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         "-u", "john.doe",
         "-p", "openSesame",
         "-e", "https://example.org/endpoint/",
+        "dummy-cmd",
         "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 

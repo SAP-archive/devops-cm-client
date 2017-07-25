@@ -26,7 +26,7 @@ class GetTransportModifiable extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         TransportRelated.main(GetTransportModifiable.class, args,
-            format("%s [options] <changeId>, <transportId>", getCommandName(GetTransportModifiable.class)),
+            format("%s <changeId>, <transportId>", getCommandName(GetTransportModifiable.class)),
             "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }
 }

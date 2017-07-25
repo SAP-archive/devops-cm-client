@@ -42,6 +42,7 @@ public class ReleaseTransportTest extends CMTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673", "L21K90002K"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -61,6 +62,7 @@ public class ReleaseTransportTest extends CMTestBase {
                 "-u", "john.doe",
                 "-p", "openSesame",
                 "-e", "https://example.org/endpoint/",
+                "dummy-cmd",
                 "8000038673", "L21K900026"});
     }
 
