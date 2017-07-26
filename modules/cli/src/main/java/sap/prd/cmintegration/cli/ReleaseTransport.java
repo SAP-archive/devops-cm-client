@@ -14,7 +14,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
-import sap.prd.cmintegration.cli.Commands.Helpers;
 
 @CommandDescriptor(name="release-transport")
 class ReleaseTransport extends Command {
