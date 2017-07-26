@@ -23,8 +23,6 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="get-transports")
 class GetChangeTransports extends Command {
 
-    final static String SUBCOMMAND_NAME = "get-change-transports";
-
     private final String changeId;
 
     private final boolean modifiableOnly;
