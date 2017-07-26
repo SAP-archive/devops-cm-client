@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -52,6 +53,34 @@ public class GetChangeTransportsTest extends CMTestBase {
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
     }
 
+    @Test
+    public void testModifiablesOnly() throws Exception{
+
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock());
+
+        GetChangeTransports.main(new String[] {
+        "-u", "john.doe",
+        "-p", "openSesame",
+        "-e", "https://example.org/endpoint/",
+        "dummy-cmd", "-m",
+        "8000038673"});
+
+        Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));
+        assertThat(transportIds, contains("L21K90002E"));
+        assertThat(transportIds.size(), is(equalTo(1)));
+
+        assertThat(changeId.getValue(), is(equalTo("8000038673")));
+    }
+
+    @Test
+    public void testHelp() throws Exception {
+        GetChangeTransports.main(new String[] {"--help"});
+        String helpText = IOUtils.toString(result.toByteArray(), "UTF-8");
+        assertThat(helpText, containsString("-m,--modifiable-only   Returns modifiable transports only."));
+    }
+
     private ClientFactory setupMock() throws Exception {
 
         ArrayList<CMODataTransport> transports = new ArrayList<>();
@@ -62,7 +91,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         transports.add(new CMODataTransport("L21K90002B", false, "Description", "Owner"));
         transports.add(new CMODataTransport("L21K90002C", false, "Description", "Owner"));
         transports.add(new CMODataTransport("L21K90002D", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K90002E", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002E", true, "Description", "Owner"));
 
         CMODataClient clientMock = createMock(CMODataClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
