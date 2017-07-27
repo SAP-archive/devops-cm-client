@@ -129,6 +129,16 @@ public class CommandsTest extends CMTestBase {
     }
 
     @Test
+    public void testExecuteWithOptionsBeforeSubcommandName() throws Exception {
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Command 'does-not-exist' not found.");
+        Commands.main(new String[] {"-e", "https://www.example.org/mypath",
+                                    "-u", "nobody",
+                                    "-p", "secret",
+                                    "does-not-exist"});
+    }
+
+    @Test
     public void testPrintHelpWithNotExistingSubcommand() throws Exception {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("Command 'does-not-exist' not found.");

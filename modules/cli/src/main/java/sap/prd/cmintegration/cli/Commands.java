@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -44,6 +45,10 @@ class Commands {
             HOST.setRequired(true);
             HELP.setRequired(false);
             VERSION.setRequired(false);
+        }
+
+        static Option clone(Option o) {
+            return new Option(o.getOpt(), o.getLongOpt(), o.hasArg(), o.getDescription());
         }
     }
 
@@ -175,11 +180,21 @@ class Commands {
     }
 
     private static String getCommandName(String[] args) throws ParseException {
+
+        Options opts = new Options();
+        asList(CMOptions.HELP, CMOptions.VERSION, CMOptions.HOST, CMOptions.USER, CMOptions.PASSWORD).stream().map(
+           new Function<Option, Option>() {
+
+              @Override
+              public Option apply(Option o) {
+                Option c = CMOptions.clone(o);
+                c.setRequired(false);
+                return c;
+              }
+          }).forEach(o -> opts.addOption(o));
+
         try {
-            return new DefaultParser().parse(
-                new Options()
-                    .addOption(CMOptions.HELP)
-                    .addOption(CMOptions.VERSION), args, true).getArgs()[0];
+            return new DefaultParser().parse(opts, args, true).getArgs()[0];
         } catch(ArrayIndexOutOfBoundsException e) {
             throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
                     StringUtils.join(" ", args)), e);
