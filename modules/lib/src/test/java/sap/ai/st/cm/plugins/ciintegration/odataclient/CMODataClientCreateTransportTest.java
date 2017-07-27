@@ -26,6 +26,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
@@ -48,15 +49,20 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
     public void testCreateTransportRequestStraightForward() throws Exception {
 
         /*
-         * 8000038673 holds already an open transport.
-         * in case there is already an open transport the open transport is returned.
+         * 8000038673 holds already an open transport. That change is an urgent change.
+         * For urgent changes no new transport is created in case there is already an open
+         * transport. For urgent changes the already existing open change is returned in
+         * this case.
+         *
+         * The urgent change here is used in order to avoid a footprint in case the test is
+         * executed against the real back-end.
          */
 
         /*
          *  Comment line below and the captures later on in order to run against
          *  real back-end.
          */
-        setMock(examinee, setupStraightForwardMock());
+        setMock(examinee, setupMock("john.dev", "Jenkins CI Test"));
 
         CMODataTransport transport = examinee.createDevelopmentTransport("8000038673");
 
@@ -65,7 +71,44 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
             is(equalTo("https://example.org/endpoint/createTransport?ChangeID='8000038673'")));
         assertThat(transport.getTransportID(), is(equalTo("L21K90002H")));
         assertThat(transport.isModifiable(), is(equalTo(true)));
+        assertThat(transport.getOwner(), is(equalTo("john.dev")));
+        assertThat(transport.getDescription(), is(equalTo("Jenkins CI Test")));
     }
+
+    @Ignore("This test does not work on the server side.")
+    @Test
+    public void testCreateTransportRequestWithDesciptionAndOwnerWithNonExistingOwner() throws Exception {
+
+        thrown.expect(ODataClientErrorException.class);
+        thrown.expectMessage("400");
+
+        /*
+         *  Comment line below and the captures later on in order to run against
+         *  real back-end.
+         */
+        setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
+
+        examinee.createDevelopmentTransportAdvanced("8000042445", "myDescription", "doesNotExist");
+    }
+
+  @Test
+  public void testCreateTransportRequestWithDesciptionAndOwnerStraightForward() throws Exception {
+
+      /*
+       *  Comment line below and the captures later on in order to run against
+       *  real back-end.
+       */
+      setMock(examinee, setupMock("john.doe", "myDescription"));
+
+      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "myDescription", "john.doe");
+
+      assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
+      assertThat(address.getValue().toASCIIString(),
+          is(equalTo("https://example.org/endpoint/createTransportAdvanced?ChangeID='8000042445'&Description='myDescription'&Owner='john.doe'")));
+      assertThat(transport.isModifiable(), is(equalTo(true)));
+      assertThat(transport.getDescription(), is(equalTo("myDescription")));
+      assertThat(transport.getOwner(), is(equalTo("john.doe")));
+  }
 
     @Test
     public void testCreateTransportRequestForNotExistingChangeDocument() throws Exception {
@@ -98,12 +141,16 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         examinee.createDevelopmentTransport("xx");
     }
 
-    private ODataClient setupStraightForwardMock() {
-        return setupMock(null);
+    private ODataClient setupMock(String owner, String description) {
+        return setupMock(owner, description, null);
+    }
+
+    private ODataClient setupMock(ODataClientErrorException e) {
+        return setupMock(null, null, e);
     }
 
     @SuppressWarnings("unchecked")
-    private ODataClient setupMock(ODataClientErrorException e) {
+    private ODataClient setupMock(final String owner, final String description, ODataClientErrorException e) {
 
         class MockHelpers {
             ClientEntity getClientEntity() {
@@ -119,10 +166,10 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
                         factory.newPrimitiveValueBuilder().setValue("true").build()));
 
                 clientEntity.getProperties().add(new ClientPropertyImpl("Owner",
-                        factory.newPrimitiveValueBuilder().setValue("me").build()));
+                        factory.newPrimitiveValueBuilder().setValue(owner).build()));
 
                 clientEntity.getProperties().add(new ClientPropertyImpl("Description",
-                        factory.newPrimitiveValueBuilder().setValue("Lorem ipsum").build()));
+                        factory.newPrimitiveValueBuilder().setValue(description).build()));
 
                 return clientEntity;
             }

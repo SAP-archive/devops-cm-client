@@ -74,10 +74,10 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         // Assert for the captures below needs to be commented also in this case.
         setMock(examinee, setupUploadFileSucceedsMock());
 
-        examinee.uploadFileToTransport("8000042445", "L21K90002J", testFile.getAbsolutePath(), "HCP");
+        examinee.uploadFileToTransport("8000042445", "L21K900035", testFile.getAbsolutePath(), "HCP");
 
         assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/Files(ChangeID='8000042445',TransportID='L21K90002J',FileID='" +
+                is(equalTo("https://example.org/endpoint/Files(ChangeID='8000042445',TransportID='L21K900035',FileID='" +
                    testFile.getName() + "',ApplicationID='HCP')")));
     }
 

@@ -1,11 +1,14 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createMockBuilder;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,7 +30,6 @@ import org.apache.olingo.client.core.ODataClientImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
 import org.apache.olingo.client.core.domain.ClientPropertyImpl;
 import org.easymock.Capture;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,21 +54,24 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     public void testGetTransportsStraightForward() throws Exception {
 
         setMock(examinee, setupStraightForwardMock());
-        ArrayList<CMODataTransport> changeTransports = examinee.getChangeTransports("8000038673");
+        ArrayList<CMODataTransport> changeTransports = examinee.getChangeTransports("8000042445");
 
-        assertThat(getTransportIds(changeTransports), Matchers.containsInAnyOrder(
-                "L21K90002B", "L21K90002A", "L21K900026",
-                "L21K900028", "L21K900029", "L21K90002C",
-                "L21K90002D", "L21K90002E", "L21K90002H"));
-        assertThat(changeTransports.size(), is(equalTo(9)));
+        assertThat(join(getTransportIds(changeTransports), " "), allOf(
+                containsString("L21K90002J"),
+                containsString("L21K90002L"),
+                containsString("L21K90002N")));
 
-        assertThat(changeTransports.get(0).getDescription(), is(equalTo("The description goes here.")));
-        assertThat(changeTransports.get(0).getOwner(), is(equalTo("d999999")));
+        assertThat(changeTransports.get(0).getDescription(), is(equalTo("S 8000038673: HCP CI Jenkins Deploy UC 1")));
+        assertThat(changeTransports.get(0).getOwner(), is(equalTo("john.doe")));
 
         assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/Changes('8000038673')/Transports")));
+                is(equalTo("https://example.org/endpoint/Changes('8000042445')/Transports")));
     }
 
+    /*
+     * No java 8 streams for the lib since the lib is also used from the jenkins plugin which
+     * has (for some reasons (?)) a constrain to java 7.
+     */
     private static Collection<String> getTransportIds(Collection<CMODataTransport> transports) {
         Collection<String> transportIds = Sets.newHashSet();
         for(CMODataTransport t : transports) {
@@ -130,24 +135,11 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
             ClientEntitySetIterator<ClientEntitySet, ClientEntity> iteratorMock = createMock(ClientEntitySetIterator.class);
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K900026", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002N", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K900028", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002L", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K900029", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002A", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002B", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002C", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002D", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002E", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002H", true));
-
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002J", true));
             expect(iteratorMock.hasNext()).andReturn(false);
 
             expect(responseMock.getBody()).andReturn(iteratorMock);
@@ -184,10 +176,10 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
             new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build());
 
         ClientProperty d = new ClientPropertyImpl("Description",
-                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("The description goes here.").build());
+                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("S 8000038673: HCP CI Jenkins Deploy UC 1").build());
 
         ClientProperty o = new ClientPropertyImpl("Owner",
-                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("d999999").build());
+                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("john.doe").build());
 
         expect(transportMock.getProperty("TransportID")).andReturn(t);
         expect(transportMock.getProperty("IsModifiable")).andReturn(m);
