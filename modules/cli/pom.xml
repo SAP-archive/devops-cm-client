@@ -62,13 +62,10 @@
                 <version>2.2.1</version>
                 <executions>
                     <execution>
-                        <phase>prepare-package</phase>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>revision</goal>
                         </goals>
-                        <configuration>
-                          <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
