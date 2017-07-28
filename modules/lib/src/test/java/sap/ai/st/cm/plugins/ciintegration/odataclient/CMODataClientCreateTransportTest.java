@@ -92,21 +92,22 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
     }
 
   @Test
-  public void testCreateTransportRequestWithDesciptionAndOwnerStraightForward() throws Exception {
+  public void testCreateTransportRequestWithDescriptionAndOwnerStraightForward() throws Exception {
 
       /*
        *  Comment line below and the captures later on in order to run against
        *  real back-end.
        */
-      setMock(examinee, setupMock("john.doe", "myDescription"));
+      setMock(examinee, setupMock("john.doe", "my Description"));
 
-      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "myDescription", "john.doe");
+      // with that test we check also for blanks in the description ...
+      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "my Description", "john.doe");
 
       assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
       assertThat(address.getValue().toASCIIString(),
-          is(equalTo("https://example.org/endpoint/createTransportAdvanced?ChangeID='8000042445'&Description='myDescription'&Owner='john.doe'")));
+          is(equalTo("https://example.org/endpoint/createTransportAdvanced?ChangeID='8000042445'&Description='my%20Description'&Owner='john.doe'")));
       assertThat(transport.isModifiable(), is(equalTo(true)));
-      assertThat(transport.getDescription(), is(equalTo("myDescription")));
+      assertThat(transport.getDescription(), is(equalTo("my Description")));
       assertThat(transport.getOwner(), is(equalTo("john.doe")));
   }
 
