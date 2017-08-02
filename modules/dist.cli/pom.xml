@@ -17,31 +17,29 @@
             <dependency>
                 <groupId>com.sap.ai.st.cm</groupId>
                 <artifactId>ci-integration-cli</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.parent.version}</version>
             </dependency>
         </dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>package</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/main/assembly/dist.xml</descriptor>
-							</descriptors>
-							<appendAssemblyId>false</appendAssemblyId>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
+    <build>
+        <plugins>
+            <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <executions>
+                  <execution>
+                      <id>package</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                      <configuration>
+                          <descriptors>
+                              <descriptor>src/main/assembly/dist.xml</descriptor>
+                          </descriptors>
+                          <appendAssemblyId>false</appendAssemblyId>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+      </plugins>
+    </build>
 </project>
