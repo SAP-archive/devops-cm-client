@@ -25,7 +25,7 @@
         <dependency>
           <groupId>${project.groupId}</groupId>
           <artifactId>ci-integration-lib</artifactId>
-          <version>0.0.1-SNAPSHOT</version>
+          <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>
