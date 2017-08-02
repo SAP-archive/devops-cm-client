@@ -29,7 +29,7 @@
 			<outputDirectory>lib</outputDirectory>
 			<useProjectArtifact>false</useProjectArtifact>
                         <includes>
-                          <include>com.sap.ai.st.cm:ci-integration-cli</include>
+                          <include>${project.parent.groupId}:ci-integration-cli</include>
                         </includes>
                         <outputFileNameMapping>${artifact.artifactId}.jar</outputFileNameMapping>
 		</dependencySet>

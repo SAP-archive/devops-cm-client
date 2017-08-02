@@ -10,7 +10,6 @@
     <relativePath>../..</relativePath>
   </parent>
 
-  <groupId>com.sap.ai.st.cm</groupId>
   <artifactId>ci-integration-lib</artifactId>
   <packaging>jar</packaging>
 

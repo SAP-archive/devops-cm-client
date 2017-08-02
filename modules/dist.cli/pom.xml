@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
         <dependencies>
             <dependency>
-                <groupId>com.sap.ai.st.cm</groupId>
+                <groupId>${project.parent.groupId}</groupId>
                 <artifactId>ci-integration-cli</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>

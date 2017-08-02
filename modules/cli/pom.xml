@@ -10,7 +10,6 @@
     <relativePath>../..</relativePath>
   </parent>
 
-  <groupId>com.sap.ai.st.cm</groupId>
   <artifactId>ci-integration-cli</artifactId>
   <packaging>jar</packaging>
 
@@ -23,7 +22,7 @@
 
       <dependencies>
         <dependency>
-          <groupId>${project.groupId}</groupId>
+          <groupId>${project.parent.groupId}</groupId>
           <artifactId>ci-integration-lib</artifactId>
           <version>${project.parent.version}</version>
         </dependency>
