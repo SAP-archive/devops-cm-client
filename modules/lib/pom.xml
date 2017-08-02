@@ -49,6 +49,7 @@
       <plugins>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.2</version>
           <configuration>
             <source>${java.level}</source>
             <target>${java.level}</target>
