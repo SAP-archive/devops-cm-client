@@ -23,7 +23,7 @@
 
       <dependencies>
         <dependency>
-          <groupId>${groupId}</groupId>
+          <groupId>${project.groupId}</groupId>
           <artifactId>ci-integration-lib</artifactId>
           <version>0.0.1-SNAPSHOT</version>
         </dependency>
