@@ -52,8 +52,8 @@
           <configuration>
             <source>${java.level}</source>
             <target>${java.level}</target>
-            <testSource>${java.level.test}</testSource>
-            <testTarget>${java.level.test}</testTarget>
+            <testSource>${java.level}</testSource>
+            <testTarget>${java.level}</testTarget>
           </configuration>
         </plugin>
       </plugins>
