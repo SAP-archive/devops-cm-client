@@ -11,6 +11,14 @@
       <module>modules/cli</module>
       <module>modules/dist.cli</module>
     </modules>
-
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
 </project>
 

@@ -3,6 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.sap.prd.ci.integration</groupId>
+    <artifactId>module</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
+  </parent>
+
   <groupId>com.sap.ai.st.cm</groupId>
   <artifactId>ci-integration-cli</artifactId>
   <version>0.0.1-SNAPSHOT</version>
@@ -29,7 +36,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
-            <version>1.7.7</version>
         </dependency>
         <dependency>
         	<groupId>junit</groupId>
