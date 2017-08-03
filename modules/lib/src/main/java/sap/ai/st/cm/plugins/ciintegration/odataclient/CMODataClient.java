@@ -5,9 +5,12 @@ import static java.lang.String.format;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
+
+import javax.xml.namespace.QName;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
@@ -24,6 +27,7 @@ import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
+import org.apache.olingo.client.core.serialization.AtomDeserializer;
 import org.apache.olingo.commons.api.format.ContentType;
 
 import com.google.common.base.Strings;
@@ -279,4 +283,71 @@ public class CMODataClient implements AutoCloseable {
     private static String getValueAsString(String key, ClientEntity transport) {
         return transport.getProperty(key).getValue().toString();
     }
+
+    private static void BAD_HACK_setErrorMessageNameSpace() {
+
+        /*
+         * [Q] Why do we have that bad hack?
+         * [A] Without that hack we do not get the error message issued by the server.
+         *     Within the AtomDeserializer the error response is parsed and marshaled
+         *     into an ODataError instance. The 'message' tag which encapsulates the error
+         *     message is exptected to have a certain namespace. For whatever reason the
+         *     server provides the 'message' tag with a different namespace. Hence the
+         *     namespace is updated below accordingly.
+         *
+         *     Other option would be to switch from xml response format to json response format.
+         *     But that also does not work. The json response for getting the transports is expected
+         *     to have a 'value' node. But the server provides the transport inside a node named
+         *     'd'. Hence nothing is marshaled from json into the corresponding odata like
+         *     data transfer entities.
+         */
+        try {
+
+            Exception caught = null;
+
+            final Field errorMessageQNameField = AtomDeserializer.class.getDeclaredField("errorMessageQName"),
+                        namespaceURI = QName.class.getDeclaredField("namespaceURI");
+
+            try {
+                namespaceURI.setAccessible(true);
+                errorMessageQNameField.setAccessible(true);
+                namespaceURI.set(errorMessageQNameField.get(null), "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
+            } catch(Exception e) {
+                caught = e;
+            } finally {
+                try {
+                    errorMessageQNameField.setAccessible(false);
+                } catch(RuntimeException e) {
+                    if(caught == null) throw e; else caught.addSuppressed(e);
+                }
+                try {
+                    namespaceURI.setAccessible(false);
+                } catch(RuntimeException e) {
+                    if(caught == null) throw e; else caught.addSuppressed(e);
+                }
+            }
+
+            if(caught != null) throw caught;
+
+        } catch(RuntimeException e) {
+
+            /*
+             * TODO log and continue would be better. In that case the client would work, but error messages
+             *      from the server are not available on the client.
+             */
+            throw e;
+        }
+        catch(Exception e) {
+
+            /*
+             *  TODO: see above.
+             */
+            throw new RuntimeException(e);
+        }
+    }
+
+    static {
+        BAD_HACK_setErrorMessageNameSpace();
+    }
+
 }
