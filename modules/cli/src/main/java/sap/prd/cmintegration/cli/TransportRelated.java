@@ -8,19 +8,24 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 abstract class TransportRelated extends Command {
 
-    protected final String changeId, transportId;
+	final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
+	protected final String changeId, transportId;
 
     protected TransportRelated(String host, String user, String password,
             String changeId, String transportId) {
@@ -49,7 +54,9 @@ abstract class TransportRelated extends Command {
 
     protected static void main(Class<? extends TransportRelated> clazz, String[] args, String usage, String helpText) throws Exception {
 
-        Options options = new Options();
+    	logger.debug(Commands.Helpers.getArgsLogString(args));
+    	
+    	Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
@@ -57,6 +64,7 @@ abstract class TransportRelated extends Command {
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
+        
 
         newInstance(clazz, getHost(commandLine),
                 getUser(commandLine),

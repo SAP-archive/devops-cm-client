@@ -16,6 +16,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
@@ -23,10 +25,12 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="get-transports")
 class GetChangeTransports extends Command {
 
-    private final String changeId;
+	final static private Logger logger = LoggerFactory.getLogger(GetChangeTransports.class);
+	private final String changeId;
 
     private final boolean modifiableOnly;
 
+    
     GetChangeTransports(String host, String user, String password, String changeId,
             boolean modifiableOnly) {
         super(host, user, password);
@@ -36,7 +40,8 @@ class GetChangeTransports extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
+    	logger.debug(Commands.Helpers.getArgsLogString(args));
+    	Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         Option modifiableOnly = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");
@@ -66,7 +71,8 @@ class GetChangeTransports extends Command {
             ArrayList<CMODataTransport> transports = client.getChangeTransports(changeId);
             transports.stream()
                 .filter(modifiableOnly ? modOnly : all)
-                .forEach(it -> System.out.println(it.getTransportID()));
+                .forEach(it ->{ System.out.println(it.getTransportID());
+                                logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));});
         }
     }
 }

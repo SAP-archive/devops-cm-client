@@ -14,6 +14,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
@@ -21,7 +23,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name = "create-transport")
 class CreateTransport extends Command {
 
-    private final String changeId, owner, description;
+	final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
+	private final String changeId, owner, description;
 
     public CreateTransport(String host, String user, String password, String changeId,
             String owner, String description) {
@@ -33,7 +36,8 @@ class CreateTransport extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+    	Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
@@ -71,6 +75,7 @@ class CreateTransport extends Command {
                               isBlank(description) ? "" : description,
                               isBlank(owner) ? user : owner);
             }
+            logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", transport.getTransportID(), transport.getOwner(), Boolean.toString(transport.isModifiable())));
             System.out.println(transport.getTransportID());
             System.out.flush();
         }

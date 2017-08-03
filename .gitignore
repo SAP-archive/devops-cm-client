@@ -4,3 +4,6 @@ target
 /modules/cli/ci-integration-cli.iml
 /modules/jenkins-plugin/ci-integration.iml
 /modules/lib/ci-integration-lib.iml
+.project
+.settings
+.classpath

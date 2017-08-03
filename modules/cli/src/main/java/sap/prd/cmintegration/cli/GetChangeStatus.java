@@ -9,9 +9,14 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
@@ -19,7 +24,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 @CommandDescriptor(name = "is-change-in-development")
 class GetChangeStatus extends Command {
 
-    private String changeId;
+	final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
+	private String changeId;
 
     GetChangeStatus(String host, String user, String password, String changeId) {
         super(host, user, password);
@@ -30,13 +36,15 @@ class GetChangeStatus extends Command {
     void execute() throws Exception {
         try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
             CMODataChange change = client.getChange(changeId);
+            logger.debug(String.format("Change: '%s' isInDevelopment: '%s'", change.getChangeID(), Boolean.toString(change.isInDevelopment())));
             System.out.println(change.isInDevelopment());
         }
     }
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
+    	logger.debug(Commands.Helpers.getArgsLogString(args));
+    	Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
@@ -45,7 +53,6 @@ class GetChangeStatus extends Command {
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
-
         new GetChangeStatus(
                 getHost(commandLine),
                 getUser(commandLine),

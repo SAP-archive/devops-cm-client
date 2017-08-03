@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -23,11 +24,14 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
 class Commands {
-
+	
+	final static private Logger logger = LoggerFactory.getLogger(Commands.class);
     private final static String DASH = "-";
     private final static String TWO_DASHES = DASH+DASH;
 
@@ -120,6 +124,10 @@ class Commands {
         static String getCommandName(Class<? extends Command> clazz) {
             return clazz.getAnnotation(CommandDescriptor.class).name();
         }
+        
+        static String getArgsLogString(String[] args) {
+        	return String.format("Arguments: %s", Arrays.asList(args).stream().collect(Collectors.joining(" ")));
+        }
     }
 
     private final static Set<Class<? extends Command>> commands = Sets.newHashSet();
@@ -142,7 +150,8 @@ class Commands {
 
     public final static void main(String[] args) throws Exception {
 
-        Collection<String> _args = Arrays.asList(args);
+    	logger.debug(Commands.Helpers.getArgsLogString(args));
+    	Collection<String> _args = Arrays.asList(args);
 
         if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
            _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
@@ -172,7 +181,8 @@ class Commands {
             }
 
         } catch (InvocationTargetException e) {
-            if(e.getTargetException() instanceof Exception)
+            logger.error(e.getMessage(),e);
+        	if(e.getTargetException() instanceof Exception)
               throw (Exception)e.getTargetException();
             else
               throw e;

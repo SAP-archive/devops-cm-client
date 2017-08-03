@@ -15,13 +15,16 @@ import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 @CommandDescriptor(name="upload-file-to-transport")
 class UploadFileToTransport extends Command {
 
-    private final String changeId, transportId, applicationId;
+	final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
+	private final String changeId, transportId, applicationId;
     private final File upload;
 
     UploadFileToTransport(String host, String user, String password,
@@ -34,7 +37,8 @@ class UploadFileToTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        Options options = new Options();
+    	logger.debug(Commands.Helpers.getArgsLogString(args));
+    	Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
