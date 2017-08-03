@@ -50,7 +50,7 @@ public class CommandsTest extends CMTestBase {
          * Here we depend on a maven build. Before executing this test in
          * an IDE mvn process-resources needs to be invoked.
          */
-        File version = new File("target/classes/version");
+        File version = new File("../lib/target/classes/VERSION"); // not so nice, we go outside the submodule folder (../lib)
         Assume.assumeTrue(version.isFile());
 
         Commands.main(new String[] {"--version", "is-transport-modifiable"});

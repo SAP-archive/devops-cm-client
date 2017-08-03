@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLConnection;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
@@ -46,7 +48,8 @@ public class CMODataClient implements AutoCloseable {
 
         this.serviceUrl = serviceUrl;
         this.client = ODataClientFactory.getClient();
-        this.client.getConfiguration().setHttpClientFactory(new CMOdataHTTPFactory(serviceUser, servicePassword));
+        this.client.getConfiguration().setHttpClientFactory(
+                new CMOdataHTTPFactory(serviceUser, servicePassword));
     }
 
     public CMODataChange getChange(String ChangeID) throws Exception {
@@ -282,6 +285,16 @@ public class CMODataClient implements AutoCloseable {
 
     private static String getValueAsString(String key, ClientEntity transport) {
         return transport.getProperty(key).getValue().toString();
+    }
+
+    public static String getVersion() {
+        String not_available = "<n/a>";
+        try(InputStream version = CMODataClient.class.getResourceAsStream("/VERSION")) {
+            return (version == null) ? not_available : IOUtils.toString(version).replaceAll("\\r?\\n$", "");
+        } catch(IOException e) {
+            // TODO logging
+            return not_available;
+        }
     }
 
     private static void BAD_HACK_setErrorMessageNameSpace() {

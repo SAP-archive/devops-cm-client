@@ -5,7 +5,6 @@ import static java.util.Arrays.asList;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -21,10 +20,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Sets;
+
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 class Commands {
 
@@ -202,9 +202,7 @@ class Commands {
     }
 
     private static void printVersion() throws IOException {
-        try(InputStream version = Commands.class.getResourceAsStream("/VERSION")) {
-            System.out.println(IOUtils.toString(version).replaceAll("\\r?\\n$", ""));
-        }
+        System.out.println(CMODataClient.getVersion());
     }
 
     private static void printHelp() throws Exception {
