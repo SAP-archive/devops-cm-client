@@ -202,7 +202,7 @@ class Commands {
     }
 
     private static void printVersion() throws IOException {
-        System.out.println(CMODataClient.getVersion());
+        System.out.println(CMODataClient.getLongVersion());
     }
 
     private static void printHelp() throws Exception {

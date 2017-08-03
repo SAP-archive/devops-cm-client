@@ -10,10 +10,10 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
@@ -287,13 +287,26 @@ public class CMODataClient implements AutoCloseable {
         return transport.getProperty(key).getValue().toString();
     }
 
-    public static String getVersion() {
-        String not_available = "<n/a>";
+    public static String getShortVersion() {
+        Properties vProps = getVersionProperties();
+        return (vProps == null) ? "<n/a>" : vProps.getProperty("mvnProjectVersion", "<n/a>");
+    }
+
+    public static String getLongVersion() {
+        Properties vProps = getVersionProperties();
+        return (vProps == null) ? "<n/a>" : format("%s : %s",
+                                              vProps.getProperty("mvnProjectVersion", "<n/a>"),
+                                              vProps.getProperty("gitCommitId", "<n/a>"));
+    }
+
+    private static Properties getVersionProperties() {
         try(InputStream version = CMODataClient.class.getResourceAsStream("/VERSION")) {
-            return (version == null) ? not_available : IOUtils.toString(version).replaceAll("\\r?\\n$", "");
+            Properties vProps = new Properties();
+            vProps.load(version);
+            return vProps;
         } catch(IOException e) {
             // TODO logging
-            return not_available;
+            return null;
         }
     }
 

@@ -1,11 +1,14 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -58,8 +61,11 @@ public class CommandsTest extends CMTestBase {
         versionAsserts(version);
     }
     private void versionAsserts(File versionFile) throws Exception {
+        Properties vProps = new Properties();
+        vProps.load(new FileInputStream(versionFile));
+        String theVersion = format("%s : %s", vProps.getProperty("mvnProjectVersion"), vProps.getProperty("gitCommitId"));
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")),
-                is(equalTo(removeCRLF(FileUtils.readFileToString(versionFile)))));
+                is(equalTo(theVersion)));
     }
 
 
