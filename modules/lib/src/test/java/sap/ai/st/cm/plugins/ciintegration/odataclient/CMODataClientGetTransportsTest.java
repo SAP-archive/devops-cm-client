@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     public void testGetTransportsChangeIdDoesNotExist() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400"); // TODO 404 would be better
+        thrown.expect(carriesStatusCode(400)); // TODO 404 would be better
 
         setMock(examinee, setupExceptionMock());
 

@@ -95,18 +95,14 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
          * Hence we cannot check for more details.
          */
         thrown.expect(HttpClientException.class);
+        thrown.expect(hasRootCause(ODataClientErrorException.class));
+        thrown.expect(carriesStatusCode(400));
 
         // comment line below for testing against real backend.
         setMock(examinee, setupUploadFileFailsMock());
 
-        try {
-            //transport 'L21K900026' exists, but is closed.
-             examinee.uploadFileToTransport("8000038673", "L21K900026", testFile.getAbsolutePath(), "HCP");
-        } catch (HttpClientException e) {
-            assertThat(e, hasRootCause(ODataClientErrorException.class));
-            assertThat(e, carriesStatusCode(400));
-            throw e;
-        }
+        //transport 'L21K900026' exists, but is closed.
+        examinee.uploadFileToTransport("8000038673", "L21K900026", testFile.getAbsolutePath(), "HCP");
     }
 
     @Test
@@ -123,18 +119,14 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
          * Hence we cannot check for more details.
          */
         thrown.expect(HttpClientException.class);
+        thrown.expect(hasRootCause(ODataClientErrorException.class));
+        thrown.expect(carriesStatusCode(400));
 
         // comment line below for testing against real backend.
         setMock(examinee, setupUploadFileFailsMock());
 
-        try {
-            //transport 'L21K900XFG' does not exist
-            examinee.uploadFileToTransport("8000042445", "L21K900XFG", testFile.getAbsolutePath(), "HCP"); 
-        } catch (HttpClientException e) {
-            assertThat(e, hasRootCause(ODataClientErrorException.class));
-            assertThat(e, carriesStatusCode(400));
-            throw e;
-        }
+        //transport 'L21K900XFG' does not exist
+        examinee.uploadFileToTransport("8000042445", "L21K900XFG", testFile.getAbsolutePath(), "HCP"); 
     }
 
     @Test

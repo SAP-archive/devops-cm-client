@@ -9,7 +9,10 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
+
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -62,7 +65,7 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
     public void testReleaseTransportFailsDueTransportHasAlreadyBeenReleased() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400"); // TODO: 404 would be better
+        thrown.expect(carriesStatusCode(400)); // TODO: 404 would be better
 
         setMock(examinee, setupMock(new ODataClientErrorException(
                 StatusLines.BAD_REQUEST)));
@@ -73,7 +76,7 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
     public void testReleaseTransportFailsDueToNotExistingChange() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400"); // TODO: 404 would be better
+        thrown.expect(carriesStatusCode(400)); // TODO: 404 would be better
 
         setMock(examinee, setupMock(new ODataClientErrorException(
                 StatusLines.BAD_REQUEST)));
@@ -84,7 +87,7 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
     public void testReleaseTransportFailsDueToNotExistingTransport() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400"); // TODO: 404 would be better
+        thrown.expect(carriesStatusCode(400)); // TODO: 404 would be better
 
         setMock(examinee, setupMock(new ODataClientErrorException(
                 StatusLines.BAD_REQUEST)));

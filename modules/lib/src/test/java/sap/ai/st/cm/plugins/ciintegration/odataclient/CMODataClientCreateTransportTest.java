@@ -10,6 +10,7 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import org.apache.olingo.client.api.ODataClient;
@@ -80,7 +81,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
     public void testCreateTransportRequestWithDesciptionAndOwnerWithNonExistingOwner() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400");
+        thrown.expect(carriesStatusCode(400));
 
         /*
          *  Comment line below and the captures later on in order to run against
@@ -121,7 +122,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("400"); // TODO 404 would be better ...
+        thrown.expect(carriesStatusCode(400)); // TODO 404 would be better ...
 
         try {
             examinee.createDevelopmentTransport("DOES_NOT_EXIST");

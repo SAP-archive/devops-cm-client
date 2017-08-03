@@ -9,6 +9,7 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import org.apache.olingo.client.api.ODataClient;
@@ -64,7 +65,7 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
     public void testChangeDoesNotExist() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("404");
+        thrown.expect(carriesStatusCode(404));
 
         // comment line below for testing against real backend.
         // Assert for the captures below needs to be commented also in this case.
@@ -77,7 +78,7 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
     public void testChangeBadCredentials() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("401");
+        thrown.expect(carriesStatusCode(401));
 
         CMODataClient examinee = new CMODataClient(
                 "https://example.org/endpoint",
