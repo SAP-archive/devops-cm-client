@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import org.apache.olingo.client.api.ODataClient;
@@ -23,6 +24,7 @@ import org.apache.olingo.client.core.domain.ClientEntityImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
 import org.apache.olingo.client.core.domain.ClientPropertyImpl;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
+import org.apache.olingo.commons.api.ex.ODataError;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
@@ -66,12 +68,20 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(404));
+        thrown.expect(hasServerSideErrorMessage("Resource not found for segment ''."));
 
         // comment line below for testing against real backend.
         // Assert for the captures below needs to be commented also in this case.
         setMock(examinee, setupChangeDoesNotExistMock());
 
-        examinee.getChange("001");
+        try {
+            examinee.getChange("001");
+        } catch(Exception e) {
+            assertThat(address.getValue().toASCIIString(),
+                    is(equalTo(
+                      "https://example.org/endpoint/Changes('001')")));
+            throw e;
+        }
     }
 
     @Test
@@ -79,6 +89,9 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(401));
+        // we cannot check for the server side error message in this case since
+        // we get a generic html page in this case explaining to a human user that
+        // there was a problem with the credentials.
 
         CMODataClient examinee = new CMODataClient(
                 "https://example.org/endpoint",
@@ -86,7 +99,6 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
                 "openSesame");
 
         // comment line below for testing against real backend.
-        // Assert for the captures below needs to be commented also in this case.
         setMock(examinee, setupBadCredentialsMock());
 
         examinee.getChange("8000038673");
@@ -113,7 +125,8 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
     private ODataClient setupChangeDoesNotExistMock() {
         return setupMock(
                 new ODataClientErrorException(
-                        StatusLines.NOT_FOUND));
+                        StatusLines.NOT_FOUND,
+                        new ODataError().setMessage("Resource not found for segment ''.")));
     }
 
     @SuppressWarnings("unchecked")

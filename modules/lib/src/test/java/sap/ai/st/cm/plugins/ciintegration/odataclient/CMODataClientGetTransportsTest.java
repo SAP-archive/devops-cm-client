@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
@@ -30,6 +31,7 @@ import org.apache.olingo.client.api.domain.ClientProperty;
 import org.apache.olingo.client.core.ODataClientImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
 import org.apache.olingo.client.core.domain.ClientPropertyImpl;
+import org.apache.olingo.commons.api.ex.ODataError;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
@@ -54,7 +56,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     @Test
     public void testGetTransportsStraightForward() throws Exception {
 
-        setMock(examinee, setupStraightForwardMock());
+        setMock(examinee, setupMock());
         ArrayList<CMODataTransport> changeTransports = examinee.getChangeTransports("8000042445");
 
         assertThat(join(getTransportIds(changeTransports), " "), allOf(
@@ -86,8 +88,14 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(400)); // TODO 404 would be better
+        thrown.expect(hasServerSideErrorMessage("Resource not found for segment ''"));
 
-        setMock(examinee, setupExceptionMock());
+        // comment statement below for testing against real backend.
+        // Assert for the captures below needs to be commented also in this case.
+        setMock(examinee, setupMock(
+            new ODataClientErrorException(
+                StatusLines.BAD_REQUEST,
+                new ODataError().setMessage("Resource not found for segment ''"))));
 
         try {
             examinee.getChangeTransports("DOES_NOT_EXIST");
@@ -104,7 +112,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("ChangeID was null or empty");
 
-        setMock(examinee, setupStraightForwardMock());
+        setMock(examinee, setupMock());
 
         examinee.getChangeTransports(null);
     }
@@ -117,11 +125,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         examinee.getChangeTransports("xx");
     }
 
-    private ODataClient setupExceptionMock() throws Exception {
-        return setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST));
-    }
-
-    private ODataClient setupStraightForwardMock() throws Exception {
+    private ODataClient setupMock() throws Exception {
         return setupMock(null);
     }
 

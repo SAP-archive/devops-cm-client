@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasRootCause;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
 import org.apache.olingo.client.api.http.HttpClientException;
 import org.apache.olingo.client.core.ODataClientImpl;
+import org.apache.olingo.commons.api.ex.ODataError;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -84,22 +86,26 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
     @Test
     public void testUploadFileToClosedTransportFails() throws Exception {
 
-        /*
-         * Details about the reason are provided by the server, but they gets lost during
-         * parsing the odata error response since the xml namespace used by the server does not
-         * match the xml namespace expected by the client. For the message element in the response
-         * there is no namespace used at all. But there is the namespace
-         * "http://docs.oasis-open.org/odata/ns/metadata" expected by the client.
-         * See: org.apache.olingo.client.core.serialization.AtomDeserializer.
-         *
-         * Hence we cannot check for more details.
-         */
         thrown.expect(HttpClientException.class);
         thrown.expect(hasRootCause(ODataClientErrorException.class));
         thrown.expect(carriesStatusCode(400));
+        thrown.expect(hasServerSideErrorMessage(
+            "Internal Error - assertion skipped (see long text). "
+            + "Diagnosis An invalid system status was reached "
+            + "in the Change and Transport Organizer. "
+            + "System Response The internal check using an assertion "
+            + "was ignored due to the setti."));
 
-        // comment line below for testing against real backend.
-        setMock(examinee, setupUploadFileFailsMock());
+        // comment statement below for testing against real backend.
+        setMock(examinee, setupUploadFileFailsMock(new HttpClientException(
+                    new RuntimeException(new ODataClientErrorException(
+                        StatusLines.BAD_REQUEST,
+                        new ODataError().setMessage(
+                            "Internal Error - assertion skipped (see long text). "
+                          + "Diagnosis An invalid system status was reached "
+                          + "in the Change and Transport Organizer. "
+                          + "System Response The internal check using an assertion "
+                          + "was ignored due to the setti."))))));
 
         //transport 'L21K900026' exists, but is closed.
         examinee.uploadFileToTransport("8000038673", "L21K900026", testFile.getAbsolutePath(), "HCP");
@@ -108,22 +114,16 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
     @Test
     public void testUploadFileToNonExistingTransportFails() throws Exception {
 
-        /*
-         * Details about the reason are provided by the server, but they gets lost during
-         * parsing the odata error response since the xml namespace used by the server does not
-         * match the xml namespace expected by the client. For the message element in the response
-         * there is no namespace used at all. But there is the namespace
-         * "http://docs.oasis-open.org/odata/ns/metadata" expected by the client.
-         * See: org.apache.olingo.client.core.serialization.AtomDeserializer.
-         *
-         * Hence we cannot check for more details.
-         */
         thrown.expect(HttpClientException.class);
         thrown.expect(hasRootCause(ODataClientErrorException.class));
         thrown.expect(carriesStatusCode(400));
+        thrown.expect(hasServerSideErrorMessage("Resource not found for segment 'Transport'."));
 
-        // comment line below for testing against real backend.
-        setMock(examinee, setupUploadFileFailsMock());
+        // comment statement below for testing against real backend.
+        setMock(examinee, setupUploadFileFailsMock(new HttpClientException(
+                    new RuntimeException(new ODataClientErrorException(
+                        StatusLines.BAD_REQUEST,
+                        new ODataError().setMessage("Resource not found for segment 'Transport'."))))));
 
         //transport 'L21K900XFG' does not exist
         examinee.uploadFileToTransport("8000042445", "L21K900XFG", testFile.getAbsolutePath(), "HCP"); 
@@ -141,10 +141,8 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         return setupMock(null);
     }
 
-    private ODataClient setupUploadFileFailsMock() {
-        return setupMock(new HttpClientException(
-                    new RuntimeException(new ODataClientErrorException(
-                        StatusLines.BAD_REQUEST))));
+    private ODataClient setupUploadFileFailsMock(Exception e) {
+        return setupMock(e);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

@@ -11,6 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import org.apache.olingo.client.api.ODataClient;
@@ -24,10 +25,10 @@ import org.apache.olingo.client.core.domain.ClientEntityImpl;
 import org.apache.olingo.client.core.domain.ClientObjectFactoryImpl;
 import org.apache.olingo.client.core.domain.ClientPropertyImpl;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
+import org.apache.olingo.commons.api.ex.ODataError;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
@@ -76,18 +77,19 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         assertThat(transport.getDescription(), is(equalTo("Jenkins CI Test")));
     }
 
-    @Ignore("This test does not work on the server side.")
     @Test
     public void testCreateTransportRequestWithDesciptionAndOwnerWithNonExistingOwner() throws Exception {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(400));
+        thrown.expect(Matchers.hasServerSideErrorMessage("User DOESNOTEXIST does not exist in the system (or locked)."));
 
         /*
          *  Comment line below and the captures later on in order to run against
          *  real back-end.
          */
-        setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
+        setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST,
+            new ODataError().setMessage("User DOESNOTEXIST does not exist in the system (or locked)."))));
 
         examinee.createDevelopmentTransportAdvanced("8000042445", "myDescription", "doesNotExist");
     }
@@ -119,10 +121,12 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
          *  Comment line below and the captures later on in order to run against
          *  real back-end.
          */
-        setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
+        setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST,
+                new ODataError().setMessage("DOES_NOT_E not found."))));
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(400)); // TODO 404 would be better ...
+        thrown.expect(hasServerSideErrorMessage("DOES_NOT_E not found."));
 
         try {
             examinee.createDevelopmentTransport("DOES_NOT_EXIST");

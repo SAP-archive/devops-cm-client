@@ -10,9 +10,8 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
-
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -21,6 +20,7 @@ import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequ
 import org.apache.olingo.client.api.communication.response.ODataInvokeResponse;
 import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.core.ODataClientImpl;
+import org.apache.olingo.commons.api.ex.ODataError;
 import org.easymock.Capture;
 import org.junit.After;
 import org.junit.Assert;
@@ -66,9 +66,11 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(400)); // TODO: 404 would be better
+        thrown.expect(hasServerSideErrorMessage("Transport request L21K900026 can no longer be changed."));
 
         setMock(examinee, setupMock(new ODataClientErrorException(
-                StatusLines.BAD_REQUEST)));
+                StatusLines.BAD_REQUEST,
+                new ODataError().setMessage("Transport request L21K900026 can no longer be changed."))));
         examinee.releaseDevelopmentTransport("8000038673", "L21K900026");
     }
 
@@ -77,9 +79,12 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(400)); // TODO: 404 would be better
+        thrown.expect(hasServerSideErrorMessage("CHANGE_ID_ not found."));
 
+        // comment statement below for testing against real backend.
         setMock(examinee, setupMock(new ODataClientErrorException(
-                StatusLines.BAD_REQUEST)));
+                StatusLines.BAD_REQUEST,
+                new ODataError().setMessage("CHANGE_ID_ not found."))));
         examinee.releaseDevelopmentTransport("CHANGE_ID_DOES_NOT_EXIST", "TRANSPORT_REQUEST_DOES_ALSO_NOT_EXIST");
     }
 
@@ -88,9 +93,12 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
 
         thrown.expect(ODataClientErrorException.class);
         thrown.expect(carriesStatusCode(400)); // TODO: 404 would be better
+        thrown.expect(hasServerSideErrorMessage("DOES_NOT_EXIST not found."));
 
+        // comment statement below for testing against real backend.
         setMock(examinee, setupMock(new ODataClientErrorException(
-                StatusLines.BAD_REQUEST)));
+                StatusLines.BAD_REQUEST,
+                new ODataError().setMessage("DOES_NOT_EXIST not found."))));
 
         examinee.releaseDevelopmentTransport("8000038673", "DOES_NOT_EXIST");
     }
