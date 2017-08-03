@@ -212,7 +212,7 @@ public class CMODataClient implements AutoCloseable {
     }
 
     private void checkClosed() {
-        if(isClosed) throw new IllegalStateException(format("This instance of %s has been closed (%d);",
+        if(isClosed()) throw new IllegalStateException(format("This instance of %s has been closed (%d);",
                 getClass().getSimpleName(),
                 System.identityHashCode(this)));
     }
