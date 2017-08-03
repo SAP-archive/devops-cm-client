@@ -15,9 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.io.IOUtils;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
