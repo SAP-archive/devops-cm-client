@@ -1,5 +1,7 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import static java.lang.String.format;
+
 import java.net.URI;
 import org.apache.http.client.CookieStore;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -24,7 +26,8 @@ public class CMOdataHTTPFactory extends BasicAuthHttpClientFactory {
         
         final DefaultHttpClient httpClient = super.create(method, uri);
 
-        httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, USER_AGENT);
+        httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
+                format("SAP CM Client/%s based on %s", CMODataClient.getShortVersion(), USER_AGENT));
 
         httpClient.setCookieStore(this.cookieStore);
 
