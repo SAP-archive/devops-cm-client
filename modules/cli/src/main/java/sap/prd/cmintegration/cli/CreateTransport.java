@@ -75,7 +75,7 @@ class CreateTransport extends Command {
                               isBlank(description) ? "" : description,
                               isBlank(owner) ? user : owner);
             }
-            logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", transport.getTransportID(), transport.getOwner(), Boolean.toString(transport.isModifiable())));
+            logger.debug(transport.toString());
             System.out.println(transport.getTransportID());
             System.out.flush();
         }

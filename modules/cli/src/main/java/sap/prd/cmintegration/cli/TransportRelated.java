@@ -43,7 +43,7 @@ abstract class TransportRelated extends Command {
 
             Optional<CMODataTransport> transport = client.getChangeTransports(changeId).stream()
                 .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
-
+            logger.debug(transport.toString());
             if(transport.isPresent()) {
                 getOutputPredicate().test(transport.get());
             }  else {
