@@ -6,7 +6,7 @@ class ExitWrapper {
         try {
             Commands.main(args);
         } catch(ExitException e) {
-            e.printStackTrace(System.err);
+            e.getCause().printStackTrace(System.err);
             System.exit(e.getExitCode());
         }
     }
