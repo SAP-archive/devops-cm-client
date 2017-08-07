@@ -40,7 +40,7 @@ class GetChangeTransports extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        logger.debug(Commands.Helpers.getArgsLogString(args));
+        logger.debug(format("%s called with arguments: '%s'.", GetChangeTransports.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 

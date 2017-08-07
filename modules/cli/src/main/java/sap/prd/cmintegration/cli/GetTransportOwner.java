@@ -33,7 +33,7 @@ class GetTransportOwner extends TransportRelated {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(Commands.Helpers.getArgsLogString(args));
+        logger.debug(format("%s called with arguments: '%s'.", GetTransportOwner.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         TransportRelated.main(GetTransportOwner.class, args,
                 format("%s <changeId> <transportId>", getCommandName(GetTransportOwner.class)),
                 "Returns the owner of the transport represented by <changeId>, <transportId>.");
