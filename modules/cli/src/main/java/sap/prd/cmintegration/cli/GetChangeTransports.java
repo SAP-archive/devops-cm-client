@@ -25,8 +25,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="get-transports")
 class GetChangeTransports extends Command {
 
-	final static private Logger logger = LoggerFactory.getLogger(GetChangeTransports.class);
-	private final String changeId;
+    final static private Logger logger = LoggerFactory.getLogger(GetChangeTransports.class);
+    private final String changeId;
 
     private final boolean modifiableOnly;
 
@@ -40,8 +40,8 @@ class GetChangeTransports extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	Options options = new Options();
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         Option modifiableOnly = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");

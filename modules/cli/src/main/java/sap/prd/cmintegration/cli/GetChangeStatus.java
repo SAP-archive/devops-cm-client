@@ -24,8 +24,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 @CommandDescriptor(name = "is-change-in-development")
 class GetChangeStatus extends Command {
 
-	final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
-	private String changeId;
+    final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
+    private String changeId;
 
     GetChangeStatus(String host, String user, String password, String changeId) {
         super(host, user, password);
@@ -43,8 +43,8 @@ class GetChangeStatus extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	Options options = new Options();
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {

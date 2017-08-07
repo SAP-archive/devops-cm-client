@@ -13,8 +13,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="is-transport-modifiable")
 class GetTransportModifiable extends TransportRelated {
 
-	final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiable.class);
-	GetTransportModifiable(String host, String user, String password, String changeId, String transportId) {
+    final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiable.class);
+    GetTransportModifiable(String host, String user, String password, String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
     }
 

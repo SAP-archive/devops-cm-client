@@ -23,8 +23,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 @CommandDescriptor(name="upload-file-to-transport")
 class UploadFileToTransport extends Command {
 
-	final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
-	private final String changeId, transportId, applicationId;
+    final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
+    private final String changeId, transportId, applicationId;
     private final File upload;
 
     UploadFileToTransport(String host, String user, String password,
@@ -37,8 +37,8 @@ class UploadFileToTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	Options options = new Options();
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {

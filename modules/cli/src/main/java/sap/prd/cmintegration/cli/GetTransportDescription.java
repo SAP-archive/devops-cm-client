@@ -14,8 +14,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="get-transport-description")
 class GetTransportDescription extends TransportRelated {
 
-	final static private Logger logger = LoggerFactory.getLogger(GetTransportDescription.class);
-	GetTransportDescription(String host, String user, String password, String changeId, String transportId) {
+    final static private Logger logger = LoggerFactory.getLogger(GetTransportDescription.class);
+    GetTransportDescription(String host, String user, String password, String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
     }
 
@@ -33,8 +33,8 @@ class GetTransportDescription extends TransportRelated {
     }
 
     public final static void main(String[] args) throws Exception {
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	TransportRelated.main(GetTransportDescription.class, args,
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        TransportRelated.main(GetTransportDescription.class, args,
                 format("%s <changeId> <transportId>", getCommandName(GetTransportDescription.class)),
                 "Returns the description for the transport represented by <changeId>, <transportId>.");
     }

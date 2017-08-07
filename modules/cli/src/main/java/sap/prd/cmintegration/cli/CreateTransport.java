@@ -23,8 +23,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name = "create-transport")
 class CreateTransport extends Command {
 
-	final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
-	private final String changeId, owner, description;
+    final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
+    private final String changeId, owner, description;
 
     public CreateTransport(String host, String user, String password, String changeId,
             String owner, String description) {
@@ -37,7 +37,7 @@ class CreateTransport extends Command {
     public final static void main(String[] args) throws Exception {
 
         logger.debug(Commands.Helpers.getArgsLogString(args));
-    	Options options = new Options();
+        Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),

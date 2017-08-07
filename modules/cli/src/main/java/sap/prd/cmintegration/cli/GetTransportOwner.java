@@ -14,8 +14,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="get-transport-owner")
 class GetTransportOwner extends TransportRelated {
 
-	final static private Logger logger = LoggerFactory.getLogger(GetTransportOwner.class);
-	GetTransportOwner(String host, String user, String password, String changeId, String transportId) {
+    final static private Logger logger = LoggerFactory.getLogger(GetTransportOwner.class);
+    GetTransportOwner(String host, String user, String password, String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
     }
 

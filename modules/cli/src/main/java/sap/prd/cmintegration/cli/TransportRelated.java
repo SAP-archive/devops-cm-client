@@ -24,8 +24,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 abstract class TransportRelated extends Command {
 
-	final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
-	protected final String changeId, transportId;
+    final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
+    protected final String changeId, transportId;
 
     protected TransportRelated(String host, String user, String password,
             String changeId, String transportId) {
@@ -54,9 +54,9 @@ abstract class TransportRelated extends Command {
 
     protected static void main(Class<? extends TransportRelated> clazz, String[] args, String usage, String helpText) throws Exception {
 
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	
-    	Options options = new Options();
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+
+        Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {

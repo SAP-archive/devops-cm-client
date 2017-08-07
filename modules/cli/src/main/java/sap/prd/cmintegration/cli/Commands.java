@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
 class Commands {
-	
-	final static private Logger logger = LoggerFactory.getLogger(Commands.class);
+
+    final static private Logger logger = LoggerFactory.getLogger(Commands.class);
     private final static String DASH = "-";
     private final static String TWO_DASHES = DASH+DASH;
 
@@ -126,7 +126,7 @@ class Commands {
         }
         
         static String getArgsLogString(String[] args) {
-        	return String.format("Arguments: %s", Arrays.asList(args).stream().collect(Collectors.joining(" ")));
+            return String.format("Arguments: %s", Arrays.asList(args).stream().collect(Collectors.joining(" ")));
         }
     }
 
@@ -150,8 +150,8 @@ class Commands {
 
     public final static void main(String[] args) throws Exception {
 
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	Collection<String> _args = Arrays.asList(args);
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        Collection<String> _args = Arrays.asList(args);
 
         if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
            _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
@@ -182,7 +182,7 @@ class Commands {
 
         } catch (InvocationTargetException e) {
             logger.error(e.getMessage(),e);
-        	if(e.getTargetException() instanceof Exception)
+            if(e.getTargetException() instanceof Exception)
               throw (Exception)e.getTargetException();
             else
               throw e;

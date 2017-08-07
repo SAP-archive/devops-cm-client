@@ -20,8 +20,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 @CommandDescriptor(name="release-transport")
 class ReleaseTransport extends Command {
 
-	final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);
-	private final String changeId, transportId;
+    final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);
+    private final String changeId, transportId;
 
     ReleaseTransport(String host, String user, String password,
             String changeId, String transportId) {
@@ -32,7 +32,7 @@ class ReleaseTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
+        logger.debug(Commands.Helpers.getArgsLogString(args));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
