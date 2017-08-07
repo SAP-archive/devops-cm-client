@@ -33,8 +33,11 @@ class GetChangeStatus extends Command {
     void execute() throws Exception {
         try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
             CMODataChange change = client.getChange(changeId);
-            logger.debug(format("Change: '%s' isInDevelopment: '%b'", change.getChangeID(), change.isInDevelopment()));
+            logger.debug(format("Change '%s' retrieved from host '%s'. isInDevelopment: '%b'.", change.getChangeID(), host, change.isInDevelopment()));
             System.out.println(change.isInDevelopment());
+        } catch(Exception e) {
+            logger.warn(format("Change '%s' could not be retrieved from '%s'.", changeId, host), e);
+            throw e;
         }
     }
 
