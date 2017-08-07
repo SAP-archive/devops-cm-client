@@ -25,6 +25,8 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name="get-transports")
 class GetChangeTransports extends Command {
 
+    private final static Option modifiableOnlyOption = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");
+
     final static private Logger logger = LoggerFactory.getLogger(GetChangeTransports.class);
     private final String changeId;
 
@@ -44,13 +46,13 @@ class GetChangeTransports extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
-        Option modifiableOnly = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");
-        options.addOption(modifiableOnly);
+
+        options.addOption(modifiableOnlyOption);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [SUBCOMMAND_OPTIONS] <changeId>", getCommandName(GetChangeTransports.class)),
                     "Returns the ids of the transports for the change represented by <changeId>.",
-                      new Options().addOption(modifiableOnly)); return;
+                      new Options().addOption(modifiableOnlyOption)); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -60,19 +62,52 @@ class GetChangeTransports extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                commandLine.hasOption(modifiableOnly.getOpt())).execute();
+                commandLine.hasOption(modifiableOnlyOption.getOpt())).execute();
     }
 
     @Override
     public void execute() throws Exception {
+
+        if(modifiableOnly) {
+            logger.debug(format("Flag '-%s' has been set. Only modifiable transports will be returned.", modifiableOnlyOption.getOpt()));
+        } else {
+            logger.debug(format("Flag '-%s' has not beem set. All transports will be returned.", modifiableOnlyOption.getOpt()));
+        }
+
+        Predicate<CMODataTransport> log =
+                it -> {
+                    logger.debug(format("Transport '%s' retrieved from host '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+                      it.getTransportID(),
+                      host,
+                      it.isModifiable(),
+                      it.getOwner(),
+                      it.getDescription()));
+                    return true;};
+
         Predicate<CMODataTransport> all = it -> true;
-        Predicate<CMODataTransport> modOnly = it -> it.isModifiable();
+
+        Predicate<CMODataTransport> modOnly = it -> {
+              if(!it.isModifiable()) {
+                logger.debug(format("Transport '%s' is modifiable. This transport is added to the result set.", it.getTransportID()));
+              }
+              else {
+                logger.debug(format("Transport '%s' is not modifiable. This transport is not added to the result set.", it.getTransportID()));
+              };
+              return it.isModifiable();};
+
         try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
             ArrayList<CMODataTransport> transports = client.getChangeTransports(changeId);
-            transports.stream()
+
+            if(transports.isEmpty())  {
+                logger.debug(format("No transports retrieved for change document id '%s' from host '%s'.", changeId, host));
+            }
+
+            transports.stream().filter(log)
                 .filter(modifiableOnly ? modOnly : all)
-                .forEach(it ->{ System.out.println(it.getTransportID());
-                                logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));});
+                .forEach(it ->System.out.println(it.getTransportID()));
+        } catch(Exception e) {
+            logger.error(format("Exception caught while retrieving transports for change document '%s' from host '%s',", changeId, host), e);
+            throw e;
         }
     }
 }
