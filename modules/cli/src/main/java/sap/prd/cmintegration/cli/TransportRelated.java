@@ -69,7 +69,7 @@ abstract class TransportRelated extends Command {
 
     protected static void main(Class<? extends TransportRelated> clazz, String[] args, String usage, String helpText) throws Exception {
 
-        logger.debug(Commands.Helpers.getArgsLogString(args));
+        logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
