@@ -67,8 +67,17 @@ class UploadFileToTransport extends Command {
         }
 
         try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+
+            logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
+
             client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+
+            logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
         } catch(Exception e) {
+            logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
             throw new ExitException(e, 1);
         }
     }
