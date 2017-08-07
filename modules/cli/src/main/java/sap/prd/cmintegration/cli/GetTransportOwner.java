@@ -23,18 +23,18 @@ class GetTransportOwner extends TransportRelated {
     protected Predicate<CMODataTransport> getOutputPredicate() {
         return it -> { String owner = it.getOwner();
                        if(StringUtils.isBlank(owner)) {
-                    	   logger.debug(it.toString());
+                           logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));
                            return false;
                        } else {
                            System.out.println(owner); 
-                           logger.debug(it.toString());
+                           logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));
                            return true;}
                        };
     }
 
     public final static void main(String[] args) throws Exception {
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	TransportRelated.main(GetTransportOwner.class, args,
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        TransportRelated.main(GetTransportOwner.class, args,
                 format("%s <changeId> <transportId>", getCommandName(GetTransportOwner.class)),
                 "Returns the owner of the transport represented by <changeId>, <transportId>.");
     }

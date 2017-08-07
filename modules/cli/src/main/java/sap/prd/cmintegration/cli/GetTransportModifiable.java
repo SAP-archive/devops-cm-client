@@ -24,13 +24,13 @@ class GetTransportModifiable extends TransportRelated {
      */
     protected Predicate<CMODataTransport> getOutputPredicate() {
         return it -> { System.out.println(it.isModifiable()); 
-        			   logger.debug(it.toString());
-        			   return true;};
+                       logger.debug(String.format("Tansport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));
+                       return true;};
     }
 
     public final static void main(String[] args) throws Exception {
-    	logger.debug(Commands.Helpers.getArgsLogString(args));
-    	TransportRelated.main(GetTransportModifiable.class, args,
+        logger.debug(Commands.Helpers.getArgsLogString(args));
+        TransportRelated.main(GetTransportModifiable.class, args,
             format("%s <changeId>, <transportId>", getCommandName(GetTransportModifiable.class)),
             "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }
