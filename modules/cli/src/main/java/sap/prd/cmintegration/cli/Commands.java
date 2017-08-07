@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -126,7 +125,29 @@ class Commands {
         }
         
         static String getArgsLogString(String[] args) {
-            return String.format("Arguments: %s", Arrays.asList(args).stream().collect(Collectors.joining(" ")));
+            return String.format("Arguments: %s", StringUtils.join(hidePassword(args), " "));
+        }
+
+        /**
+         * 
+         * @return A copy of <code>args</code>. The password parameter, identified by a preceding
+         *         <quote>-p</quote> is replaced by asterisks.
+         */
+        static String[] hidePassword(String[] args) {
+            String[] copy = new String[args.length];
+            System.arraycopy(args, 0, copy,0, args.length);
+            for(int i = 0, length = args.length; i < length; i++) {
+                if(args[i].equals(DASH + CMOptions.PASSWORD.getOpt()) ||
+                   args[i].equals(DASH + DASH + CMOptions.PASSWORD.getLongOpt())) {
+                    if(i < args.length -1) {
+                        // -p provided, but no subsequent password? We should not fail
+                        // in this case with array index out of bound.
+                        if(!args[i+1].equals(DASH)) copy[i+1] = "********";
+                        i++; // do not check the password itself
+                    }
+                }
+            }
+            return copy;
         }
     }
 

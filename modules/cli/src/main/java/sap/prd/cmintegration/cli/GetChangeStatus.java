@@ -9,9 +9,6 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
