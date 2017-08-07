@@ -125,7 +125,7 @@ class Commands {
         }
         
         static String getArgsLogString(String[] args) {
-            return String.format("Arguments: %s", StringUtils.join(hidePassword(args), " "));
+            return StringUtils.join(hidePassword(args), " ");
         }
 
         /**
