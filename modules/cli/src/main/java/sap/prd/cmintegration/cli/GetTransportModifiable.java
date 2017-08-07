@@ -24,7 +24,6 @@ class GetTransportModifiable extends TransportRelated {
      */
     protected Predicate<CMODataTransport> getOutputPredicate() {
         return it -> { System.out.println(it.isModifiable()); 
-                       logger.debug(String.format("Transport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));
                        return true;};
     }
 

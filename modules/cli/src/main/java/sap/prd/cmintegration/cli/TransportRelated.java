@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -8,10 +9,8 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -45,10 +44,26 @@ abstract class TransportRelated extends Command {
                 .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
 
             if(transport.isPresent()) {
-                getOutputPredicate().test(transport.get());
+                CMODataTransport t = transport.get();
+ 
+                if(!t.getTransportID().trim().equals(transportId.trim())) {
+                    throw new CMCommandLineException(
+                        format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
+                                t.getTransportID(),
+                                transportId));
+                }
+ 
+                logger.debug(format("Transport '%s' has been found for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+                        transportId, changeId,
+                        t.isModifiable(), t.getOwner(), t.getDescription()));
+ 
+                getOutputPredicate().test(t);
             }  else {
                 throw new CMCommandLineException(String.format("Transport '%s' not found for change '%s'.", transportId, changeId));
             }
+        } catch(Exception e) {
+            logger.warn(format("Exception caught while getting transport '%s' for change document '%s' from host '%s'.", transportId, changeId, host), e);
+            throw e;
         }
     }
 
@@ -64,7 +79,6 @@ abstract class TransportRelated extends Command {
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
-        
 
         newInstance(clazz, getHost(commandLine),
                 getUser(commandLine),

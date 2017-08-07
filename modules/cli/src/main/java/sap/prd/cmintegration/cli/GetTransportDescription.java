@@ -21,13 +21,14 @@ class GetTransportDescription extends TransportRelated {
 
     @Override
     protected Predicate<CMODataTransport> getOutputPredicate() {
-        return it -> { String description = it.getDescription();
+        return it -> {
+                       String description = it.getDescription();
                        if(StringUtils.isBlank(description)) {
-                           logger.debug(String.format("Transport Id: '%s' Owner: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(), Boolean.toString(it.isModifiable())));
+                           logger.debug(format("Description of transport '%s' is blank. Nothing will be emitted.", it.getTransportID()));
                            return false;
                        } else {
+                           logger.debug(format("Description of transport '%s' is not blank. Description '%s' will be emitted.", it.getTransportID(), it.getDescription()));
                            System.out.println(description); 
-                           logger.debug(String.format("Transport Id: '%s' Owner: '%s' Description: '%s' isModifiable: '%s'", it.getTransportID(), it.getOwner(),it.getDescription() , Boolean.toString(it.isModifiable())));
                            return true;}
                        };
     }
