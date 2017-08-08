@@ -8,4 +8,9 @@ IS_IN_DEVELOPMENT=`${CM_CLIENT_HOME}/bin/cmclient \
   -p ${CM_PASSWORD} \
   is-change-in-development 8000038673`
 
+rc=$?
+if [ ${rc} == 2 ];then
+  exit ${rc}
+fi
+
 test "${IS_IN_DEVELOPMENT}" = "true"
