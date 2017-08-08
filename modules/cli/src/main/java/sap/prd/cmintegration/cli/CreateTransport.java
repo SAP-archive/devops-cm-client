@@ -14,6 +14,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
@@ -21,6 +23,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name = "create-transport")
 class CreateTransport extends Command {
 
+    final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
     private final String changeId, owner, description;
 
     public CreateTransport(String host, String user, String password, String changeId,
@@ -33,6 +36,7 @@ class CreateTransport extends Command {
 
     public final static void main(String[] args) throws Exception {
 
+        logger.debug(format("%s called with arguments: '%s'.", CreateTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
@@ -62,17 +66,29 @@ class CreateTransport extends Command {
     @Override
     void execute() throws Exception {
         try(CMODataClient client = ClientFactory.getInstance().newClient(host, user,  password)) {
+            logger.debug(format("Creating transport request for changeId '%s'.", changeId));
+
             CMODataTransport transport;
             if(owner == null && description == null) {
+
                 transport = client.createDevelopmentTransport(changeId);
+
             } else {
+
+                String d = isBlank(description) ? "" : description,
+                       o = isBlank(owner) ? user : owner;
+
+                logger.debug(format("Creating transport with owner '%s' and description '%s'", o, d));
                 transport = client.createDevelopmentTransportAdvanced(
-                              changeId,
-                              isBlank(description) ? "" : description,
-                              isBlank(owner) ? user : owner);
+                              changeId, d, o);
             }
+            logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+                transport.getTransportID(), changeId, transport.isModifiable(), transport.getOwner(), transport.getDescription()));
             System.out.println(transport.getTransportID());
             System.out.flush();
+        } catch(final Exception e) {
+            logger.error(format("Exception caught while created transport request for change document '%s'.",changeId), e);
+            throw e;
         }
     }
 }

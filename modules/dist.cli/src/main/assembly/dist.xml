@@ -28,10 +28,6 @@
 		<dependencySet>
 			<outputDirectory>lib</outputDirectory>
 			<useProjectArtifact>false</useProjectArtifact>
-                        <includes>
-                          <include>${project.parent.groupId}:ci-integration-cli</include>
-                        </includes>
-                        <outputFileNameMapping>${artifact.artifactId}.jar</outputFileNameMapping>
 		</dependencySet>
 	</dependencySets>
 

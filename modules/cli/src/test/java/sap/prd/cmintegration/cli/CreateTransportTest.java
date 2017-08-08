@@ -126,7 +126,7 @@ public class CreateTransportTest extends CMTestBase {
 
     private ClientFactory setupStraightForwardMock(String owner, String description) throws Exception {
 
-        CMODataTransport transport = new CMODataTransport("myTransport", true, owner, description);
+        CMODataTransport transport = new CMODataTransport("myTransport", true, description, owner);
 
         CMODataClient clientMock = createMock(CMODataClient.class);
         if(owner != null && description != null) {

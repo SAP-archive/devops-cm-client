@@ -15,12 +15,15 @@ import java.io.File;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 @CommandDescriptor(name="upload-file-to-transport")
 class UploadFileToTransport extends Command {
 
+    final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
     private final String changeId, transportId, applicationId;
     private final File upload;
 
@@ -34,6 +37,7 @@ class UploadFileToTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
+        logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
 
@@ -63,8 +67,17 @@ class UploadFileToTransport extends Command {
         }
 
         try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+
+            logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
+
             client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+
+            logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
         } catch(Exception e) {
+            logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
             throw new ExitException(e, 1);
         }
     }

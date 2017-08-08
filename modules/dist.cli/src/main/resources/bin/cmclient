@@ -44,4 +44,4 @@ reject_unsupported_environment
 determine_dir
 check_env
 
-"`java_executable`" $CMCLIENT_OPTS -jar "$CMCLIENT_HOME/lib/ci-integration-cli.jar" "$@"
+"`java_executable`" $CMCLIENT_OPTS -cp "$CMCLIENT_HOME/lib/*" sap.prd.cmintegration.cli.ExitWrapper "$@"

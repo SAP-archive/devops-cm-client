@@ -2,6 +2,7 @@ package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getArgsLogString;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
@@ -28,6 +31,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
 class Commands {
 
+    final static private Logger logger = LoggerFactory.getLogger(Commands.class);
     private final static String DASH = "-";
     private final static String TWO_DASHES = DASH+DASH;
 
@@ -120,6 +124,32 @@ class Commands {
         static String getCommandName(Class<? extends Command> clazz) {
             return clazz.getAnnotation(CommandDescriptor.class).name();
         }
+        
+        static String getArgsLogString(String[] args) {
+            return StringUtils.join(hidePassword(args), " ");
+        }
+
+        /**
+         * 
+         * @return A copy of <code>args</code>. The password parameter, identified by a preceding
+         *         <quote>-p</quote> is replaced by asterisks.
+         */
+        static String[] hidePassword(String[] args) {
+            String[] copy = new String[args.length];
+            System.arraycopy(args, 0, copy,0, args.length);
+            for(int i = 0, length = args.length; i < length; i++) {
+                if(args[i].equals(DASH + CMOptions.PASSWORD.getOpt()) ||
+                   args[i].equals(DASH + DASH + CMOptions.PASSWORD.getLongOpt())) {
+                    if(i < args.length -1) {
+                        // -p provided, but no subsequent password? We should not fail
+                        // in this case with array index out of bound.
+                        if(!args[i+1].equals(DASH)) copy[i+1] = "********";
+                        i++; // do not check the password itself
+                    }
+                }
+            }
+            return copy;
+        }
     }
 
     private final static Set<Class<? extends Command>> commands = Sets.newHashSet();
@@ -142,11 +172,13 @@ class Commands {
 
     public final static void main(String[] args) throws Exception {
 
+        logger.debug(format("CM Client has been called with command line '%s'.", getArgsLogString(args)));
         Collection<String> _args = Arrays.asList(args);
 
         if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
            _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
            args.length <= 1) || args.length == 0) {
+            logger.debug("Printing help and return.");
             printHelp();
             if(args.length == 0) throw new CMCommandLineException("Called without arguments.");
             return;
@@ -154,6 +186,7 @@ class Commands {
 
         if(_args.contains(DASH+CMOptions.VERSION.getOpt()) ||
            _args.contains(TWO_DASHES+CMOptions.VERSION.getLongOpt())) {
+            logger.debug("Printing version and return.");
             printVersion();
             return;
         }
@@ -165,6 +198,7 @@ class Commands {
                         .name().equals(commandName)).findFirst();
 
             if(command.isPresent()) {
+                logger.debug(format("Command name '%s' resolved to implementing class '%s'.", commandName, command.get().getName()));
                 command.get().getDeclaredMethod("main", String[].class)
                 .invoke(null, new Object[] { args });
             } else {
@@ -172,10 +206,14 @@ class Commands {
             }
 
         } catch (InvocationTargetException e) {
+            logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
             if(e.getTargetException() instanceof Exception)
               throw (Exception)e.getTargetException();
             else
               throw e;
+        } catch(Exception e) {
+            logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
+            throw e;
         }
     }
 
@@ -193,12 +231,14 @@ class Commands {
               }
           }).forEach(o -> opts.addOption(o));
 
-        try {
-            return new DefaultParser().parse(opts, args, true).getArgs()[0];
-        } catch(ArrayIndexOutOfBoundsException e) {
-            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
-                    StringUtils.join(" ", args)), e);
-        }
+          CommandLine parser = new DefaultParser().parse(opts, args, true);
+          if(parser.getArgs().length == 0) {
+              throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+                        getArgsLogString(args)));
+          }
+          String commandName = parser.getArgs()[0];
+          logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
+          return commandName;
     }
 
     private static void printVersion() throws IOException {

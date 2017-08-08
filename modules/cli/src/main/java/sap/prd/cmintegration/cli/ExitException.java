@@ -1,5 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class ExitException extends CMCommandLineException {
 
     private static final long serialVersionUID = -3269137608207801150L;
