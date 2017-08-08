@@ -228,14 +228,14 @@ class Commands {
               }
           }).forEach(o -> opts.addOption(o));
 
-        try {
-            String commandName = new DefaultParser().parse(opts, args, true).getArgs()[0];
-            logger.debug("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args));
-            return commandName;
-        } catch(ArrayIndexOutOfBoundsException e) {
-            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
-                    getArgsLogString(args)), e);
-        }
+          CommandLine parser = new DefaultParser().parse(opts, args, true);
+          if(parser.getArgs().length == 0) {
+              throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+                        getArgsLogString(args)));
+          }
+          String commandName = parser.getArgs()[0];
+          logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
+          return commandName;
     }
 
     private static void printVersion() throws IOException {
