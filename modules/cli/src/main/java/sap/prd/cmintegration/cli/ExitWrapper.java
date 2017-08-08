@@ -9,8 +9,12 @@ class ExitWrapper {
         try {
             Commands.main(args);
         } catch(ExitException e) {
+            if(e.getCause() == null) {
+                e.printStackTrace();
+            } else {
+                e.getCause().printStackTrace();
+            }
             logger.error(e.getMessage(), e);
-            e.printStackTrace(System.err);
             System.exit(e.getExitCode());
         }
     }

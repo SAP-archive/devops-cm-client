@@ -22,6 +22,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.StatusLine;
+import org.apache.olingo.client.api.communication.ODataClientErrorException;
+import org.apache.olingo.commons.api.ex.ODataError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,7 +210,14 @@ class Commands {
 
         } catch (InvocationTargetException e) {
             logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
-            if(e.getTargetException() instanceof Exception)
+            if(e.getTargetException() instanceof ODataClientErrorException) {
+                 StatusLine statusLine = ((ODataClientErrorException) e.getTargetException()).getStatusLine();
+                 if(statusLine.getStatusCode() == 401) { // unauthorized
+                     throw new ExitException(e.getTargetException(), 2);
+                 } else {
+                     throw (ODataClientErrorException)e.getTargetException();
+                 }
+            } else if(e.getTargetException() instanceof Exception)
               throw (Exception)e.getTargetException();
             else
               throw e;
