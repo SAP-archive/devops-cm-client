@@ -24,7 +24,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.StatusLine;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
-import org.apache.olingo.commons.api.ex.ODataError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,8 +108,14 @@ class Commands {
         }
 
         static void handleHelpOption(String usage, String header, Options options) {
+
+            String footer = "Exit codes:\n"
+                    + "    0  The request completed successfully.\n"
+                    + "    1  The request did  not complete successfully and\n"
+                    + "       no more specific return code as defined below applies.\n"
+                    + "    2  Wrong credentials.";
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("<CMD> [COMMON_OPTIONS] "+ usage, header, options, "");
+            formatter.printHelp("<CMD> [COMMON_OPTIONS] "+ usage, header, options, footer);
         }
 
         private static String readPassword() throws IOException {
