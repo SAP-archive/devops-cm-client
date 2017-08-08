@@ -2,6 +2,7 @@ package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getArgsLogString;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -171,12 +172,13 @@ class Commands {
 
     public final static void main(String[] args) throws Exception {
 
-        logger.debug(Commands.Helpers.getArgsLogString(args));
+        logger.debug(format("CM Client has been called with command line '%s'.", getArgsLogString(args)));
         Collection<String> _args = Arrays.asList(args);
 
         if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
            _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
            args.length <= 1) || args.length == 0) {
+            logger.debug("Printing help and return.");
             printHelp();
             if(args.length == 0) throw new CMCommandLineException("Called without arguments.");
             return;
@@ -184,6 +186,7 @@ class Commands {
 
         if(_args.contains(DASH+CMOptions.VERSION.getOpt()) ||
            _args.contains(TWO_DASHES+CMOptions.VERSION.getLongOpt())) {
+            logger.debug("Printing version and return.");
             printVersion();
             return;
         }

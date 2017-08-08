@@ -82,7 +82,7 @@ class CreateTransport extends Command {
                 transport = client.createDevelopmentTransportAdvanced(
                               changeId, d, o);
             }
-            logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Owner '%s', Description: '%s'.",
+            logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
                 transport.getTransportID(), changeId, transport.isModifiable(), transport.getOwner(), transport.getDescription()));
             System.out.println(transport.getTransportID());
             System.out.flush();
