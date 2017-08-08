@@ -103,7 +103,7 @@ public class UploadFileToTransportTest extends CMTestBase {
 
     }
 
-    private ClientFactory setupMock() throws IOException {
+    private ClientFactory setupMock() throws Exception {
 
         CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
         clientMock.uploadFileToTransport(capture(changeId), capture(transportId),

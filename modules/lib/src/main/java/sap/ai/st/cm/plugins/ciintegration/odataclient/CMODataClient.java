@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
@@ -146,7 +147,7 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
-    public void uploadFileToTransport(String ChangeID, String TransportID, String filePath, String ApplicationID) throws IOException {
+    public void uploadFileToTransport(String ChangeID, String TransportID, String filePath, String ApplicationID) throws IOException, CMODataClientException {
         logger.trace(format("Entering 'uploadFileToTransport'. ChangeID: '%s', TransportId: '%s', FilePath: '%s', ApplicationId: '%s'.",
                 ChangeID, TransportID, filePath, ApplicationID));
         checkClosed();
@@ -154,7 +155,7 @@ public class CMODataClient implements AutoCloseable {
         File file = new File(filePath);
 
         if(!file.canRead()) {
-            throw new IOException(format("Cannot upload file '%s' to transport '%s'. File cannot be read.", file.getAbsolutePath(), TransportID));
+            throw new CMODataClientException(format("Cannot upload file '%s' to transport '%s'. File cannot be read.", file.getAbsolutePath(), TransportID));
         }
 
         URIBuilder uribuilder = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Files");
@@ -194,7 +195,7 @@ public class CMODataClient implements AutoCloseable {
             logger.debug(format("File '%s' uploaded to transport '%s' for change id '%s' with application id '%s'.",
                     filePath, TransportID, ChangeID, ApplicationID));
 
-        } catch(IOException | RuntimeException e) {
+        } catch(IOException | CMODataClientException | RuntimeException e) {
             logger.error(format("%s caught while uploading file '%s' to transport '%s' for change id '%s' with application id '%s'.",
                     e.getClass().getName(), filePath, TransportID, ChangeID, ApplicationID));
             throw e;
@@ -208,7 +209,7 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
-    public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws IOException {
+    public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws CMODataClientException {
 
         logger.trace(format("Entering 'releaseDevelopmentTransport'. ChangeID: '%s', TransportId: '%s'.",
                 ChangeID, TransportID));
@@ -231,7 +232,7 @@ public class CMODataClient implements AutoCloseable {
             response = executeRequest(functionInvokeRequest, 200);
             logger.debug(format("Transport request '%s' for change document '%s' released.",
                     TransportID, ChangeID));
-        } catch(IOException | RuntimeException e) {
+        } catch(CMODataClientException | RuntimeException e) {
             logger.error(format("%s caught while releasing transport '%s' for change document '%s'.",
                 e.getClass().getName(), TransportID, ChangeID));
             throw e;
@@ -303,7 +304,7 @@ public class CMODataClient implements AutoCloseable {
                 System.identityHashCode(this)));
     }
 
-    private CMODataTransport _createDevelopmentTransport(String ChangeID, String segment, String query) throws IOException {
+    private CMODataTransport _createDevelopmentTransport(String ChangeID, String segment, String query) throws CMODataClientException {
 
         logger.trace(format("Entering '_createDevelopmentTransport'. ChangeID: '%s', Segment: '%s', Query: '%s'.",
                 ChangeID, segment, query));
@@ -325,7 +326,7 @@ public class CMODataClient implements AutoCloseable {
                     transport.getTransportID(), ChangeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));
 
             return transport;
-        } catch(IOException | RuntimeException e) {
+        } catch(CMODataClientException | RuntimeException e) {
             logger.error(format("%s caught while creating transport for change '%s'.", e.getClass().getName(), ChangeID));
             throw e;
         } finally {
@@ -337,7 +338,7 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
-    private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws IOException {
+    private ODataInvokeResponse<ClientEntity> executeRequest(ODataInvokeRequest<ClientEntity> functionInvokeRequest, int returnCode) throws CMODataClientException {
         functionInvokeRequest.setAccept(ContentType.APPLICATION_ATOM_XML.toContentTypeString());
         ODataInvokeResponse<ClientEntity> response = functionInvokeRequest.execute();
         checkStatus(response, returnCode);
@@ -366,9 +367,31 @@ public class CMODataClient implements AutoCloseable {
         return URI.create(functionUri.toString() + UrlEscapers.urlFragmentEscaper().escape(query));
     }
 
-    private void checkStatus(ODataResponse response, int expectedStatusCode) throws IOException {
+    private void checkStatus(ODataResponse response, int expectedStatusCode) throws CMODataClientException {
+
         if (response.getStatusCode() != expectedStatusCode) {
-            throw new IOException(response.getRawResponse().toString());
+
+            IOException suspressed = null;
+
+            String bodyContent = "<n/a>";
+
+            try {
+                /*
+                 *  Does not work for http-4xx and http.5xx since Olingo prefers to answer
+                 *  with an exception in this case rather with an response entity. But it might
+                 *  be helpful also for inexpected http responses outside that range. 
+                 */
+                bodyContent = IOUtils.toString(response.getRawResponse());
+            } catch(IOException e) {
+                suspressed = e;
+                logger.warn("Cannot read response body content.", e);
+            }
+
+            CMODataClientException e = new CMODataClientException(
+                format("Response status code '%d' does not match expected status code '%d'. Response body: '%s'.",
+                    response.getStatusCode(), expectedStatusCode, bodyContent));
+            if(suspressed != null) e.addSuppressed(suspressed);
+            throw e;
         }
     }
 
