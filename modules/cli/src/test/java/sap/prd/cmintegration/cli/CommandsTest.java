@@ -139,6 +139,15 @@ public class CommandsTest extends CMTestBase {
     }
 
     @Test
+    public void testExecuteWithOptionsAndWithoutSubcommandName() throws Exception {
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Canmnot extract command name from arguments");
+        Commands.main(new String[] {"-e", "https://www.example.org/mypath",
+                                    "-u", "nobody",
+                                    "-p", "secret"});
+    }
+
+    @Test
     public void testPrintHelpWithNotExistingSubcommand() throws Exception {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("Command 'does-not-exist' not found.");
