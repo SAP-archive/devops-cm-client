@@ -68,7 +68,7 @@ public class CMODataClient implements AutoCloseable {
 
     public CMODataChange getChange(String ChangeID) {
 
-        logger.trace(format("Entering 'getChange'. ChangeID: '%s'.'", ChangeID));
+        logger.trace(format("Entering 'getChange'. ChangeID: '%s'.", ChangeID));
         checkClosed();
 
         URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes").appendKeySegment(ChangeID).build();
@@ -88,17 +88,20 @@ public class CMODataClient implements AutoCloseable {
             boolean isInDevelopment = Boolean.valueOf(body.getProperty("IsInDevelopment").getValue().toString());
             logger.debug(format("Change '%s' found. isInDevelopment: '%b'", ChangeID, isInDevelopment));
             return new CMODataChange(ChangeID, isInDevelopment);
+        } catch(RuntimeException e) {
+            logger.error(format("%s caught while getting change '%s'.", e.getClass().getName(), ChangeID), e);
+            throw e;
         } finally {
             if(response != null) {
                 response.close();
             }
-            logger.trace(format("Exiting 'getChange'. ChangeID: '%s'.'", ChangeID));
+            logger.trace(format("Exiting 'getChange'. ChangeID: '%s'.", ChangeID));
         }
     }
 
-    public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
+    public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) {
 
-        logger.trace(format("Entering 'getChangeTransports'. ChangeID: '%s'.'", ChangeID));
+        logger.trace(format("Entering 'getChangeTransports'. ChangeID: '%s'.", ChangeID));
 
         checkClosed();
 
@@ -125,26 +128,43 @@ public class CMODataClient implements AutoCloseable {
                 transportList.add(toTransport(ChangeID, iterator.next()));
             }
 
+            if(transportList.isEmpty()) {
+                logger.debug(format("No transports found for change document '%s'.", ChangeID));
+            } else {
+                logger.debug(format("%d transports found for change document '%s'.", transportList.size(), ChangeID));
+            }
             return transportList;
+        } catch(RuntimeException e) {
+            logger.error(format("%s caught while retrieving transports for change document '%s'.",
+                e.getClass().getName(), ChangeID));
+            throw e;
         } finally {
             if(response != null) {
                 response.close();
             }
-            logger.trace(format("Exiting 'getChangeTransports'. ChangeID: '%s'.'", ChangeID));
+            logger.trace(format("Exiting 'getChangeTransports'. ChangeID: '%s'.", ChangeID));
         }
     }
 
     public void uploadFileToTransport(String ChangeID, String TransportID, String filePath, String ApplicationID) throws IOException {
-
+        logger.trace(format("Entering 'uploadFileToTransport'. ChangeID: '%s', TransportId: '%s', FilePath: '%s', ApplicationId: '%s'.",
+                ChangeID, TransportID, filePath, ApplicationID));
         checkClosed();
 
         File file = new File(filePath);
+
+        if(!file.canRead()) {
+            throw new IOException(format("Cannot upload file '%s' to transport '%s'. File cannot be read.", file.getAbsolutePath(), TransportID));
+        }
 
         URIBuilder uribuilder = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Files");
 
         URI fileStreamUri = uribuilder.build();
 
         fileStreamUri = URI.create(fileStreamUri.toString() + "(ChangeID='" + ChangeID + "',TransportID='" + TransportID + "',FileID='" + file.getName() + "',ApplicationID='" + ApplicationID + "')");
+
+        logger.debug(format("File stream URI for uploading file '%s' to transport '%s' for change id '%s': '%s'.",
+            file.getAbsolutePath(), ChangeID, TransportID,  fileStreamUri.toASCIIString()));
 
         ODataResponse createMediaResponse = null;
         try (FileInputStream fileStream = new FileInputStream(file)) {
@@ -159,24 +179,39 @@ public class CMODataClient implements AutoCloseable {
             if (! Strings.isNullOrEmpty(mimeType)) {
 
                 createMediaRequest.setContentType(mimeType);
+                logger.debug(format("Assuming mime type '%s' for file '%s'.", mimeType, file.getName()));
 
+            } else {
+                logger.warn(format("Cannot derive mimetype from file name '%s'", file.getName()));
             }
 
             ODataPayloadManager streamManager = createMediaRequest.payloadManager();
 
             createMediaResponse = streamManager.getResponse();
 
-
             checkStatus(createMediaResponse, 204);
 
+            logger.debug(format("File '%s' uploaded to transport '%s' for change id '%s' with application id '%s'.",
+                    filePath, TransportID, ChangeID, ApplicationID));
+
+        } catch(IOException | RuntimeException e) {
+            logger.error(format("%s caught while uploading file '%s' to transport '%s' for change id '%s' with application id '%s'.",
+                    e.getClass().getName(), filePath, TransportID, ChangeID, ApplicationID));
+            throw e;
         } finally {
             if(createMediaResponse != null) {
                 createMediaResponse.close();
             }
+            logger.trace(format("Exiting 'uploadFileToTransport'. ChangeID: '%s', TransportId: '%s', FilePath: '%s', ApplicationId: '%s'.",
+                    ChangeID, TransportID, filePath, ApplicationID));
+
         }
     }
 
-    public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws Exception {
+    public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws IOException {
+
+        logger.trace(format("Entering 'releaseDevelopmentTransport'. ChangeID: '%s', TransportId: '%s'.",
+                ChangeID, TransportID));
 
         checkClosed();
 
@@ -185,15 +220,26 @@ public class CMODataClient implements AutoCloseable {
 
         URI functionUri = getFunctionURI("releaseTransport", "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
 
+        logger.debug(format("Function URI for releassing transport '%s' for change id '%s': '%s'.",
+           TransportID, ChangeID, functionUri.toASCIIString()));
+
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
         ODataInvokeResponse<ClientEntity> response = null;
 
         try {
             response = executeRequest(functionInvokeRequest, 200);
+            logger.debug(format("Transport request '%s' for change document '%s' released.",
+                    TransportID, ChangeID));
+        } catch(IOException | RuntimeException e) {
+            logger.error(format("%s caught while releasing transport '%s' for change document '%s'.",
+                e.getClass().getName(), TransportID, ChangeID));
+            throw e;
         } finally {
             if(response != null) {
                 response.close();
+                logger.trace(format("Exiting 'releaseDevelopmentTransport'. ChangeID: '%s', TransportId: '%s'.",
+                        ChangeID, TransportID));
             }
         }
     }
@@ -238,11 +284,17 @@ public class CMODataClient implements AutoCloseable {
         String bModifiable = getValueAsString("IsModifiable", transportEntity);
         checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", ChangeID));
 
+        String description = getValueAsString("Description", transportEntity);
+        String owner = getValueAsString("Owner", transportEntity);
+
+        logger.debug(format("Transport '%s' retrieved for change document '%s'. isModifiable: '%s', Owner: '%s' ,Description: '%s'.",
+            transportId, ChangeID, bModifiable, owner, description));
+
         return new CMODataTransport(
                 transportId,
                 parseBoolean(bModifiable),
-                getValueAsString("Description", transportEntity),
-                getValueAsString("Owner", transportEntity));
+                description,
+                owner);
     }
 
     private void checkClosed() {
@@ -253,6 +305,9 @@ public class CMODataClient implements AutoCloseable {
 
     private CMODataTransport _createDevelopmentTransport(String ChangeID, String segment, String query) throws IOException {
 
+        logger.trace(format("Entering '_createDevelopmentTransport'. ChangeID: '%s', Segment: '%s', Query: '%s'.",
+                ChangeID, segment, query));
+
         checkClosed();
 
         URI functionUri = getFunctionURI(segment, query);
@@ -261,12 +316,24 @@ public class CMODataClient implements AutoCloseable {
 
         ODataInvokeResponse<ClientEntity> response = null;
         try {
+
             response = executeRequest(functionInvokeRequest, 200);
-            return  toTransport("", response.getBody());
+
+            CMODataTransport transport = toTransport("", response.getBody());
+
+            logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Description: '%s', Owner: '%s'.",
+                    transport.getTransportID(), ChangeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));
+
+            return transport;
+        } catch(IOException | RuntimeException e) {
+            logger.error(format("%s caught while creating transport for change '%s'.", e.getClass().getName(), ChangeID));
+            throw e;
         } finally {
             if(response != null) {
                 response.close();
             }
+            logger.trace(format("Exiting '_createDevelopmentTransport'. ChangeID: '%s', Segment: '%s', Query: '%s'.",
+                    ChangeID, segment, query));
         }
     }
 
@@ -331,7 +398,7 @@ public class CMODataClient implements AutoCloseable {
             vProps.load(version);
             return vProps;
         } catch(IOException e) {
-            // TODO logging
+            logger.warn("Cannot retrieve version.", e);
             return null;
         }
     }
@@ -353,48 +420,49 @@ public class CMODataClient implements AutoCloseable {
          *     'd'. Hence nothing is marshaled from json into the corresponding odata like
          *     data transfer entities.
          */
+        String ourNamespace = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
+
+        logger.debug(format("Setting namespace of message qname to '%s'.", ourNamespace));
+
         try {
 
             Exception caught = null;
 
-            final Field errorMessageQNameField = AtomDeserializer.class.getDeclaredField("errorMessageQName"),
-                        namespaceURI = QName.class.getDeclaredField("namespaceURI");
+            String errorMessageQNameFieldName = "errorMessageQName",
+                   nameSpaceURIFieldName = "namespaceURI";
+
+            final Field errorMessageQNameField = AtomDeserializer.class.getDeclaredField(errorMessageQNameFieldName),
+                        namespaceURI = QName.class.getDeclaredField(nameSpaceURIFieldName);
 
             try {
                 namespaceURI.setAccessible(true);
                 errorMessageQNameField.setAccessible(true);
-                namespaceURI.set(errorMessageQNameField.get(null), "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata");
+                namespaceURI.set(errorMessageQNameField.get(null), ourNamespace);
+                logger.info(format("Namespace of message qname set to '%s'.", ourNamespace));
+
             } catch(Exception e) {
                 caught = e;
             } finally {
                 try {
                     errorMessageQNameField.setAccessible(false);
                 } catch(RuntimeException e) {
+                    logger.error(format("Cannot reset accessibility flag for '%s'.", errorMessageQNameFieldName), e);
                     if(caught == null) throw e; else caught.addSuppressed(e);
                 }
                 try {
                     namespaceURI.setAccessible(false);
                 } catch(RuntimeException e) {
+                    logger.error(format("Cannot reset accessibility flag for '%s'.", nameSpaceURIFieldName), e);
                     if(caught == null) throw e; else caught.addSuppressed(e);
                 }
             }
 
             if(caught != null) throw caught;
 
-        } catch(RuntimeException e) {
+        } catch(Exception e) {
 
-            /*
-             * TODO log and continue would be better. In that case the client would work, but error messages
-             *      from the server are not available on the client.
-             */
-            throw e;
-        }
-        catch(Exception e) {
-
-            /*
-             *  TODO: see above.
-             */
-            throw new RuntimeException(e);
+            logger.warn(format("%s caught while setting name space of message qname to '%s'. "
+                    + "Retrieving error messages from server is not possible.", e.getClass().getName(), ourNamespace), e);
         }
     }
 
