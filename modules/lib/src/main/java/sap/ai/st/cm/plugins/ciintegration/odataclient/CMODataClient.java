@@ -57,7 +57,7 @@ public class CMODataClient implements AutoCloseable {
                 new CMOdataHTTPFactory(serviceUser, servicePassword));
     }
 
-    public CMODataChange getChange(String ChangeID) throws Exception {
+    public CMODataChange getChange(String ChangeID) {
 
         checkClosed();
 
