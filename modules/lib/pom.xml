@@ -88,7 +88,7 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <configuration>
                 <systemPropertyVariables>
-                  <org.slf4j.simpleLogger.log.sap.ai.st.cm.plugins.ciintegration.odataclient>DEBUG</org.slf4j.simpleLogger.log.sap.ai.st.cm.plugins.ciintegration.odataclient>
+                  <org.slf4j.simpleLogger.log.sap.ai.st.cm.plugins.ciintegration.odataclient>TRACE</org.slf4j.simpleLogger.log.sap.ai.st.cm.plugins.ciintegration.odataclient>
                 </systemPropertyVariables>
                </configuration>
             </plugin>

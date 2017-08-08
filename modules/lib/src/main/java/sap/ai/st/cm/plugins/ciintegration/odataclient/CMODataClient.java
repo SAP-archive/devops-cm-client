@@ -1,6 +1,8 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static java.lang.Boolean.parseBoolean;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -29,6 +31,8 @@ import org.apache.olingo.client.api.communication.response.ODataRetrieveResponse
 import org.apache.olingo.client.api.domain.ClientEntity;
 import org.apache.olingo.client.api.domain.ClientEntitySet;
 import org.apache.olingo.client.api.domain.ClientEntitySetIterator;
+import org.apache.olingo.client.api.domain.ClientProperty;
+import org.apache.olingo.client.api.domain.ClientValue;
 import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.client.core.serialization.AtomDeserializer;
@@ -121,9 +125,15 @@ public class CMODataClient implements AutoCloseable {
 
                 ClientEntity transport = iterator.next();
 
+                String transportId = getValueAsString("TransportID", transport);
+                checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", ChangeID));
+
+                String bModifiable = getValueAsString("IsModifiable", transport);
+                checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", ChangeID));
+
                 transportList.add(new CMODataTransport(
-                        getValueAsString("TransportID", transport),
-                        Boolean.parseBoolean(getValueAsString("IsModifiable", transport)),
+                        transportId,
+                        parseBoolean(bModifiable),
                         getValueAsString("Description", transport),
                         getValueAsString("Owner", transport)));
             }
@@ -299,7 +309,11 @@ public class CMODataClient implements AutoCloseable {
     }
 
     private static String getValueAsString(String key, ClientEntity transport) {
-        return transport.getProperty(key).getValue().toString();
+        ClientProperty property = transport.getProperty(key);
+        if(property == null) return null;
+        ClientValue value = property.getValue();
+        if(value == null) return null;
+        return value.toString();
     }
 
     public static String getShortVersion() {
