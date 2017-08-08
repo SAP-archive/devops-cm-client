@@ -198,6 +198,7 @@ class Commands {
                         .name().equals(commandName)).findFirst();
 
             if(command.isPresent()) {
+                logger.debug(format("Command name '%s' resolved to implementing class '%s'.", commandName, command.get().getName()));
                 command.get().getDeclaredMethod("main", String[].class)
                 .invoke(null, new Object[] { args });
             } else {
@@ -228,10 +229,12 @@ class Commands {
           }).forEach(o -> opts.addOption(o));
 
         try {
-            return new DefaultParser().parse(opts, args, true).getArgs()[0];
+            String commandName = new DefaultParser().parse(opts, args, true).getArgs()[0];
+            logger.debug("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args));
+            return commandName;
         } catch(ArrayIndexOutOfBoundsException e) {
             throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
-                    StringUtils.join(" ", args)), e);
+                    getArgsLogString(args)), e);
         }
     }
 
