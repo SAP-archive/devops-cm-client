@@ -122,20 +122,7 @@ public class CMODataClient implements AutoCloseable {
             ArrayList<CMODataTransport> transportList = new ArrayList<>();
 
             while (iterator.hasNext()) {
-
-                ClientEntity transport = iterator.next();
-
-                String transportId = getValueAsString("TransportID", transport);
-                checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", ChangeID));
-
-                String bModifiable = getValueAsString("IsModifiable", transport);
-                checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", ChangeID));
-
-                transportList.add(new CMODataTransport(
-                        transportId,
-                        parseBoolean(bModifiable),
-                        getValueAsString("Description", transport),
-                        getValueAsString("Owner", transport)));
+                transportList.add(toTransport(ChangeID, iterator.next()));
             }
 
             return transportList;
@@ -212,11 +199,11 @@ public class CMODataClient implements AutoCloseable {
     }
 
     public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
-        return _createDevelopmentTransport("createTransport", "?ChangeID='" + ChangeID + "'");
+        return _createDevelopmentTransport(ChangeID, "createTransport", "?ChangeID='" + ChangeID + "'");
     }
 
     public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
-        return _createDevelopmentTransport("createTransportAdvanced", "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
+        return _createDevelopmentTransport(ChangeID, "createTransportAdvanced", "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
     }
 
     /**
@@ -243,13 +230,28 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
+    static CMODataTransport toTransport(String ChangeID, ClientEntity transportEntity) {
+
+        String transportId = getValueAsString("TransportID", transportEntity);
+        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", ChangeID));
+
+        String bModifiable = getValueAsString("IsModifiable", transportEntity);
+        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", ChangeID));
+
+        return new CMODataTransport(
+                transportId,
+                parseBoolean(bModifiable),
+                getValueAsString("Description", transportEntity),
+                getValueAsString("Owner", transportEntity));
+    }
+
     private void checkClosed() {
         if(isClosed()) throw new IllegalStateException(format("This instance of %s has been closed (%d);",
                 getClass().getSimpleName(),
                 System.identityHashCode(this)));
     }
 
-    private CMODataTransport _createDevelopmentTransport(String segment, String query) throws IOException {
+    private CMODataTransport _createDevelopmentTransport(String ChangeID, String segment, String query) throws IOException {
 
         checkClosed();
 
@@ -260,12 +262,7 @@ public class CMODataClient implements AutoCloseable {
         ODataInvokeResponse<ClientEntity> response = null;
         try {
             response = executeRequest(functionInvokeRequest, 200);
-            ClientEntity transport = response.getBody();
-            return new CMODataTransport(
-                    getValueAsString("TransportID", transport),
-                    Boolean.parseBoolean(getValueAsString("IsModifiable", transport)),
-                    getValueAsString("Description", transport), 
-                    getValueAsString("Owner", transport));
+            return  toTransport("", response.getBody());
         } finally {
             if(response != null) {
                 response.close();
