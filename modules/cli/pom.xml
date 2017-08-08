@@ -85,4 +85,28 @@
         </plugin>
       </plugins>
     </build>
+    <profiles>
+      <profile>
+        <id>logging</id>
+        <build>
+          <plugins>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <systemPropertyVariables>
+                  <org.slf4j.simpleLogger.log.sap.prd.cmintegration.cli>DEBUG</org.slf4j.simpleLogger.log.sap.prd.cmintegration.cli>
+                </systemPropertyVariables>
+               </configuration>
+            </plugin>
+          </plugins>
+        </build>
+        <dependencies>
+            <dependency>
+              <groupId>org.slf4j</groupId>
+              <artifactId>slf4j-simple</artifactId>
+              <scope>test</scope>
+            </dependency>
+         </dependencies>
+      </profile>
+    </profiles>
 </project>
