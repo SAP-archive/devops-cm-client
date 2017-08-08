@@ -33,11 +33,15 @@ import org.apache.olingo.client.api.uri.URIBuilder;
 import org.apache.olingo.client.core.ODataClientFactory;
 import org.apache.olingo.client.core.serialization.AtomDeserializer;
 import org.apache.olingo.commons.api.format.ContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
 
 public class CMODataClient implements AutoCloseable {
+
+    private final static Logger logger = LoggerFactory.getLogger(CMODataClient.class);
 
     private boolean isClosed = false;
 
@@ -55,10 +59,12 @@ public class CMODataClient implements AutoCloseable {
         this.client = ODataClientFactory.getClient();
         this.client.getConfiguration().setHttpClientFactory(
                 new CMOdataHTTPFactory(serviceUser, servicePassword));
+        logger.debug(format("CMClient instanciated for host '%s' with service user '%s'.", serviceUrl, serviceUser));
     }
 
     public CMODataChange getChange(String ChangeID) {
 
+        logger.trace(format("Entering 'getChange'. ChangeID: '%s'.'", ChangeID));
         checkClosed();
 
         URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes").appendKeySegment(ChangeID).build();
@@ -76,25 +82,28 @@ public class CMODataClient implements AutoCloseable {
                 throw new RuntimeException(
                     format("ChangeId contained in server response ('%s') does not match request change (%s).", changeId, ChangeID));
             boolean isInDevelopment = Boolean.valueOf(body.getProperty("IsInDevelopment").getValue().toString());
+            logger.debug(format("Change '%s' found. isInDevelopment: '%b'", ChangeID, isInDevelopment));
             return new CMODataChange(ChangeID, isInDevelopment);
         } finally {
             if(response != null) {
                 response.close();
             }
+            logger.trace(format("Exiting 'getChange'. ChangeID: '%s'.'", ChangeID));
         }
     }
 
     public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) throws Exception {
 
+        logger.trace(format("Entering 'getChangeTransports'. ChangeID: '%s'.'", ChangeID));
+
         checkClosed();
 
-        if(StringUtils.isEmpty(ChangeID)) {
-            throw new IllegalArgumentException(format("ChangeID was null or empty: '%s'.", ChangeID));
-        }
+        checkArgument(!isBlank(ChangeID), format("ChangeID was null or empty: '%s'.", ChangeID));
 
-        URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes"
-        ).appendKeySegment(ChangeID).appendNavigationSegment("Transports").build();
+        URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes")
+            .appendKeySegment(ChangeID).appendNavigationSegment("Transports").build();
 
+        logger.debug(format("Entity URI for getting transports for change id '%s': '%s'.", ChangeID, entityUri.toASCIIString()));
         ODataEntitySetIteratorRequest<ClientEntitySet, ClientEntity> request = this.client.getRetrieveRequestFactory().getEntitySetIteratorRequest(entityUri);
 
         request.setAccept(contentType.toContentTypeString());
@@ -124,6 +133,7 @@ public class CMODataClient implements AutoCloseable {
             if(response != null) {
                 response.close();
             }
+            logger.trace(format("Exiting 'getChangeTransports'. ChangeID: '%s'.'", ChangeID));
         }
     }
 
