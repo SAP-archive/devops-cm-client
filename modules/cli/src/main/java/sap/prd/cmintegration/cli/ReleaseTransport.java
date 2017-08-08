@@ -55,6 +55,9 @@ class ReleaseTransport extends Command {
     void execute() throws Exception {
         try (CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
             client.releaseDevelopmentTransport(changeId, transportId);
+        } catch(Exception e) {
+            logger.error(format("Exception caught while releasing transport '%s' for change document '%s': '%s'.", transportId, changeId, e.getMessage()), e);
+            throw e;
         }
     }
 
