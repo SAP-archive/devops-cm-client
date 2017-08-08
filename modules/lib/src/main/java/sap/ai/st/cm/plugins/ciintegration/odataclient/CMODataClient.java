@@ -299,9 +299,12 @@ public class CMODataClient implements AutoCloseable {
     }
 
     private void checkClosed() {
-        if(isClosed()) throw new IllegalStateException(format("This instance of %s has been closed (%d);",
-                getClass().getSimpleName(),
-                System.identityHashCode(this)));
+        if(isClosed()) {
+            IllegalStateException e = new IllegalStateException(format("This instance (%s) has been closed.",
+                   getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this))));
+            logger.warn("Client has already been closed.", e);
+            throw e;
+        }
     }
 
     private CMODataTransport _createDevelopmentTransport(String ChangeID, String segment, String query) throws CMODataClientException {
