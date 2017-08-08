@@ -1,6 +1,8 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +48,9 @@ public class CMODataClient implements AutoCloseable {
 
     public CMODataClient(String serviceUrl, String serviceUser, String servicePassword) {
 
+        checkArgument(!isBlank(serviceUrl), "Service url must not be blank.");
+        checkArgument(!isBlank(serviceUser), "Service user must not be blank.");
+        checkArgument(!isBlank(servicePassword), "Service password must not be blank.");
         this.serviceUrl = serviceUrl;
         this.client = ODataClientFactory.getClient();
         this.client.getConfiguration().setHttpClientFactory(
