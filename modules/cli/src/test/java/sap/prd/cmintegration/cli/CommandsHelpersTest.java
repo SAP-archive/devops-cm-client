@@ -31,4 +31,18 @@ public class CommandsHelpersTest {
                 "-e http://example.org -u me -p")));
     }
 
+    @Test
+    public void testDashAsPasswordNotHidden() {
+
+        //Password read from stdin in this case.
+
+        String[] args = Commands.Helpers.hidePassword(new String[] {
+                "-e", "http://example.org",
+                "-u", "me",
+                "-p", "-"});
+
+            assertThat(StringUtils.join(args, " "), is(equalTo(
+                    "-e http://example.org -u me -p -")));
+    }
+
 }
