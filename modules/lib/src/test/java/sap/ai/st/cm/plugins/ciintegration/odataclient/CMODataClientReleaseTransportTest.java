@@ -58,7 +58,7 @@ public class CMODataClientReleaseTransportTest extends CMODataClientBaseTest {
         examinee.releaseDevelopmentTransport("8000042445", "L21K90002K");
 
         Assert.assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/releaseTransport?ChangeID='8000042445'&TransportID='L21K90002K'")));
+                is(equalTo(SERVICE_ENDPOINT + "releaseTransport?ChangeID='8000042445'&TransportID='L21K90002K'")));
     }
 
     @Test

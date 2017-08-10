@@ -60,7 +60,7 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
         assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
         assertThat(address.getValue().toASCIIString(),
           is(equalTo(
-            "https://example.org/endpoint/Changes('8000038673')")));
+            SERVICE_ENDPOINT + "Changes('8000038673')")));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
         } catch(Exception e) {
             assertThat(address.getValue().toASCIIString(),
                     is(equalTo(
-                      "https://example.org/endpoint/Changes('001')")));
+                      SERVICE_ENDPOINT + "Changes('001')")));
             throw e;
         }
     }
@@ -94,9 +94,9 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
         // there was a problem with the credentials.
 
         CMODataClient examinee = new CMODataClient(
-                "https://example.org/endpoint",
+                SERVICE_ENDPOINT,
                 "NOBODY",
-                "openSesame");
+                SERVICE_PASSWORD);
 
         // comment line below for testing against real backend.
         setMock(examinee, setupBadCredentialsMock());

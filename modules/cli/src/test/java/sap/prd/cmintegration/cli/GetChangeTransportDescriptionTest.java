@@ -14,9 +14,9 @@ public class GetChangeTransportDescriptionTest extends CMTransportTestBase {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
         GetTransportDescription.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673", "L21K900026"});
 

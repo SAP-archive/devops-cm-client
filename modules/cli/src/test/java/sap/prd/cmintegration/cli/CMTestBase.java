@@ -14,6 +14,10 @@ import org.junit.rules.ExpectedException;
 
 public class CMTestBase {
 
+    protected final static String SERVICE_USER = System.getProperty("CM_SERVICE_USER", "john.doe"),
+                                  SERVICE_PASSWORD = System.getProperty("CM_SERVICE_PASSWORD", "openSesame"),
+                                  SERVICE_ENDPOINT = System.getProperty("CM_SERVICE_ENDPOINT", "https://example.org/myEndpoint");
+
     protected static class StatusLines {
         private final static ProtocolVersion HTTP_1_1 = new ProtocolVersion("HTTP", 1, 1);
         protected final static BasicStatusLine BAD_REQUEST = new BasicStatusLine(HTTP_1_1, 400, "Bad Request");

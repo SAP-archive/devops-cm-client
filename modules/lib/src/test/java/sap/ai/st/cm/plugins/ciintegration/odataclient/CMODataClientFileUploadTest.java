@@ -79,7 +79,7 @@ public class CMODataClientFileUploadTest extends CMODataClientBaseTest {
         examinee.uploadFileToTransport("8000042445", "L21K900035", testFile.getAbsolutePath(), "HCP");
 
         assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/Files(ChangeID='8000042445',TransportID='L21K900035',FileID='" +
+                is(equalTo(SERVICE_ENDPOINT + "Files(ChangeID='8000042445',TransportID='L21K900035',FileID='" +
                    testFile.getName() + "',ApplicationID='HCP')")));
     }
 

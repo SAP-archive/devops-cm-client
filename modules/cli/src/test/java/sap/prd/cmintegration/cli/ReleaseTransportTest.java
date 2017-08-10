@@ -39,9 +39,9 @@ public class ReleaseTransportTest extends CMTestBase {
         setMock(setupMock(null));
 
         ReleaseTransport.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673", "L21K90002K"});
 
@@ -59,9 +59,9 @@ public class ReleaseTransportTest extends CMTestBase {
         setMock(setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
 
         ReleaseTransport.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673", "L21K900026"});
     }

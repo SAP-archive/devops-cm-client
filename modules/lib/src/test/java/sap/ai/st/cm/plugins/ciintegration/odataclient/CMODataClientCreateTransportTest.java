@@ -64,16 +64,16 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
          *  Comment line below and the captures later on in order to run against
          *  real back-end.
          */
-        setMock(examinee, setupMock("john.dev", "Jenkins CI Test"));
+        setMock(examinee, setupMock(SERVICE_USER, "Jenkins CI Test"));
 
         CMODataTransport transport = examinee.createDevelopmentTransport("8000038673");
 
         assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
         assertThat(address.getValue().toASCIIString(),
-            is(equalTo("https://example.org/endpoint/createTransport?ChangeID='8000038673'")));
+            is(equalTo(SERVICE_ENDPOINT + "createTransport?ChangeID='8000038673'")));
         assertThat(transport.getTransportID(), is(equalTo("L21K90002H")));
         assertThat(transport.isModifiable(), is(equalTo(true)));
-        assertThat(transport.getOwner(), is(equalTo("john.dev")));
+        assertThat(transport.getOwner(), is(equalTo(SERVICE_USER)));
         assertThat(transport.getDescription(), is(equalTo("Jenkins CI Test")));
     }
 
@@ -101,17 +101,17 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
        *  Comment line below and the captures later on in order to run against
        *  real back-end.
        */
-      setMock(examinee, setupMock("john.doe", "my Description"));
+      setMock(examinee, setupMock(SERVICE_USER, "my Description"));
 
       // with that test we check also for blanks in the description ...
-      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "my Description", "john.doe");
+      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "my Description", SERVICE_USER);
 
       assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
       assertThat(address.getValue().toASCIIString(),
-          is(equalTo("https://example.org/endpoint/createTransportAdvanced?ChangeID='8000042445'&Description='my%20Description'&Owner='john.doe'")));
+          is(equalTo(SERVICE_ENDPOINT + "createTransportAdvanced?ChangeID='8000042445'&Description='my%20Description'&Owner='" + SERVICE_USER + "'")));
       assertThat(transport.isModifiable(), is(equalTo(true)));
       assertThat(transport.getDescription(), is(equalTo("my Description")));
-      assertThat(transport.getOwner(), is(equalTo("john.doe")));
+      assertThat(transport.getOwner(), is(equalTo(SERVICE_USER)));
   }
 
     @Test
@@ -133,7 +133,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         } catch(Exception e) {
             assertThat(
                     address.getValue().toASCIIString(),
-                    is(equalTo("https://example.org/endpoint/createTransport?ChangeID='DOES_NOT_EXIST'")));
+                    is(equalTo(SERVICE_ENDPOINT + "createTransport?ChangeID='DOES_NOT_EXIST'")));
             assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
             throw e;
         }

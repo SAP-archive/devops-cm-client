@@ -15,9 +15,9 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
         GetTransportModifiable.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673", "L21K900026"});
 
@@ -32,9 +32,9 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", true));
         GetTransportModifiable.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673", "L21K900026"});
 
@@ -52,9 +52,9 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
         GetTransportModifiable.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673", "DOES_NOT_EXIST"});
     }
@@ -70,9 +70,9 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
 
         try {
             GetTransportModifiable.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "DOES_NOT_EXIST", "NOT_NEEDED"});
         } catch(ODataClientErrorException ex) {
@@ -88,9 +88,9 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expectMessage("No transportId specified.");
 
         GetTransportModifiable.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673"});
     }

@@ -42,9 +42,9 @@ public class CreateTransportTest extends CMTestBase {
         setMock(setupStraightForwardMock());
 
         CreateTransport.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "8000038673"});
 
@@ -62,9 +62,9 @@ public class CreateTransportTest extends CMTestBase {
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
         CreateTransport.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "--owner", "me",
                 "--description", "lorem ipsum",
@@ -84,9 +84,9 @@ public class CreateTransportTest extends CMTestBase {
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
         CreateTransport.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "--owner", "me",
                 "8000038673"});
@@ -105,15 +105,15 @@ public class CreateTransportTest extends CMTestBase {
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
         CreateTransport.main(new String[] {
-                "-u", "john.doe",
-                "-p", "openSesame",
-                "-e", "https://example.org/endpoint/",
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "--description", "lorem ipsum",
                 "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
-        assertThat(owner.getValue(), is(equalTo("john.doe")));
+        assertThat(owner.getValue(), is(equalTo(SERVICE_USER)));
         assertThat(description.getValue(), is(equalTo("lorem ipsum")));
 
         assertThat(IOUtils.toString(result.toByteArray(), "UTF-8").replaceAll("\\r?\\n", ""),

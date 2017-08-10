@@ -26,6 +26,11 @@ import org.junit.rules.ExpectedException;
 
 public class CMODataClientBaseTest {
 
+
+    protected final static String SERVICE_USER = System.getProperty("CM_SERVICE_USER", "john.doe"),
+                                  SERVICE_PASSWORD = System.getProperty("CM_SERVICE_PASSWORD", "openSesame"),
+                                  SERVICE_ENDPOINT = System.getProperty("CM_SERVICE_ENDPOINT", "https://example.org/myEndpoint/");
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -44,9 +49,9 @@ public class CMODataClientBaseTest {
         address = Capture.newInstance();
 
         examinee = new CMODataClient(
-                "https://example.org/endpoint",
-                "john.doe",
-                "openSesame");
+                SERVICE_ENDPOINT,
+                SERVICE_USER,
+                SERVICE_PASSWORD);
 
     }
 

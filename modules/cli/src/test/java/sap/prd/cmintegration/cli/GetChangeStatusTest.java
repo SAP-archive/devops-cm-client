@@ -54,16 +54,16 @@ public class GetChangeStatusTest extends CMTestBase {
         setMock(setupMock());
 
         GetChangeStatus.main(new String[] {
-        "-u", "john.doe",
-        "-p", "openSesame",
-        "-e", "https://example.org/endpoint/",
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
         "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
-        assertThat(user.getValue(), is(equalTo("john.doe")));
-        assertThat(password.getValue(), is(equalTo("openSesame")));
-        assertThat(host.getValue(), is(equalTo("https://example.org/endpoint/")));
+        assertThat(user.getValue(), is(equalTo(SERVICE_USER)));
+        assertThat(password.getValue(), is(equalTo(SERVICE_PASSWORD)));
+        assertThat(host.getValue(), is(equalTo(SERVICE_ENDPOINT)));
 
         assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("true"));
     }
@@ -80,7 +80,7 @@ public class GetChangeStatusTest extends CMTestBase {
         GetChangeStatus.main(new String[] {
         "-u", "DOES_NOT_EXIST",
         "-p", "********",
-        "-e", "https://example.org/endpoint/",
+        "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
         "8000038673"});
     }
@@ -96,9 +96,9 @@ public class GetChangeStatusTest extends CMTestBase {
 
         try {
             GetChangeStatus.main(new String[] {
-            "-u", "john.doe",
-            "-p", "openSesame",
-            "-e", "https://example.org/endpoint/",
+            "-u", SERVICE_USER,
+            "-p", SERVICE_PASSWORD,
+            "-e", SERVICE_ENDPOINT,
             "dummy-cmd",
             "DOES_NOT_EXIST"});
         } catch(Exception e) {
@@ -117,16 +117,16 @@ public class GetChangeStatusTest extends CMTestBase {
         setMock(setupMock());
 
         GetChangeStatus.main(new String[] {
-        "-u", "john.doe",
-        "-p", "openSesame",
-        "-e", "https://example.org/endpoint/"});
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT});
     }
 
     @Test
     public void testGetChangeStatusPasswordViaStdin() throws Exception {
 
         InputStream oldIn = System.in;
-        System.setIn(new ByteArrayInputStream("openSesame".getBytes()));
+        System.setIn(new ByteArrayInputStream(SERVICE_PASSWORD.getBytes()));
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
@@ -134,16 +134,16 @@ public class GetChangeStatusTest extends CMTestBase {
 
         try {
           GetChangeStatus.main(new String[] {
-          "-u", "john.doe",
+          "-u", SERVICE_USER,
           "-p", "-",
-          "-e", "https://example.org/endpoint/",
+          "-e", SERVICE_ENDPOINT,
           "dummy-cmd",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
         }
 
-        assertThat(password.getValue(), is(equalTo("openSesame")));
+        assertThat(password.getValue(), is(equalTo(SERVICE_PASSWORD)));
     }
 
     @Test
@@ -153,7 +153,7 @@ public class GetChangeStatusTest extends CMTestBase {
         thrown.expectMessage("Multiline passwords are not supported.");
 
         InputStream oldIn = System.in;
-        System.setIn(new ByteArrayInputStream("openSesame\r\nTESTAGAIN".getBytes()));
+        System.setIn(new ByteArrayInputStream(SERVICE_PASSWORD.concat("\r\nPWDAGAIN").getBytes()));
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
@@ -161,9 +161,9 @@ public class GetChangeStatusTest extends CMTestBase {
 
         try {
           GetChangeStatus.main(new String[] {
-          "-u", "john.doe",
+          "-u", SERVICE_USER,
           "-p", "-",
-          "-e", "https://example.org/endpoint/",
+          "-e", SERVICE_ENDPOINT,
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -184,9 +184,9 @@ public class GetChangeStatusTest extends CMTestBase {
 
         try {
           GetChangeStatus.main(new String[] {
-          "-u", "john.doe",
+          "-u", SERVICE_USER,
           "-p", "-",
-          "-e", "https://example.org/endpoint/",
+          "-e", SERVICE_ENDPOINT,
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -204,8 +204,8 @@ public class GetChangeStatusTest extends CMTestBase {
         setMock(setupMock());
 
         GetChangeStatus.main(new String[] {
-        "-u", "john.doe",
-        "-e", "https://example.org/endpoint/",
+        "-u", SERVICE_USER,
+        "-e", SERVICE_ENDPOINT,
         "8000038673"});
     }
 }

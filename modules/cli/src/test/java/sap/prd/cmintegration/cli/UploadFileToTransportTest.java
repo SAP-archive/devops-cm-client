@@ -44,9 +44,9 @@ public class UploadFileToTransportTest extends CMTestBase {
         FileUtils.touch(upload);
 
         UploadFileToTransport.main(new String[] {
-        "-u", "john.doe",
-        "-p", "openSesame",
-        "-e", "https://example.org/endpoint/",
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
         "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
@@ -94,9 +94,9 @@ public class UploadFileToTransportTest extends CMTestBase {
         setMock(setupMock());
 
         UploadFileToTransport.main(new String[] {
-        "-u", "john.doe",
-        "-p", "openSesame",
-        "-e", "https://example.org/endpoint/",
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
         "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });

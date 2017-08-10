@@ -65,10 +65,10 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
                 containsString("L21K90002N")));
 
         assertThat(changeTransports.get(0).getDescription(), is(equalTo("S 8000038673: HCP CI Jenkins Deploy UC 1")));
-        assertThat(changeTransports.get(0).getOwner(), is(equalTo("john.doe")));
+        assertThat(changeTransports.get(0).getOwner(), is(equalTo(SERVICE_USER)));
 
         assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/Changes('8000042445')/Transports")));
+                is(equalTo(SERVICE_ENDPOINT + "Changes('8000042445')/Transports")));
     }
 
     /*
@@ -101,7 +101,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
             examinee.getChangeTransports("DOES_NOT_EXIST");
         } catch(Exception e) {
             assertThat(address.getValue().toASCIIString(),
-                is(equalTo("https://example.org/endpoint/Changes('DOES_NOT_EXIST')/Transports")));
+                is(equalTo(SERVICE_ENDPOINT + "Changes('DOES_NOT_EXIST')/Transports")));
             throw e;
         }
     }
@@ -184,7 +184,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
                 new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("S 8000038673: HCP CI Jenkins Deploy UC 1").build());
 
         ClientProperty o = new ClientPropertyImpl("Owner",
-                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("john.doe").build());
+                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(SERVICE_USER).build());
 
         expect(transportMock.getProperty("TransportID")).andReturn(t);
         expect(transportMock.getProperty("IsModifiable")).andReturn(m);

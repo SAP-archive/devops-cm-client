@@ -32,9 +32,9 @@ public class GetChangeTransportsTest extends CMTestBase {
         setMock(setupMock());
 
         GetChangeTransports.main(new String[] {
-        "-u", "john.doe",
-        "-p", "openSesame",
-        "-e", "https://example.org/endpoint/",
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
         "8000038673"});
 
@@ -61,9 +61,9 @@ public class GetChangeTransportsTest extends CMTestBase {
         setMock(setupMock());
 
         GetChangeTransports.main(new String[] {
-        "-u", "john.doe",
-        "-p", "openSesame",
-        "-e", "https://example.org/endpoint/",
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
         "dummy-cmd", "-m",
         "8000038673"});
 
