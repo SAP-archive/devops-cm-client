@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z ${CM_USER} ];then
-  export CM_USER="john.doe"
+  echo "[ERROR] Provide CM service user with environment variable '\${CM_USER}'."; exit 1
 fi
 
 if [ -z ${CM_PASSWORD} ];then
@@ -9,7 +9,7 @@ if [ -z ${CM_PASSWORD} ];then
 fi
 
 if [ -z "${CM_ENDPOINT}" ];then
-  export CM_ENDPOINT="https://example.org/endpoint/"
+  echo "[ERROR] Provide CM service endpoint with environment variable '\${CM_ENDPOINT}'."; exit 1
 fi
 
 
