@@ -1,13 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+
+set -o noglob
 
 _SN=`basename "$0"` # script name
 
-reject_unsupported_environment() {
-    case "`uname`" in
-        CYGWIN*)
-            echo "Cygwin is not supported" 1>&2
-            exit 1
-    esac
+is_emulated_shell() {
+    [[ `uname` =~ CYGWIN|MINGW ]] && return
+    false
 }
 
 determine_dir() {
@@ -18,6 +17,11 @@ determine_dir() {
             CMCLIENT_HOME=`pwd`/$0
         fi
         CMCLIENT_HOME=`dirname $CMCLIENT_HOME`/..
+	CMCLIENT_LIB=$CMCLIENT_HOME/lib/*
+        if is_emulated_shell; then
+            CMCLIENT_HOME=`cygpath -wp $CMCLIENT_HOME`
+	    CMCLIENT_LIB=`cygpath -wp $CMCLIENT_LIB`
+        fi
     fi
 }
 
@@ -40,8 +44,7 @@ java_executable() {
     fi
 }
 
-reject_unsupported_environment
 determine_dir
 check_env
 
-"`java_executable`" $CMCLIENT_OPTS -cp "$CMCLIENT_HOME/lib/*" sap.prd.cmintegration.cli.ExitWrapper "$@"
+"`java_executable`" $CMCLIENT_OPTS -cp "$CMCLIENT_LIB" sap.prd.cmintegration.cli.ExitWrapper "$@"
