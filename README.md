@@ -17,7 +17,7 @@ action necessary within those scenarios. Available actions are:
 # Requirements
 
  - Solution Manager 7.2 SP6
- - Java Runtime Environment 8
+ - Java Development Kit 8
 
 # Download and Installation
 
