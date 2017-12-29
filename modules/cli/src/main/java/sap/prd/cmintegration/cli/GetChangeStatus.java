@@ -49,7 +49,7 @@ class GetChangeStatus extends Command {
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s <changeId>", getCommandName(GetChangeStatus.class)),
-                    "Returns 'true' if the transport specified by <changeId> is modifiable. Otherwise 'false'.", new Options()); return;
+                    "Returns 'true' if the change specified by <changeId> is in development. Otherwise 'false'.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
