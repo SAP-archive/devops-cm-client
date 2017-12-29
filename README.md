@@ -17,7 +17,7 @@ action necessary within those scenarios. Available actions are:
 # Requirements
 
  - Solution Manager 7.2 SP6
- - Java Runtime Environment 8
+ - JDK 8 to build this project (to run the client JRE 8 is sufficient)
 
 # Download and Installation
 
