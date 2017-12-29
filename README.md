@@ -15,13 +15,13 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
   - Build the project with maven: `mvn clean package`
   - Create a temporary directory: `mkdir tmp`
   - Extract the command line interface into that folder:
+
     `tar -C tmp -xvf modules/dist.cli/target/dist.cli-${project.version}.tar.gz`
   - Run `tmp/bin/cmclient --help` in order to see all available commands
 
 # Usage
 ````
-<CMD> [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS]
-             <parameters...>
+<CMD> [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS] <parameters...>
 ````
 
 | Option                   |     Description         |
