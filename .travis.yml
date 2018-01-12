@@ -1,0 +1,15 @@
+language: java
+sudo: false
+jdk:
+  - oraclejdk8
+
+install: mvn clean package 
+script: 
+  - mkdir tmp/ 
+  - export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
+  - tar -C tmp -xvf modules/dist.cli/target/dist.cli-${PROJECT_VERSION}.tar.gz 
+  - tmp/bin/cmclient --version | grep -q "^${PROJECT_VERSION}" 
+
+cache:
+  directories:
+  - $HOME/.m2
