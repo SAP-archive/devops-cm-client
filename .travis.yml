@@ -2,14 +2,20 @@ language: java
 sudo: false
 jdk:
   - oraclejdk8
-
-install: mvn clean package 
+install: mvn --settings cfg/settings.xml -P signing clean verify
 script: 
   - mkdir tmp/ 
   - export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
   - tar -C tmp -xvf modules/dist.cli/target/dist.cli-${PROJECT_VERSION}.tar.gz 
   - tmp/bin/cmclient --version | grep -q "^${PROJECT_VERSION}" 
-
 cache:
   directories:
   - $HOME/.m2
+before_install:
+- openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv
+  -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
+- gpg --fast-import cfg/codesigning.asc
+env:
+  global:
+  - secure: HUcHmYOSdDxee86RxYW4QI/Yele4p56CiUq1Iy+O6pOb9Nx4jVWoQbgum80gO94D7eHYfURpQvIhvGNeQwimfN6IdEnpoi6b1yXpRi0Y8oLl4bXfcDUwzS0wiXr4vMeVG2F/P43Fqo/8QDaJgfnIHwimG57teSGTd4Zzu1iiJayi0jyvGw20ne5tNHTkLj2niJ07+bM5hlE9+M1hCWMuG+i7FNgFhlafc27Ebvix9hcxZz2u0oH/NnWDcNuG90O4CLnMNjIqr7kBzJ0sQxTIW9prRSUTYLmC4aSLVdLDOXzB55K+ZDjq4qHzFtzaI1pWm/ukKCHzzU+JC3W6hMnxd4i55+SLh8T57Ds4sZUQr0y5BUNzD45wFJ638xOpuydRAghA01f3cPcJDxkS3/nArGUrILAvRvZlCGGnorBZ59slIyVp0HGsNsKY8OsRk4ugUvpGKQDIxlHRP7zZK8qkTQ+mGXlh45rR+Y0NdBUOt1MB1PuSNcj38ptn0GMpWzcfeL5C+ZrSgc9u7TWb58L6n1RpIi0NCSZTlWq5J1FScMmY9T/O8itYAx6cducjLPoiFHvnmCpTvzFFPngG9IJEKTw325qJ2lz5a7g4VqfCURojAz3+p73RikY+WxS5x4jXTuBT3Kc79DL/7GuLur8/8qLIPekkruyIYMrzv2g5lGQ=
+  - secure: bypTXEbBITqiXnoq+nWb43DHZn4s+IkYPa9e8TjO1pp7dPMMKeeGrMRh64btCWlcQkWGVoy5388JjyNoWdUEaW7QGomDFwC7z7KLAFOH9KwvpFFPSQ68Np4YQVleZQBYQINaXQaLHszeRyItio2aTZRvhgABAYQLd8ArG2mwr4+2DxR9P25PHZsqVlTnldi4NHwuq1MQhzkqz0pxOVbKgxBdoYt/s4wY6YXJlS57AASyrl3XH6nJY8O6syqXC1EqIsiL3QO+J37Wu9KWBVNh3jpLN8z4mcTx/uJGzaisWUV3CG1TshgtvV4ymhQyL0gdgIw9ohOyp1kEgXIigWOM/c6gbhyu+51gCwRHC23ebxTXpgUeB6Xz7HGbgTnR2Bgv//G5fFMNLlsDeJPYOpGawSbjZlbudlHp9xKlQN5DOA/DoNW1U2tbmsDBDQBUeWfurFZq1IF/hFEmQosRzuNrLnLp3nQxpUELG8CMdDJvIpCuKjNq0FGebVsXqPtCsRamaEKgQhgCwP9Qs7lOg31qBHk9u8PZ4+Bcg5Gx/8NWj8b5exXSoOyEV6E1nj+MYUbIALn2/MbQFJko32AesJiXBek5E1yTyLEbkXWwWIfUD+ZLLC1QZyKUnAlxyb/HvC3QBi7gsGPJ5Zza564/LogzRgmPpDKLHb9MGVLObn4al3Q=
