@@ -140,7 +140,7 @@ class Commands {
         /**
          * 
          * @return A copy of <code>args</code>. The password parameter, identified by a preceding
-         *         <quote>-p</quote> is replaced by asterisks.
+         *         <code>-p</code> is replaced by asterisks.
          */
         static String[] hidePassword(String[] args) {
             String[] copy = new String[args.length];
