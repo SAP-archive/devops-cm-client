@@ -17,6 +17,8 @@
       <url>http://github.com/SAP/devops-cm-client/tree/master</url>
     </scm>
 
+    <url>http://github.com/SAP/devops-cm-client/</url>
+
     <licenses>
       <license>
         <name>The Apache License, Version 2.0</name>
