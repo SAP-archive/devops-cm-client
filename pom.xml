@@ -11,6 +11,12 @@
       <slf4j.version>1.7.7</slf4j.version>
     </properties>
 
+    <scm>
+      <connection>scm:git:git://github.com/SAP/devops-cm-client.git</connection>
+      <developerConnection>scm:git:ssh://github.com:SAP/devops-cm-client.git</developerConnection>
+      <url>http://github.com/SAP/devops-cm-client/tree/master</url>
+    </scm>
+
     <modules>
       <module>modules/lib</module>
       <module>modules/cli</module>
