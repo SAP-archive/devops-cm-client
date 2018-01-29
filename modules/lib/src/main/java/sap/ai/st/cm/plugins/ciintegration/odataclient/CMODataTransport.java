@@ -2,38 +2,38 @@ package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
 public class CMODataTransport {
 
-    private final String TransportID;
-    private final Boolean IsModifiable;
-    private final String Description;
-    private final String Owner;
+    private final String transportID;
+    private final Boolean isModifiable;
+    private final String description;
+    private final String owner;
 
     public String getTransportID() {
-        return TransportID;
+        return transportID;
     }
 
     public Boolean isModifiable() {
-        return IsModifiable;
+        return isModifiable;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public String getOwner() {
-        return Owner;
+        return owner;
     }
 
-    public CMODataTransport(String TransportID, Boolean IsModifiable, String Description, String Owner) {
+    public CMODataTransport(String transportID, Boolean isModifiable, String description, String owner) {
 
-        this.TransportID = TransportID;
-        this.IsModifiable = IsModifiable;
-        this.Description = Description;
-        this.Owner = Owner;
+        this.transportID = transportID;
+        this.isModifiable = isModifiable;
+        this.description = description;
+        this.owner = owner;
     }
 
     @Override
     public String toString() {
-        return "CMODataTransport [TransportID='" + TransportID + "', IsModifiable='" + IsModifiable + "', Description='"
-                + Description + "', Owner='" + Owner + "']";
+        return "CMODataTransport [TransportID='" + transportID + "', IsModifiable='" + isModifiable + "', Description='"
+                + description + "', Owner='" + owner + "']";
     }
 }
