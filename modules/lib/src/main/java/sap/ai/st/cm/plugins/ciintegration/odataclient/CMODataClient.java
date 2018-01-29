@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
+import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntityRequest;
@@ -44,6 +45,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
 
+/**
+ * OData client for handling connections to SAP solution manager.
+ */
 public class CMODataClient implements AutoCloseable {
 
     private final static Logger logger = LoggerFactory.getLogger(CMODataClient.class);
@@ -67,6 +71,13 @@ public class CMODataClient implements AutoCloseable {
         logger.debug(format("CMClient instanciated for host '%s' with service user '%s'.", serviceUrl, serviceUser));
     }
 
+    /**
+     * Retrieves a change
+     * @param changeID The identifier of the change which should be retrieved.
+     * @return The change represented by <code>changeID</code>.
+     * @throws ODataClientErrorException with status code 404 in case no matching change could be resolved.
+     * @throws IllegalStateException in case the client has been closed.
+     */
     public CMODataChange getChange(String changeID) {
 
         logger.trace(format("Entering 'getChange'. changeID: '%s'.", changeID));
@@ -100,6 +111,13 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
+    /**
+     * Retrieves all transports assigned to the change with id <code>changeId</code>
+     * @throws IllegalStateException in case the client has been closed.
+     * @throws IllegalArgumentException in case <code>changeID</code> is null or empty.
+     * @throws ODataClientErrorException with status code 400 in case no matching 
+     *   <code>changeId</code> does exist.
+     */
     public ArrayList<CMODataTransport> getChangeTransports(String changeID) {
 
         logger.trace(format("Entering 'getChangeTransports'. changeID: '%s'.", changeID));
@@ -147,8 +165,19 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
+    /**
+     * Uploads a file into a transport
+     * @param changeID The identifier of the change to that the transport request is assigned to.
+     * @param transportID The identifier of the transport receiving the file denoted by <code>filePath</code>.
+     * @param filePath An absolute or relative path denoting the file which should be uploaded.
+     * @param applicationID An identifier used in the backend in order to decide how the upload 
+     *          is processed.
+     * @throws IllegalStateException in case the client has been closed.
+     * @throws CMODataClientException In case the file denoted by <code>filePath</code> cannot be resolved.
+     * @throws IOException In case of problems with reading the file denoted by <code>filePath</code>.
+     */
     public void uploadFileToTransport(String changeID, String transportID, String filePath, String applicationID) throws IOException, CMODataClientException {
-        logger.trace(format("Entering 'uploadFileToTransport'. changeID: '%s', transportId: '%s', filePath: '%s', applicationId: '%s'.",
+        logger.trace(format("Entering 'uploadFileToTransport'. ChangeID: '%s', TransportId: '%s', FilePath: '%s', ApplicationId: '%s'.",
                 changeID, transportID, filePath, applicationID));
         checkClosed();
 
@@ -209,7 +238,16 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
-    public void releaseDevelopmentTransport(String changeID, String transportID) throws CMODataClientException {
+    /**
+     * Releases a transport.
+     * @param changeID The identifier of the change to that the transport is assigned to.
+     * @param transportID The identfier of the transport that is released.
+     * @throws IllegalStateException in case the client has been closed.
+     * @throws IllegalArgumentException in case either <code>changeId</code> or <code>transportId</code>
+     *           or both are null or empty.
+     * @throws CMODataClientException In case the transport could not be releases successfully. 
+     */
+    public void releaseDevelopmentTransport(String changeID, String transportID) throws RuntimeException, CMODataClientException {
 
         logger.trace(format("Entering 'releaseDevelopmentTransport'. changeID: '%s', transportId: '%s'.",
                 changeID, transportID));
@@ -255,7 +293,13 @@ public class CMODataClient implements AutoCloseable {
         return _createDevelopmentTransport(changeID, "createTransport", "?ChangeID='" + changeID + "'");
     }
 
-    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String description, String owner) throws Exception {
+    /**
+     * Creates a transport with description and owner.
+     * @param changeID The identifier of the change for that the transport is created.
+     * @return An instance representing the transport.
+     * @throws CMODataClientException In case the transport could not be created.
+     */
+    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String description, String owner) throws CMODataClientException {
         return _createDevelopmentTransport(changeID, "createTransportAdvanced", "?ChangeID='" + changeID + "'" + "&Description='" + description + "'" + "&Owner='" + owner + "'");
     }
 
@@ -277,6 +321,10 @@ public class CMODataClient implements AutoCloseable {
         //not sure if there are other resources ...
     }
 
+    /**
+     * Checks if the client has been closed.
+     * @return <code>true</code> if the client has been closed. <code>false</code> otherwise.
+     */
     public boolean isClosed() {
         synchronized (this.client) {
             return isClosed;
@@ -412,11 +460,20 @@ public class CMODataClient implements AutoCloseable {
         return value.toString();
     }
 
+    /**
+     * 
+     * @return A string denoting the project version.
+     */
     public static String getShortVersion() {
         Properties vProps = getVersionProperties();
         return (vProps == null) ? "<n/a>" : vProps.getProperty("mvnProjectVersion", "<n/a>");
     }
 
+    /**
+     * 
+     * @return A string denoting the project version and the identifier of the git commit which was
+     *         the basis for the build.
+     */
     public static String getLongVersion() {
         Properties vProps = getVersionProperties();
         return (vProps == null) ? "<n/a>" : format("%s : %s",
