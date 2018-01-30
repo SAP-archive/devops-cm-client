@@ -22,6 +22,11 @@ import org.slf4j.LoggerFactory;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+/**
+ * Command for for retrieving the transport of a change. Depending on the options
+ * handed over to that command only the mofifiable transports are
+ * returned.
+ */
 @CommandDescriptor(name="get-transports")
 class GetChangeTransports extends Command {
 

@@ -31,12 +31,18 @@ import com.google.common.collect.Sets;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
+/**
+ * Helpers for using/calling commands.
+ */
 class Commands {
 
     final static private Logger logger = LoggerFactory.getLogger(Commands.class);
     private final static String DASH = "-";
     private final static String TWO_DASHES = DASH+DASH;
 
+    /**
+     * The common command line options used by all commands.
+     */
     static class CMOptions {
 
         static Option USER = new Option("u", "user", true, "Service user."),
@@ -58,6 +64,9 @@ class Commands {
         }
     }
 
+    /**
+     * Common helper methods.
+     */
     static class Helpers {
 
         static Options getStandardOptions() {
@@ -138,7 +147,7 @@ class Commands {
         }
 
         /**
-         * 
+         * @param args The <code>args</code> array handed over to the command.
          * @return A copy of <code>args</code>. The password parameter, identified by a preceding
          *         <code>-p</code> is replaced by asterisks.
          */

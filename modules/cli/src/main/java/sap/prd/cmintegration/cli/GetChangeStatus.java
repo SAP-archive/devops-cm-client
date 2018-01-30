@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
+/**
+ * Command for retrieving the status of a change.
+ */
 @CommandDescriptor(name = "is-change-in-development")
 class GetChangeStatus extends Command {
 
