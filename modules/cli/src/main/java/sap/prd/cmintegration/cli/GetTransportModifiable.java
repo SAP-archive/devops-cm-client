@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+/**
+ *  Checks if a transport is modifiable.
+ */
 @CommandDescriptor(name="is-transport-modifiable")
 class GetTransportModifiable extends TransportRelated {
 
@@ -20,7 +23,7 @@ class GetTransportModifiable extends TransportRelated {
 
     /**
      * @return A predicate returning <code>true</code> in same something was written to <code>stdout</code>.
-     * <Otherwise <code>false</code>.
+     * Otherwise <code>false</code>.
      */
     protected Predicate<CMODataTransport> getOutputPredicate() {
         return it -> { System.out.println(it.isModifiable()); 

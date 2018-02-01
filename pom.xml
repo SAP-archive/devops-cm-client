@@ -17,6 +17,21 @@
       <url>http://github.com/SAP/devops-cm-client/tree/master</url>
     </scm>
 
+    <developers>
+      <developer>
+        <name>Thomas Hoffmann</name>
+        <email>tho.hoffmann@sap.com</email>
+        <organization>SAP</organization>
+        <organizationUrl>http://www.sap.com</organizationUrl>
+      </developer>
+      <developer>
+        <name>Marcus Holl</name>
+        <email>marcus.holl@sap.com</email>
+        <organization>SAP</organization>
+        <organizationUrl>http://www.sap.com</organizationUrl>
+      </developer>
+    </developers>
+
     <url>http://github.com/SAP/devops-cm-client/</url>
 
     <licenses>
@@ -86,6 +101,35 @@
           <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.6.2</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>generate-javadoc</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              <configuration>
+                <noqualifier>all</noqualifier>
+              </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </pluginManagement>

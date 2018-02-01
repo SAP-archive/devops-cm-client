@@ -17,6 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
+/**
+ * Command for releasing a transport.
+ */
 @CommandDescriptor(name="release-transport")
 class ReleaseTransport extends Command {
 

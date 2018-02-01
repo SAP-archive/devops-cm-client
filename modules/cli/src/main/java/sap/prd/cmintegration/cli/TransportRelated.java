@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+/**
+ * Base class for all transport related commands.
+ */
 abstract class TransportRelated extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);

@@ -1,5 +1,11 @@
 package sap.prd.cmintegration.cli;
 
+/**
+ * Used in case a status is encounter where any further processing inside
+ * the command line client does not make sense. The exit code transported
+ * alongside with this exception is used as exit code of the Java Virtual
+ * Machine.
+ */
 class ExitException extends CMCommandLineException {
 
     private static final long serialVersionUID = -3269137608207801150L;

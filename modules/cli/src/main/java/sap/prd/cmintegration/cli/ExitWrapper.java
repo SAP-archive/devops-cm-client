@@ -3,6 +3,11 @@ package sap.prd.cmintegration.cli;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Launcher class which launches another class and handels {@link ExitException}s. In case
+ * an ExitExcpetion is encountered the exit code contained in that exception is used
+ * as return code when exiting the Java Virtual Machine.
+ */
 class ExitWrapper {
     final static private Logger logger = LoggerFactory.getLogger(ExitWrapper.class);
     public final static void main(String[] args) throws Exception {

@@ -10,6 +10,15 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.olingo.client.core.http.BasicAuthHttpClientFactory;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
+/**
+ * Our own factory for http clients.
+ * We set
+ *   <ul>
+ *     <li>We set a cookie store
+ *     <li>We set the USER_AGENT header in order to be able to identify requests performed
+ *         by the client (and the corresponding client version) on the server side.
+ *   </ul>
+ */
 public class CMOdataHTTPFactory extends BasicAuthHttpClientFactory {
 
     private final CookieStore cookieStore;

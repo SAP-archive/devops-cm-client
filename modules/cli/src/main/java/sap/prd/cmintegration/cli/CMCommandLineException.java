@@ -1,5 +1,9 @@
 package sap.prd.cmintegration.cli;
 
+/**
+ * Root for all exceptions related to the command line client in the
+ * narrower sense.
+ */
 class CMCommandLineException extends RuntimeException {
 
     private static final long serialVersionUID = 5251372712902531523L;
