@@ -18,7 +18,7 @@ before_install:
 - gpg --fast-import cfg/codesigning.asc
 deploy:
   provider: script
-  script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=sonatype::default::file:remoteRepo
+  script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::file:remoteRepo
   on:
     branch: release
 
