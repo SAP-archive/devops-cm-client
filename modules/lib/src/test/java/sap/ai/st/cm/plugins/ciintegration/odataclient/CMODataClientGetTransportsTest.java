@@ -110,7 +110,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     public void testGetTransportsChangeIdNotProvided() throws Exception {
 
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("ChangeID was null or empty");
+        thrown.expectMessage("changeID was null or empty");
 
         setMock(examinee, setupMock());
 

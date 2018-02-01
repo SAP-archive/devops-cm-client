@@ -20,6 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
 
+/**
+ * Command for uploading a file into a transport.
+ */
 @CommandDescriptor(name="upload-file-to-transport")
 class UploadFileToTransport extends Command {
 

@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+/**
+ *  Checks if a transport is modifiable.
+ */
 @CommandDescriptor(name="is-transport-modifiable")
 class GetTransportModifiable extends TransportRelated {
 

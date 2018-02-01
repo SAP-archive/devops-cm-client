@@ -1,5 +1,8 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+/**
+ * Data transfer Object representing a Change.
+ */
 public class CMODataChange {
     
     private final String ChangeID;

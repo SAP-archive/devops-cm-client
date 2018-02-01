@@ -119,6 +119,9 @@
                 <goals>
                   <goal>jar</goal>
                 </goals>
+              <configuration>
+                <noqualifier>all</noqualifier>
+              </configuration>
               </execution>
             </executions>
           </plugin>

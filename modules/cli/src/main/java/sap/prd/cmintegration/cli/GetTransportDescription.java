@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
+/**
+ * Command for retrieving the description of a transport.
+ */
 @CommandDescriptor(name="get-transport-description")
 class GetTransportDescription extends TransportRelated {
 

@@ -1,5 +1,9 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+/**
+ * Root of the exception hierarchy for all exceptions specific
+ * to the CMODataClient.
+ */
 public class CMODataClientException extends Exception {
 
     private static final long serialVersionUID = -404548464645983071L;

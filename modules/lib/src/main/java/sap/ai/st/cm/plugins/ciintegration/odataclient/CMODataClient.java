@@ -21,6 +21,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.olingo.client.api.ODataClient;
+import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.apache.olingo.client.api.communication.request.ODataPayloadManager;
 import org.apache.olingo.client.api.communication.request.invoke.ODataInvokeRequest;
 import org.apache.olingo.client.api.communication.request.retrieve.ODataEntityRequest;
@@ -44,6 +45,9 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
 
+/**
+ * OData client for handling connections to SAP solution manager.
+ */
 public class CMODataClient implements AutoCloseable {
 
     private final static Logger logger = LoggerFactory.getLogger(CMODataClient.class);
@@ -67,12 +71,19 @@ public class CMODataClient implements AutoCloseable {
         logger.debug(format("CMClient instanciated for host '%s' with service user '%s'.", serviceUrl, serviceUser));
     }
 
-    public CMODataChange getChange(String ChangeID) {
+    /**
+     * Retrieves a change
+     * @param changeID The identifier of the change which should be retrieved.
+     * @return The change represented by <code>changeID</code>.
+     * @throws ODataClientErrorException with status code 404 in case no matching change could be resolved.
+     * @throws IllegalStateException in case the client has been closed.
+     */
+    public CMODataChange getChange(String changeID) {
 
-        logger.trace(format("Entering 'getChange'. ChangeID: '%s'.", ChangeID));
+        logger.trace(format("Entering 'getChange'. changeID: '%s'.", changeID));
         checkClosed();
 
-        URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes").appendKeySegment(ChangeID).build();
+        URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes").appendKeySegment(changeID).build();
 
         ODataEntityRequest<ClientEntity> request = this.client.getRetrieveRequestFactory().getEntityRequest(entityUri);
 
@@ -83,35 +94,42 @@ public class CMODataClient implements AutoCloseable {
             response = request.execute();
             ClientEntity body = response.getBody();
             String changeId = body.getProperty("ChangeID").getValue().toString();
-            if(!ChangeID.equals(changeId))
+            if(!changeID.equals(changeId))
                 throw new RuntimeException(
-                    format("ChangeId contained in server response ('%s') does not match request change (%s).", changeId, ChangeID));
+                    format("ChangeId contained in server response ('%s') does not match request change (%s).", changeId, changeID));
             boolean isInDevelopment = Boolean.valueOf(body.getProperty("IsInDevelopment").getValue().toString());
-            logger.debug(format("Change '%s' found. isInDevelopment: '%b'", ChangeID, isInDevelopment));
-            return new CMODataChange(ChangeID, isInDevelopment);
+            logger.debug(format("Change '%s' found. isInDevelopment: '%b'", changeID, isInDevelopment));
+            return new CMODataChange(changeID, isInDevelopment);
         } catch(RuntimeException e) {
-            logger.error(format("%s caught while getting change '%s'.", e.getClass().getName(), ChangeID), e);
+            logger.error(format("%s caught while getting change '%s'.", e.getClass().getName(), changeID), e);
             throw e;
         } finally {
             if(response != null) {
                 response.close();
             }
-            logger.trace(format("Exiting 'getChange'. ChangeID: '%s'.", ChangeID));
+            logger.trace(format("Exiting 'getChange'. changeID: '%s'.", changeID));
         }
     }
 
-    public ArrayList<CMODataTransport> getChangeTransports(String ChangeID) {
+    /**
+     * Retrieves all transports assigned to the change with id <code>changeId</code>
+     * @throws IllegalStateException in case the client has been closed.
+     * @throws IllegalArgumentException in case <code>changeID</code> is null or empty.
+     * @throws ODataClientErrorException with status code 400 in case no matching 
+     *   <code>changeId</code> does exist.
+     */
+    public ArrayList<CMODataTransport> getChangeTransports(String changeID) {
 
-        logger.trace(format("Entering 'getChangeTransports'. ChangeID: '%s'.", ChangeID));
+        logger.trace(format("Entering 'getChangeTransports'. changeID: '%s'.", changeID));
 
         checkClosed();
 
-        checkArgument(!isBlank(ChangeID), format("ChangeID was null or empty: '%s'.", ChangeID));
+        checkArgument(!isBlank(changeID), format("changeID was null or empty: '%s'.", changeID));
 
         URI entityUri = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Changes")
-            .appendKeySegment(ChangeID).appendNavigationSegment("Transports").build();
+            .appendKeySegment(changeID).appendNavigationSegment("Transports").build();
 
-        logger.debug(format("Entity URI for getting transports for change id '%s': '%s'.", ChangeID, entityUri.toASCIIString()));
+        logger.debug(format("Entity URI for getting transports for change id '%s': '%s'.", changeID, entityUri.toASCIIString()));
         ODataEntitySetIteratorRequest<ClientEntitySet, ClientEntity> request = this.client.getRetrieveRequestFactory().getEntitySetIteratorRequest(entityUri);
 
         request.setAccept(contentType.toContentTypeString());
@@ -126,46 +144,57 @@ public class CMODataClient implements AutoCloseable {
             ArrayList<CMODataTransport> transportList = new ArrayList<>();
 
             while (iterator.hasNext()) {
-                transportList.add(toTransport(ChangeID, iterator.next()));
+                transportList.add(toTransport(changeID, iterator.next()));
             }
 
             if(transportList.isEmpty()) {
-                logger.debug(format("No transports found for change document '%s'.", ChangeID));
+                logger.debug(format("No transports found for change document '%s'.", changeID));
             } else {
-                logger.debug(format("%d transports found for change document '%s'.", transportList.size(), ChangeID));
+                logger.debug(format("%d transports found for change document '%s'.", transportList.size(), changeID));
             }
             return transportList;
         } catch(RuntimeException e) {
             logger.error(format("%s caught while retrieving transports for change document '%s'.",
-                e.getClass().getName(), ChangeID));
+                e.getClass().getName(), changeID));
             throw e;
         } finally {
             if(response != null) {
                 response.close();
             }
-            logger.trace(format("Exiting 'getChangeTransports'. ChangeID: '%s'.", ChangeID));
+            logger.trace(format("Exiting 'getChangeTransports'. changeID: '%s'.", changeID));
         }
     }
 
-    public void uploadFileToTransport(String ChangeID, String TransportID, String filePath, String ApplicationID) throws IOException, CMODataClientException {
+    /**
+     * Uploads a file into a transport
+     * @param changeID The identifier of the change to that the transport request is assigned to.
+     * @param transportID The identifier of the transport receiving the file denoted by <code>filePath</code>.
+     * @param filePath An absolute or relative path denoting the file which should be uploaded.
+     * @param applicationID An identifier used in the backend in order to decide how the upload 
+     *          is processed.
+     * @throws IllegalStateException in case the client has been closed.
+     * @throws CMODataClientException In case the file denoted by <code>filePath</code> cannot be resolved.
+     * @throws IOException In case of problems with reading the file denoted by <code>filePath</code>.
+     */
+    public void uploadFileToTransport(String changeID, String transportID, String filePath, String applicationID) throws IOException, CMODataClientException {
         logger.trace(format("Entering 'uploadFileToTransport'. ChangeID: '%s', TransportId: '%s', FilePath: '%s', ApplicationId: '%s'.",
-                ChangeID, TransportID, filePath, ApplicationID));
+                changeID, transportID, filePath, applicationID));
         checkClosed();
 
         File file = new File(filePath);
 
         if(!file.canRead()) {
-            throw new CMODataClientException(format("Cannot upload file '%s' to transport '%s'. File cannot be read.", file.getAbsolutePath(), TransportID));
+            throw new CMODataClientException(format("Cannot upload file '%s' to transport '%s'. File cannot be read.", file.getAbsolutePath(), transportID));
         }
 
         URIBuilder uribuilder = this.client.newURIBuilder(serviceUrl).appendEntitySetSegment("Files");
 
         URI fileStreamUri = uribuilder.build();
 
-        fileStreamUri = URI.create(fileStreamUri.toString() + "(ChangeID='" + ChangeID + "',TransportID='" + TransportID + "',FileID='" + file.getName() + "',ApplicationID='" + ApplicationID + "')");
+        fileStreamUri = URI.create(fileStreamUri.toString() + "(ChangeID='" + changeID + "',TransportID='" + transportID + "',FileID='" + file.getName() + "',ApplicationID='" + applicationID + "')");
 
         logger.debug(format("File stream URI for uploading file '%s' to transport '%s' for change id '%s': '%s'.",
-            file.getAbsolutePath(), ChangeID, TransportID,  fileStreamUri.toASCIIString()));
+            file.getAbsolutePath(), changeID, transportID,  fileStreamUri.toASCIIString()));
 
         ODataResponse createMediaResponse = null;
         try (FileInputStream fileStream = new FileInputStream(file)) {
@@ -193,36 +222,45 @@ public class CMODataClient implements AutoCloseable {
             checkStatus(createMediaResponse, 204);
 
             logger.debug(format("File '%s' uploaded to transport '%s' for change id '%s' with application id '%s'.",
-                    filePath, TransportID, ChangeID, ApplicationID));
+                    filePath, transportID, changeID, applicationID));
 
         } catch(IOException | CMODataClientException | RuntimeException e) {
             logger.error(format("%s caught while uploading file '%s' to transport '%s' for change id '%s' with application id '%s'.",
-                    e.getClass().getName(), filePath, TransportID, ChangeID, ApplicationID));
+                    e.getClass().getName(), filePath, transportID, changeID, applicationID));
             throw e;
         } finally {
             if(createMediaResponse != null) {
                 createMediaResponse.close();
             }
-            logger.trace(format("Exiting 'uploadFileToTransport'. ChangeID: '%s', TransportId: '%s', FilePath: '%s', ApplicationId: '%s'.",
-                    ChangeID, TransportID, filePath, ApplicationID));
+            logger.trace(format("Exiting 'uploadFileToTransport'. changeID: '%s', transportId: '%s', filePath: '%s', applicationId: '%s'.",
+                    changeID, transportID, filePath, applicationID));
 
         }
     }
 
-    public void releaseDevelopmentTransport(String ChangeID, String TransportID) throws CMODataClientException {
+    /**
+     * Releases a transport.
+     * @param changeID The identifier of the change to that the transport is assigned to.
+     * @param transportID The identfier of the transport that is released.
+     * @throws IllegalStateException in case the client has been closed.
+     * @throws IllegalArgumentException in case either <code>changeId</code> or <code>transportId</code>
+     *           or both are null or empty.
+     * @throws CMODataClientException In case the transport could not be releases successfully. 
+     */
+    public void releaseDevelopmentTransport(String changeID, String transportID) throws RuntimeException, CMODataClientException {
 
-        logger.trace(format("Entering 'releaseDevelopmentTransport'. ChangeID: '%s', TransportId: '%s'.",
-                ChangeID, TransportID));
+        logger.trace(format("Entering 'releaseDevelopmentTransport'. changeID: '%s', transportId: '%s'.",
+                changeID, transportID));
 
         checkClosed();
 
-        if(StringUtils.isBlank(ChangeID)) throw new IllegalArgumentException(format("ChangeID is null or blank: '%s'.", ChangeID));
-        if(StringUtils.isBlank(TransportID)) throw new IllegalArgumentException(format("TransportID is null or blank: '%s'.", TransportID));
+        if(StringUtils.isBlank(changeID)) throw new IllegalArgumentException(format("ChangeID is null or blank: '%s'.", changeID));
+        if(StringUtils.isBlank(transportID)) throw new IllegalArgumentException(format("TransportID is null or blank: '%s'.", transportID));
 
-        URI functionUri = getFunctionURI("releaseTransport", "?ChangeID='" + ChangeID + "'" + "&TransportID='" + TransportID + "'");
+        URI functionUri = getFunctionURI("releaseTransport", "?ChangeID='" + changeID + "'" + "&TransportID='" + transportID + "'");
 
         logger.debug(format("Function URI for releassing transport '%s' for change id '%s': '%s'.",
-           TransportID, ChangeID, functionUri.toASCIIString()));
+           transportID, changeID, functionUri.toASCIIString()));
 
         ODataInvokeRequest<ClientEntity> functionInvokeRequest = this.client.getInvokeRequestFactory().getFunctionInvokeRequest(functionUri, ClientEntity.class);
 
@@ -231,26 +269,38 @@ public class CMODataClient implements AutoCloseable {
         try {
             response = executeRequest(functionInvokeRequest, 200);
             logger.debug(format("Transport request '%s' for change document '%s' released.",
-                    TransportID, ChangeID));
+                    transportID, changeID));
         } catch(CMODataClientException | RuntimeException e) {
             logger.error(format("%s caught while releasing transport '%s' for change document '%s'.",
-                e.getClass().getName(), TransportID, ChangeID));
+                e.getClass().getName(), transportID, changeID));
             throw e;
         } finally {
             if(response != null) {
                 response.close();
-                logger.trace(format("Exiting 'releaseDevelopmentTransport'. ChangeID: '%s', TransportId: '%s'.",
-                        ChangeID, TransportID));
+                logger.trace(format("Exiting 'releaseDevelopmentTransport'. changeID: '%s', transportId: '%s'.",
+                        changeID, transportID));
             }
         }
     }
 
-    public CMODataTransport createDevelopmentTransport(String ChangeID) throws Exception {
-        return _createDevelopmentTransport(ChangeID, "createTransport", "?ChangeID='" + ChangeID + "'");
+    /**
+     * Creates a transport without description and owner.
+     * @param changeID The identifier of the change for that the transport is created.
+     * @return An instance representing the transport.
+     * @throws CMODataClientException In case the transport could not be created.
+     */
+    public CMODataTransport createDevelopmentTransport(String changeID) throws CMODataClientException {
+        return _createDevelopmentTransport(changeID, "createTransport", "?ChangeID='" + changeID + "'");
     }
 
-    public CMODataTransport createDevelopmentTransportAdvanced(String ChangeID, String Description, String Owner) throws Exception {
-        return _createDevelopmentTransport(ChangeID, "createTransportAdvanced", "?ChangeID='" + ChangeID + "'" + "&Description='" + Description + "'" + "&Owner='" + Owner + "'");
+    /**
+     * Creates a transport with description and owner.
+     * @param changeID The identifier of the change for that the transport is created.
+     * @return An instance representing the transport.
+     * @throws CMODataClientException In case the transport could not be created.
+     */
+    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String description, String owner) throws CMODataClientException {
+        return _createDevelopmentTransport(changeID, "createTransportAdvanced", "?ChangeID='" + changeID + "'" + "&Description='" + description + "'" + "&Owner='" + owner + "'");
     }
 
     /**
@@ -271,25 +321,29 @@ public class CMODataClient implements AutoCloseable {
         //not sure if there are other resources ...
     }
 
+    /**
+     * Checks if the client has been closed.
+     * @return <code>true</code> if the client has been closed. <code>false</code> otherwise.
+     */
     public boolean isClosed() {
         synchronized (this.client) {
             return isClosed;
         }
     }
 
-    static CMODataTransport toTransport(String ChangeID, ClientEntity transportEntity) {
+    static CMODataTransport toTransport(String changeID, ClientEntity transportEntity) {
 
         String transportId = getValueAsString("TransportID", transportEntity);
-        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", ChangeID));
+        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID));
 
         String bModifiable = getValueAsString("IsModifiable", transportEntity);
-        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", ChangeID));
+        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID));
 
         String description = getValueAsString("Description", transportEntity);
         String owner = getValueAsString("Owner", transportEntity);
 
         logger.debug(format("Transport '%s' retrieved for change document '%s'. isModifiable: '%s', Owner: '%s' ,Description: '%s'.",
-            transportId, ChangeID, bModifiable, owner, description));
+            transportId, changeID, bModifiable, owner, description));
 
         return new CMODataTransport(
                 transportId,
@@ -307,10 +361,10 @@ public class CMODataClient implements AutoCloseable {
         }
     }
 
-    private CMODataTransport _createDevelopmentTransport(String ChangeID, String segment, String query) throws CMODataClientException {
+    private CMODataTransport _createDevelopmentTransport(String changeID, String segment, String query) throws CMODataClientException {
 
         logger.trace(format("Entering '_createDevelopmentTransport'. ChangeID: '%s', Segment: '%s', Query: '%s'.",
-                ChangeID, segment, query));
+                changeID, segment, query));
 
         checkClosed();
 
@@ -326,18 +380,18 @@ public class CMODataClient implements AutoCloseable {
             CMODataTransport transport = toTransport("", response.getBody());
 
             logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Description: '%s', Owner: '%s'.",
-                    transport.getTransportID(), ChangeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));
+                    transport.getTransportID(), changeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));
 
             return transport;
         } catch(CMODataClientException | RuntimeException e) {
-            logger.error(format("%s caught while creating transport for change '%s'.", e.getClass().getName(), ChangeID));
+            logger.error(format("%s caught while creating transport for change '%s'.", e.getClass().getName(), changeID));
             throw e;
         } finally {
             if(response != null) {
                 response.close();
             }
             logger.trace(format("Exiting '_createDevelopmentTransport'. ChangeID: '%s', Segment: '%s', Query: '%s'.",
-                    ChangeID, segment, query));
+                    changeID, segment, query));
         }
     }
 
@@ -406,11 +460,20 @@ public class CMODataClient implements AutoCloseable {
         return value.toString();
     }
 
+    /**
+     * 
+     * @return A string denoting the project version.
+     */
     public static String getShortVersion() {
         Properties vProps = getVersionProperties();
         return (vProps == null) ? "<n/a>" : vProps.getProperty("mvnProjectVersion", "<n/a>");
     }
 
+    /**
+     * 
+     * @return A string denoting the project version and the identifier of the git commit which was
+     *         the basis for the build.
+     */
     public static String getLongVersion() {
         Properties vProps = getVersionProperties();
         return (vProps == null) ? "<n/a>" : format("%s : %s",
