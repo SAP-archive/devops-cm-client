@@ -5,6 +5,7 @@
     <artifactId>module</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <description>Command line client that can interact with SAP systems to run change management tasks.</description>
 
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
