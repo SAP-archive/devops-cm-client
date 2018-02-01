@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-            <groupId>com.sap.prd.ci.integration</groupId>
+            <groupId>com.sap.devops.cmclient</groupId>
             <artifactId>module</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <relativePath>../..</relativePath>
