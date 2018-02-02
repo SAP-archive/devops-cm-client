@@ -17,11 +17,14 @@ before_install:
   -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
 - gpg --fast-import cfg/codesigning.asc
 deploy:
-  provider: script
-  script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/service/local/staging/deploy/maven2
-  on:
-    branch: release
-
+  - provider: script
+    script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/service/local/staging/deploy/maven2
+    on:
+      branch: release
+  - provider: script
+    script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/content/repositories/snapshots
+    on:
+      branch: master
 
 env:
   global:
