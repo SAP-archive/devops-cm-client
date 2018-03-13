@@ -66,16 +66,6 @@ public class CMODataClient {
 
     public void getTransport() throws IOException, EntityProviderException, EdmException {
 
-        
-        final Edm edm;
-        try (CloseableHttpClient edmClient = clientFactory.createClient()) {
-
-            edm = EntityProvider.readMetadata(
-                    edmClient.execute(
-                            new HttpGet(endpoint.toASCIIString() + "/" + "$metadata")
-                    ).getEntity().getContent(), false);
-        }
-
         final ODataEntry transport;
 
         try (CloseableHttpClient client = clientFactory.createClient()) {
@@ -85,12 +75,23 @@ public class CMODataClient {
             checkStatusCode(response, SC_OK, SC_NOT_FOUND);
 
             transport = EntityProvider.readEntry("application/xml",
-                                                 edm.getDefaultEntityContainer().getEntitySet("Transports"),
+                                                 getEntityDataModel().getDefaultEntityContainer().getEntitySet("Transports"),
                                                  is,
                                                  EntityProviderReadProperties.init().build());
         }
 
         System.out.println(transport);
+    }
+
+    private Edm getEntityDataModel() throws IOException, EntityProviderException {
+
+        try (CloseableHttpClient edmClient = clientFactory.createClient()) {
+
+            return EntityProvider.readMetadata(
+                   edmClient.execute(
+                       new HttpGet(endpoint.toASCIIString() + "/" + "$metadata")
+                   ).getEntity().getContent(), false);
+        }
     }
 
     private static void checkStatusCode(HttpResponse response, int...  expected) {
