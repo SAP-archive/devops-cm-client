@@ -1,6 +1,7 @@
 package com.sap.cmclient.http;
 
 import static com.google.common.primitives.Ints.asList;
+import static java.lang.String.format;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
@@ -13,6 +14,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -67,41 +69,43 @@ public class CMODataClient {
         System.out.println(transport);
     }
 
-    public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException {
+    public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
 
         final String entityKey = "Transports";
 
         try (CloseableHttpClient client = clientFactory.createClient()) {
             HttpUriRequest get = new HttpGet(endpoint + "/" + entityKey + "('" + transportId + "')");
-            HttpResponse response = client.execute(get);
-            checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
-            if(Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
-                return TransportMarshaller.get(EntityProvider.readEntry("application/xml",
+            get.setHeader("Accept-Encoding", "identity");
+            try (CloseableHttpResponse response = client.execute(get)) {
+                checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
+                if(Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
+                    return TransportMarshaller.get(EntityProvider.readEntry("application/xml",
                                         getEntityDataModel().getDefaultEntityContainer().getEntitySet(entityKey),
                                         response.getEntity().getContent(),
                                         EntityProviderReadProperties.init().build()));
+
+                }
             }
 
             return null;
         }
     }
 
-    private Edm getEntityDataModel() throws IOException, EntityProviderException {
+    private Edm getEntityDataModel() throws IOException, EntityProviderException, UnexpectedHttpResponseException {
 
         try (CloseableHttpClient edmClient = clientFactory.createClient()) {
-
-            return EntityProvider.readMetadata(
-                   edmClient.execute(
-                       new HttpGet(endpoint.toASCIIString() + "/" + "$metadata")
-                   ).getEntity().getContent(), false);
+            try (CloseableHttpResponse response = edmClient.execute(new HttpGet(endpoint.toASCIIString() + "/" + "$metadata"))) {
+                checkStatusCode(response, SC_OK);
+                return EntityProvider.readMetadata(response.getEntity().getContent(), false);
+            }
         }
     }
 
-    private static void checkStatusCode(HttpResponse response, int...  expected) {
+    private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException {
 
         if( ! asList(expected).contains(response.getStatusLine().getStatusCode())) {
-            // TODO: maybe dedicated exception ...
-            throw new RuntimeException(String.format("Unexpected response code %d", response.getStatusLine().getStatusCode()));
+            throw new UnexpectedHttpResponseException(format("Unexpected response code %d", response.getStatusLine().getStatusCode()),
+                                            response.getStatusLine());
         }
     }
 

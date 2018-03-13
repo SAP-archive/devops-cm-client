@@ -100,5 +100,4 @@ public class Transport {
         return "Transport [id=" + id + ", owner=" + owner + ", description=" + description + ", targetSystem="
                 + targetSystem + ", status=" + status + ", type=" + type + "]";
     }
-
 }
