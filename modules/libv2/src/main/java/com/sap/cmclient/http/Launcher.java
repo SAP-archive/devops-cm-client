@@ -11,11 +11,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.olingo.odata2.api.edm.Edm;
 import org.apache.olingo.odata2.api.ep.EntityProvider;
 import org.apache.olingo.odata2.api.ep.EntityProviderReadProperties;
@@ -51,24 +51,29 @@ public class Launcher {
 
         HttpClientFactory clientFactory = new HttpClientFactory(sessionCookieStore, basicCredentialsProvider);
 
-        HttpClient edmClient = clientFactory.createClient();
+        final Edm edm;
+        try (CloseableHttpClient edmClient = clientFactory.createClient()) {
 
-        HttpUriRequest emdGet = new HttpGet(endpoint.toASCIIString() + "/" + "$metadata");
+            edm = EntityProvider.readMetadata(
+                    edmClient.execute(
+                            new HttpGet(endpoint.toASCIIString() + "/" + "$metadata")
+                    ).getEntity().getContent(), false);
+        }
 
-        Edm edm = EntityProvider.readMetadata(edmClient.execute(emdGet).getEntity().getContent(), false);
+        final ODataEntry transport;
 
-        HttpClient client = clientFactory.createClient();
+        try (CloseableHttpClient client = clientFactory.createClient()) {
+            HttpUriRequest get = new HttpGet(endpoint + "/" + "Transports('A5DK900014')");
+            HttpResponse response = client.execute(get);
+            InputStream is = response.getEntity().getContent();
+            checkStatusCode(response, SC_OK, SC_NOT_FOUND);
 
-        HttpUriRequest get = new HttpGet(endpoint + "/" + "Transports('A5DK900014')");
-        HttpResponse response = client.execute(get);
-        InputStream is = response.getEntity().getContent();
+            transport = EntityProvider.readEntry("application/xml",
+                                                 edm.getDefaultEntityContainer().getEntitySet("Transports"),
+                                                 is,
+                                                 EntityProviderReadProperties.init().build());
+        }
 
-        checkStatusCode(response, SC_OK, SC_NOT_FOUND);
-
-        ODataEntry transport = EntityProvider.readEntry("application/xml",
-                edm.getDefaultEntityContainer().getEntitySet("Transports"),
-                is,
-                EntityProviderReadProperties.init().build());
         System.out.println(transport);
     }
 

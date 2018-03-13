@@ -3,7 +3,7 @@ package com.sap.cmclient.http;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 public class HttpClientFactory {
@@ -16,7 +16,7 @@ public class HttpClientFactory {
         this.credentialsProvider = credentialsProvider;
     }
 
-    HttpClient createClient() {
+    CloseableHttpClient createClient() {
 
         HttpClientBuilder builder = HttpClientBuilder.create();
         builder.setDefaultCookieStore(cookieStore);
