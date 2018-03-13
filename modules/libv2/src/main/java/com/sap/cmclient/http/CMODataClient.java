@@ -5,9 +5,9 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -23,7 +23,9 @@ import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.ep.EntityProvider;
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
 import org.apache.olingo.odata2.api.ep.EntityProviderReadProperties;
-import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
+
+import com.sap.cmclient.dto.Transport;
+import com.sap.cmclient.dto.TransportMarshaller;
 
 public class CMODataClient {
 
@@ -61,28 +63,27 @@ public class CMODataClient {
     // -Dorg.apache.commons.logging.simplelog.log.org.apache.http.wire=DEBUG
 
     public final static void main(String[] args) throws Exception {
-        new CMODataClient(args[0], args[1], args[2]).getTransport();
+        Transport transport = new CMODataClient(args[0], args[1], args[2]).getTransport("A5DK900014");
+        System.out.println(transport);
     }
 
-    public void getTransport() throws IOException, EntityProviderException, EdmException {
-
-        final ODataEntry transport;
+    public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException {
 
         final String entityKey = "Transports";
 
         try (CloseableHttpClient client = clientFactory.createClient()) {
-            HttpUriRequest get = new HttpGet(endpoint + "/" + entityKey + "('A5DK900014')");
+            HttpUriRequest get = new HttpGet(endpoint + "/" + entityKey + "('" + transportId + "')");
             HttpResponse response = client.execute(get);
-            InputStream is = response.getEntity().getContent();
-            checkStatusCode(response, SC_OK, SC_NOT_FOUND);
+            checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
+            if(Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
+                return TransportMarshaller.get(EntityProvider.readEntry("application/xml",
+                                        getEntityDataModel().getDefaultEntityContainer().getEntitySet(entityKey),
+                                        response.getEntity().getContent(),
+                                        EntityProviderReadProperties.init().build()));
+            }
 
-            transport = EntityProvider.readEntry("application/xml",
-                                                 getEntityDataModel().getDefaultEntityContainer().getEntitySet(entityKey),
-                                                 is,
-                                                 EntityProviderReadProperties.init().build());
+            return null;
         }
-
-        System.out.println(transport);
     }
 
     private Edm getEntityDataModel() throws IOException, EntityProviderException {
