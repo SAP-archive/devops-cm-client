@@ -68,14 +68,16 @@ public class CMODataClient {
 
         final ODataEntry transport;
 
+        final String entityKey = "Transports";
+
         try (CloseableHttpClient client = clientFactory.createClient()) {
-            HttpUriRequest get = new HttpGet(endpoint + "/" + "Transports('A5DK900014')");
+            HttpUriRequest get = new HttpGet(endpoint + "/" + entityKey + "('A5DK900014')");
             HttpResponse response = client.execute(get);
             InputStream is = response.getEntity().getContent();
             checkStatusCode(response, SC_OK, SC_NOT_FOUND);
 
             transport = EntityProvider.readEntry("application/xml",
-                                                 getEntityDataModel().getDefaultEntityContainer().getEntitySet("Transports"),
+                                                 getEntityDataModel().getDefaultEntityContainer().getEntitySet(entityKey),
                                                  is,
                                                  EntityProviderReadProperties.init().build());
         }
