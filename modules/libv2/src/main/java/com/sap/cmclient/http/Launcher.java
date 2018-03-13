@@ -1,5 +1,9 @@
 package com.sap.cmclient.http;
 
+import static com.google.common.primitives.Ints.asList;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
+import static org.apache.http.HttpStatus.SC_OK;
+
 import java.io.InputStream;
 import java.net.URI;
 
@@ -12,6 +16,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.olingo.odata2.api.edm.Edm;
+import org.apache.olingo.odata2.api.ep.EntityProvider;
+import org.apache.olingo.odata2.api.ep.EntityProviderReadProperties;
+import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
 
 public class Launcher {
 
@@ -41,22 +49,36 @@ public class Launcher {
                 new AuthScope(uri.getHost(), uri.getPort()),
                 new UsernamePasswordCredentials(args[1], args[2]));
 
-        HttpClient client = new HttpClientFactory(sessionCookieStore, basicCredentialsProvider).createClient();
+        HttpClientFactory clientFactory = new HttpClientFactory(sessionCookieStore, basicCredentialsProvider);
+
+        HttpClient edmClient = clientFactory.createClient();
+
+        HttpUriRequest emdGet = new HttpGet("http://wdflbmd16301.wdf.sap.corp:8000/sap/opu/odata/SAP/SCTS_CLOUD_API_ODATA_SRV" + "/" + "$metadata");
+
+        Edm edm = EntityProvider.readMetadata(edmClient.execute(emdGet).getEntity().getContent(), false);
+
+        HttpClient client = clientFactory.createClient();
 
         HttpUriRequest get = new HttpGet(uri);
         HttpResponse response = client.execute(get);
         InputStream is = response.getEntity().getContent();
 
         System.out.println(response.getStatusLine());
+        checkStatusCode(response, SC_OK, SC_NOT_FOUND);
 
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        while((i = is.read()) != -1) {
-            sb.append((char) i );
+        ODataEntry transport = EntityProvider.readEntry("application/xml",
+                edm.getDefaultEntityContainer().getEntitySet("Transports"),
+                is,
+                EntityProviderReadProperties.init().build());
+        System.out.println(transport);
+    }
+
+    private static void checkStatusCode(HttpResponse response, int...  expected) {
+
+        if( ! asList(expected).contains(response.getStatusLine().getStatusCode())) {
+            // TODO: maybe dedicated exception ...
+            throw new RuntimeException(String.format("Unexpected response code %d", response.getStatusLine().getStatusCode()));
         }
-
-        System.out.println(sb.toString());
-
     }
 
 }

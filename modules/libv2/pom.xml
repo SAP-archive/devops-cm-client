@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>SAP Change Management Integration Library</name>
-  <description>SAP Change Management Integration</description>
+  <description>SAP Change Management Integration - ABAP</description>
 
     <properties>
       <java.level>1.7</java.level>
