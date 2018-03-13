@@ -36,7 +36,7 @@ public class Launcher {
 
     public final static void main(String[] args) throws Exception {
 
-        URI uri = new URI(args[0]);
+        URI endpoint = new URI(args[0]);
 
         // the same instance needs to be used as long as we are in the same session. Hence multiple
         // clients must share the same cookie store. Reason: we are logged on with the first request
@@ -46,24 +46,23 @@ public class Launcher {
 
         BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
         basicCredentialsProvider.setCredentials(
-                new AuthScope(uri.getHost(), uri.getPort()),
+                new AuthScope(endpoint.getHost(), endpoint.getPort()),
                 new UsernamePasswordCredentials(args[1], args[2]));
 
         HttpClientFactory clientFactory = new HttpClientFactory(sessionCookieStore, basicCredentialsProvider);
 
         HttpClient edmClient = clientFactory.createClient();
 
-        HttpUriRequest emdGet = new HttpGet("http://wdflbmd16301.wdf.sap.corp:8000/sap/opu/odata/SAP/SCTS_CLOUD_API_ODATA_SRV" + "/" + "$metadata");
+        HttpUriRequest emdGet = new HttpGet(endpoint.toASCIIString() + "/" + "$metadata");
 
         Edm edm = EntityProvider.readMetadata(edmClient.execute(emdGet).getEntity().getContent(), false);
 
         HttpClient client = clientFactory.createClient();
 
-        HttpUriRequest get = new HttpGet(uri);
+        HttpUriRequest get = new HttpGet(endpoint + "/" + "Transports('A5DK900014')");
         HttpResponse response = client.execute(get);
         InputStream is = response.getEntity().getContent();
 
-        System.out.println(response.getStatusLine());
         checkStatusCode(response, SC_OK, SC_NOT_FOUND);
 
         ODataEntry transport = EntityProvider.readEntry("application/xml",
