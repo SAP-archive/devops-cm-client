@@ -28,7 +28,6 @@ import org.apache.olingo.odata2.api.ep.EntityProviderReadProperties;
 
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.TransportMarshaller;
-import com.sap.cmclient.dto.TransportRequestBuilder;
 
 public class CMODataClient
 {
