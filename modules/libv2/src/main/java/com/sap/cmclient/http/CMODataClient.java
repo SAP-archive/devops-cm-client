@@ -10,21 +10,30 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.olingo.odata2.api.edm.Edm;
+import org.apache.olingo.odata2.api.edm.EdmEntityContainer;
+import org.apache.olingo.odata2.api.edm.EdmEntitySet;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.ep.EntityProvider;
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
 import org.apache.olingo.odata2.api.ep.EntityProviderReadProperties;
+import org.apache.olingo.odata2.api.ep.EntityProviderWriteProperties;
+import org.apache.olingo.odata2.api.exception.ODataException;
+import org.apache.olingo.odata2.api.processor.ODataResponse;
 
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.TransportMarshaller;
@@ -34,6 +43,7 @@ public class CMODataClient
 
   private final URI endpoint;
   private final HttpClientFactory clientFactory;
+  private String token = "";
 
   public CMODataClient(String endpoint, String user, String password) throws URISyntaxException
   {
@@ -70,8 +80,13 @@ public class CMODataClient
 
   public final static void main(String[] args) throws Exception
   {
-    Transport transport = new CMODataClient(args[0], args[1], args[2]).getTransport("A5DK900014");
+    CMODataClient odataClient = new CMODataClient(args[0], args[1], args[2]);
+    
+    Transport transport = odataClient.getTransport("A5DK900018");
     System.out.println(transport);
+    transport.setDescription("Dies ist per OData geändert");
+    odataClient.updateTransport(transport);
+    
   }
 
   public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException
@@ -95,14 +110,38 @@ public class CMODataClient
       return null;
     }
   }
+  
+  public void updateTransport(Transport transport) throws IOException, URISyntaxException, ODataException
+  {
+    final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
+    Edm edm = getEntityDataModel();
+    try (CloseableHttpClient client = clientFactory.createClient()) {
+      
+      HttpPut put = builder.updateTransport(transport.getId());
+      put.setHeader("x-csrf-token", token);
+      EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
+      EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
+      URI rootUri = new URI(endpoint.toASCIIString() + "/");
+      EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
+      ODataResponse response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
+      put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
+    
+      HttpResponse httpResponse = client.execute(put);
+      checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
+    }
+  }
 
   private Edm getEntityDataModel() throws IOException, EntityProviderException
   {
 
     try (CloseableHttpClient edmClient = clientFactory.createClient()) {
 
-      return EntityProvider.readMetadata(edmClient
-        .execute(new HttpGet(endpoint.toASCIIString() + "/" + "$metadata")).getEntity().getContent(),
+      HttpGet get = new HttpGet(endpoint.toASCIIString() + "/" + "$metadata");
+      get.addHeader("x-csrf-token" , "fetch");
+      HttpResponse response = edmClient.execute(get);
+      token = response.getHeaders("x-csrf-token")[0].getValue();
+      return EntityProvider.readMetadata(
+            response.getEntity().getContent(),
             false);
     }
   }

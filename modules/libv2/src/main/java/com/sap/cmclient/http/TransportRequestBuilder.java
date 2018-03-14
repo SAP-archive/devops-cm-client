@@ -2,6 +2,7 @@ package com.sap.cmclient.http;
 
 import java.net.URI;
 
+import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -33,9 +34,12 @@ public class TransportRequestBuilder
 
   }
 
-  public HttpPut updateTransport(Transport trans)
+  public HttpPut updateTransport(String id)
   {
-    return null;
+    
+    HttpPut put = new HttpPut(createTransportUri(id,null));
+    put.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+    return put;
 
   }
 

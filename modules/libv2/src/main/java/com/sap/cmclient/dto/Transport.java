@@ -27,6 +27,7 @@ public class Transport {
 
     public enum Type {
         W ("???"), // TODO clarify semantic
+        K ("???"),
         UNKNOWN("unknown"); // in order to simplify null handling.
 
         String description;
@@ -49,7 +50,7 @@ public class Transport {
      }
 
     
-    private final String id,
+    private  String id,
                          owner, 
                          description,
                          targetSystem;
@@ -93,6 +94,11 @@ public class Transport {
     
     public Type getType() {
         return type;
+    }
+    
+    public void setDescription(String d)
+    {
+      this.description = d;
     }
 
     @Override
