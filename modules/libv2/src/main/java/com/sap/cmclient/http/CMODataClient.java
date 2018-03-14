@@ -31,6 +31,11 @@ import com.sap.cmclient.dto.TransportMarshaller;
 
 public class CMODataClient {
 
+    private static class Entities {
+        private Entities() {}
+        final static String TRANSPORTS = "Transports";
+    }
+
     private final URI endpoint;
     private final HttpClientFactory clientFactory;
 
@@ -71,16 +76,14 @@ public class CMODataClient {
 
     public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
 
-        final String entityKey = "Transports";
-
         try (CloseableHttpClient client = clientFactory.createClient()) {
-            HttpUriRequest get = new HttpGet(endpoint + "/" + entityKey + "('" + transportId + "')");
+            HttpUriRequest get = new HttpGet(endpoint + "/" + Entities.TRANSPORTS + "('" + transportId + "')");
             get.setHeader("Accept-Encoding", "identity");
             try (CloseableHttpResponse response = client.execute(get)) {
                 checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
                 if(Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
                     return TransportMarshaller.get(EntityProvider.readEntry("application/xml",
-                                        getEntityDataModel().getDefaultEntityContainer().getEntitySet(entityKey),
+                                        getEntityDataModel().getDefaultEntityContainer().getEntitySet(Entities.TRANSPORTS),
                                         response.getEntity().getContent(),
                                         EntityProviderReadProperties.init().build()));
 
