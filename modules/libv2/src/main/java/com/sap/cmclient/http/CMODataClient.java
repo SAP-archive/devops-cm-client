@@ -154,14 +154,14 @@ public class CMODataClient {
 
     private String getCSRFToken() throws ClientProtocolException, IOException {
 
-        CloseableHttpClient client = clientFactory.createClient();
         HttpGet httpGet = new HttpGet(this.endpoint + "/$metadata");
         httpGet.addHeader("X-CSRF-Token", "Fetch");
         httpGet.addHeader("Accept", "application/xml");
-        try(CloseableHttpResponse response = client.execute(httpGet)) {
-            Header[] csrfHeaders = response.getHeaders("x-csrf-token");
-            if(csrfHeaders.length != 1) throw new IllegalStateException("Multiple or no csrfHeaders received.");
-            return csrfHeaders[0].getValue();
+        try(CloseableHttpClient client = clientFactory.createClient()) {
+            try(CloseableHttpResponse response = client.execute(httpGet)) {
+                Header[] csrfHeaders = response.getHeaders("x-csrf-token");
+                if(csrfHeaders.length != 1) throw new IllegalStateException("Multiple or no csrfHeaders received.");
+                return csrfHeaders[0].getValue();
             }
         }
     }
