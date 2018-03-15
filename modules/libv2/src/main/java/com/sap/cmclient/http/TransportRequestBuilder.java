@@ -28,9 +28,11 @@ public class TransportRequestBuilder
     return get;
   }
 
-  public HttpPost createTransport(Transport trans)
+  public HttpPost createTransport()
   {
-    return null;
+    HttpPost post = new HttpPost(createTransportUri(null, null));
+    post.addHeader(HttpHeaders.CONTENT_TYPE, "application/xml");
+    return post;
 
   }
 
@@ -45,7 +47,8 @@ public class TransportRequestBuilder
 
   public HttpDelete deleteTransport(String id)
   {
-    return null;
+    HttpDelete delete = new HttpDelete(createTransportUri(id, null));
+    return delete;
 
   }
 

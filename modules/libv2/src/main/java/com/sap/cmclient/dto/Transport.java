@@ -6,6 +6,7 @@ public class Transport {
 
     public enum Status {
                           D ("development"),
+                          R ("release"),
                           UNKNOWN("unknown"); // in order to simplify null handling.
 
                           String description;
@@ -61,7 +62,7 @@ public class Transport {
     
     private final GregorianCalendar date, time;
 
-    private final Status status;
+    private Status status;
     private final Type type;
 
     public Transport(String id,
@@ -133,6 +134,36 @@ public class Transport {
     public String getCloud()
     {
       return cloud;
+    }
+    
+    public void setId(String id)
+    {
+      this.id = id;
+    }
+
+    public void setOwner(String owner)
+    {
+      this.owner = owner;
+    }
+
+    public void setRequestRef(String requestRef)
+    {
+      this.requestRef = requestRef;
+    }
+
+    public void setCloud(String cloud)
+    {
+      this.cloud = cloud;
+    }
+
+    public void setTargetSystem(String targetSystem)
+    {
+      this.targetSystem = targetSystem;
+    }
+    
+    public void setStatus(Status s)
+    {
+      this.status = s;
     }
 
     @Override

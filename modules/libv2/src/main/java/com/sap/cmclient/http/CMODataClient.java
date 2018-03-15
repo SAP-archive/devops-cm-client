@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -19,7 +21,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.EntityBuilder;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -83,10 +87,23 @@ public class CMODataClient
   {
     CMODataClient odataClient = new CMODataClient(args[0], args[1], args[2]);
     
-    Transport transport = odataClient.getTransport("A5DK900018");
-    System.out.println(transport);
-    transport.setDescription("Dies ist per OData geaendert");
-    odataClient.updateTransport(transport);
+    GregorianCalendar cal = new GregorianCalendar();
+    GregorianCalendar time = new GregorianCalendar(0, 0, 0, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
+    //Transport myTrans = new Transport("", args[1], "Testtransport via ODATA", "A5T", cal, time, "", "X", Transport.Status.D, Transport.Type.K);
+    //Transport created = odataClient.createTransport(myTrans);
+    //System.out.println(created);
+    //created.setStatus(Transport.Status.R);
+    
+    
+    //Transport read = odataClient.getTransport("A5DK900028");
+    //System.out.println(read);
+    //read.setDescription("Change by OData");
+    //odataClient.updateTransport(read);
+    //System.out.println(read);
+    
+     //odataClient.deleteTransport(read.getId());
+    //transport.setDescription("Dies ist per OData geaendert");
+    //odataClient.updateTransport(transport);
     
   }
 
@@ -128,17 +145,50 @@ public class CMODataClient
       put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
     
       HttpResponse httpResponse = client.execute(put);
-      InputStream in = httpResponse.getEntity().getContent();
-      StringBuilder sb = new StringBuilder();
-      for(int i = 0; (i = in.read()) != -1;  ) {
-          sb.append((char)i);
-          
-      }
-      
-      System.out.print(sb);
-      checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
+      checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
       
     }
+  }
+  
+  public Transport createTransport(Transport transport) throws IOException, URISyntaxException, ODataException
+  {
+    final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
+    Edm edm = getEntityDataModel();
+    try (CloseableHttpClient client = clientFactory.createClient()) {
+      HttpPost post = builder.createTransport();
+      post.setHeader("x-csrf-token", token);
+      EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
+      EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
+      URI rootUri = new URI(endpoint.toASCIIString() + "/");
+      EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
+      ODataResponse response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
+      post.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
+    
+      HttpResponse httpResponse = client.execute(post);
+      Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
+      checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
+      if (Arrays.asList(HttpStatus.SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
+        return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
+              getEntityDataModel().getDefaultEntityContainer()
+                .getEntitySet(TransportRequestBuilder.getEntityKey()),
+                httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
+      }
+
+      return null;
+    }
+  }
+  
+  public void deleteTransport(String id) throws EntityProviderException, IOException
+  {
+    final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
+    Edm edm = getEntityDataModel();
+    try (CloseableHttpClient client = clientFactory.createClient()) {
+      HttpDelete delete = builder.deleteTransport(id);
+      delete.setHeader("x-csrf-token", token);
+      HttpResponse response = client.execute(delete);
+      checkStatusCode(response, HttpStatus.SC_NO_CONTENT);
+    }
+    
   }
 
   private Edm getEntityDataModel() throws IOException, EntityProviderException
