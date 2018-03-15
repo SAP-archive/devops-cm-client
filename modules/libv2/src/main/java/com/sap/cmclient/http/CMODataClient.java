@@ -154,7 +154,7 @@ public class CMODataClient {
 
     private String getCSRFToken() throws ClientProtocolException, IOException {
 
-        HttpGet httpGet = new HttpGet(this.endpoint + "/$metadata");
+        HttpGet httpGet = new HttpGet(this.endpoint);
         httpGet.addHeader("X-CSRF-Token", "Fetch");
         httpGet.addHeader("Accept", "application/xml");
         try(CloseableHttpClient client = clientFactory.createClient()) {
