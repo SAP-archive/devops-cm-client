@@ -38,7 +38,7 @@ public class TransportRequestBuilder
   {
     
     HttpPut put = new HttpPut(createTransportUri(id,null));
-    put.addHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+    put.addHeader(HttpHeaders.CONTENT_TYPE, "application/xml");
     return put;
 
   }

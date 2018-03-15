@@ -1,5 +1,7 @@
 package com.sap.cmclient.dto;
 
+import java.util.GregorianCalendar;
+
 public class Transport {
 
     public enum Status {
@@ -53,7 +55,11 @@ public class Transport {
     private  String id,
                          owner, 
                          description,
+                         requestRef,
+                         cloud,
                          targetSystem;
+    
+    private final GregorianCalendar date, time;
 
     private final Status status;
     private final Type type;
@@ -62,12 +68,20 @@ public class Transport {
                      String owner,
                      String description,
                      String targetSystem,
+                     GregorianCalendar date,
+                     GregorianCalendar time,
+                     String requestRef,
+                     String cloud,
                      Status status,
                      Type type) {
         this.id = id;
         this.owner = owner;
         this.description = description;
         this.targetSystem = targetSystem;
+        this.date = date;
+        this.time = time;
+        this.requestRef = requestRef;
+        this.cloud = cloud;
         this.status = status;
         this.type = type;
     }
@@ -100,11 +114,31 @@ public class Transport {
     {
       this.description = d;
     }
+    
+    public GregorianCalendar getDate()
+    {
+      return date;
+    }
+
+    public GregorianCalendar getTime()
+    {
+      return time;
+    }
+
+    public String getRequestRef()
+    {
+      return requestRef;
+    }
+
+    public String getCloud()
+    {
+      return cloud;
+    }
 
     @Override
     public String toString() {
         return "Transport [id=" + id + ", owner=" + owner + ", description=" + description + ", targetSystem="
-                + targetSystem + ", status=" + status + ", type=" + type + "]";
+                + targetSystem + ", date= " + date +", time= " + time + ", requestRef= "+ requestRef + ", cloud= " + cloud +", status=" + status + ", type=" + type + "]";
     }
 
 }

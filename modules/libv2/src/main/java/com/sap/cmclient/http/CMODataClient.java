@@ -5,6 +5,7 @@ import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -84,7 +85,7 @@ public class CMODataClient
     
     Transport transport = odataClient.getTransport("A5DK900018");
     System.out.println(transport);
-    transport.setDescription("Dies ist per OData geändert");
+    transport.setDescription("Dies ist per OData geaendert");
     odataClient.updateTransport(transport);
     
   }
@@ -127,7 +128,16 @@ public class CMODataClient
       put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
     
       HttpResponse httpResponse = client.execute(put);
+      InputStream in = httpResponse.getEntity().getContent();
+      StringBuilder sb = new StringBuilder();
+      for(int i = 0; (i = in.read()) != -1;  ) {
+          sb.append((char)i);
+          
+      }
+      
+      System.out.print(sb);
       checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
+      
     }
   }
 

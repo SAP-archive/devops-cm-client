@@ -1,5 +1,6 @@
 package com.sap.cmclient.dto;
 
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,10 @@ public class TransportMarshaller {
                              asString(p, "Owner"),
                              asString(p, "Description"),
                              asString(p, "TarSystem"),
+                             asCalendar(p, "Date"),
+                             asCalendar(p, "Time"),
+                             asString(p, "RequestRef"),
+                             asString(p, "Cloud"),
                              Transport.Status.get(asString(p, "Status")),
                              Transport.Type.get(asString(p,"Type")));
     }
@@ -26,6 +31,10 @@ public class TransportMarshaller {
       p.put("Owner", t.getOwner());
       p.put("Description", t.getDescription());
       p.put("TarSystem", t.getTargetSystem());
+      p.put("Date", t.getDate());
+      p.put("Time", t.getTime());
+      p.put("RequestRef", t.getRequestRef());
+      p.put("Cloud", t.getCloud());
       p.put("Status", t.getStatus().toString());
       p.put("Type", t.getType().toString());
       return p;
@@ -33,5 +42,9 @@ public class TransportMarshaller {
     
     private static String asString(Map<String, ?> m, String key) {
         return (String)m.get(key);
+    }
+    
+    private static GregorianCalendar asCalendar(Map<String, ?> m, String key) {
+      return (GregorianCalendar)m.get(key);
     }
 }
