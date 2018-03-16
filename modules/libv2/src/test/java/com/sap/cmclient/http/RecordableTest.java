@@ -56,4 +56,8 @@ public class RecordableTest {
     protected static String getPassword() {
         return System.getProperty("THE_PASSWORD", "openSesame");
     }
+
+    protected static boolean isRecording() {
+        return getHost() != null && ! getHost().isEmpty();
+    }
 }

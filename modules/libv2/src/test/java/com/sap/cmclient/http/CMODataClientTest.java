@@ -41,8 +41,10 @@ public class CMODataClientTest extends RecordableTest {
 
     @After
     public void tearDown() {
-        WireMock.resetAllRequests();
-        WireMock.resetAllScenarios();
+        if(! isRecording()) {
+            WireMock.resetAllRequests();
+            WireMock.resetAllScenarios();
+        }
     }
 
     @Test
