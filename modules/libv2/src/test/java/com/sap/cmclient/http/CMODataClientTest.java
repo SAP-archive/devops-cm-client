@@ -13,7 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
+import org.apache.olingo.odata2.api.exception.ODataException;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.After;
@@ -24,6 +27,8 @@ import org.junit.rules.ExpectedException;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.sap.cmclient.dto.Transport;
+import com.sap.cmclient.dto.Transport.Status;
+import com.sap.cmclient.dto.Transport.Type;
 
 public class CMODataClientTest extends RecordableTest {
 
@@ -97,5 +102,21 @@ public class CMODataClientTest extends RecordableTest {
         }
 
         assertThat(location, is(equalTo("http://example.org:8000/sap/opu/odata/SAP/SCTS_CLOUD_API_ODATA_SRV/TransportFiles(TransportId='A5DK900014',FileID='0050560313541ED88A89AB36F489B41E')")));
+    }
+
+    @Test
+    public void createTransportTest() throws UnexpectedHttpResponseException, IOException, URISyntaxException, ODataException {
+        GregorianCalendar date = new GregorianCalendar();
+        GregorianCalendar time = new GregorianCalendar(0, 0, 0, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
+
+        Transport transport = new Transport("", "ODATA", "my transport", "A5T", date, time, "", "", Status.D, Type.W);
+        Transport created = examinee.createTransport(transport);
+        assertThat(created.getId().trim(), is(not("")));
+        assertThat(created.getOwner(), is(equalTo(transport.getOwner())));
+        assertThat(created.getTargetSystem(), is(equalTo("A5T")));
+        assertThat(created.getDescription(), is(equalTo("my transport")));
+        assertThat(created.getStatus(), is(equalTo(Status.D)));
+        assertThat(created.getType(), is(equalTo(Type.W)));
+        assertThat(created.getCloud(), is(equalTo("X")));
     }
 }
