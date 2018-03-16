@@ -32,6 +32,13 @@ import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.Transport.Status;
 import com.sap.cmclient.dto.Transport.Type;
 
+// In order to run it with wire logging use:
+// -Dorg.slf4j.simpleLogger.defaultLogLevel=trace
+// -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
+// -Dorg.apache.commons.logging.simplelog.showdatetime=true
+// -Dorg.apache.commons.logging.simplelog.log.org.apache.http=DEBUG
+// -Dorg.apache.commons.logging.simplelog.log.org.apache.http.wire=DEBUG
+
 public class CMODataClientTest extends RecordableTest {
 
     @Rule

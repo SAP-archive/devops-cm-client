@@ -16,8 +16,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -84,42 +82,6 @@ public class CMODataClient {
 
         this.clientFactory = new HttpClientFactory(sessionCookieStore, basicCredentialsProvider);
     }
-
-  // args[0]
-  // "http://wdflbmd16301.wdf.sap.corp:8000/sap/opu/odata/SAP/SCTS_CLOUD_API_ODATA_SRV/Transports(\'A5DK900014\')"
-  // args[1] ODATA
-  // args[2] <the password ...>
-
-  // In order to run it with wire logging use:
-  // -Dorg.slf4j.simpleLogger.defaultLogLevel=trace
-  // -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
-  // -Dorg.apache.commons.logging.simplelog.showdatetime=true
-  // -Dorg.apache.commons.logging.simplelog.log.org.apache.http=DEBUG
-  // -Dorg.apache.commons.logging.simplelog.log.org.apache.http.wire=DEBUG
-
-  public final static void main(String[] args) throws Exception
-  {
-    CMODataClient odataClient = new CMODataClient(args[0], args[1], args[2]);
-    
-    GregorianCalendar cal = new GregorianCalendar();
-    GregorianCalendar time = new GregorianCalendar(0, 0, 0, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
-    //Transport myTrans = new Transport("", args[1], "Testtransport via ODATA", "A5T", cal, time, "", "X", Transport.Status.D, Transport.Type.K);
-    //Transport created = odataClient.createTransport(myTrans);
-    //System.out.println(created);
-    //created.setStatus(Transport.Status.R);
-    
-    
-    //Transport read = odataClient.getTransport("A5DK900028");
-    //System.out.println(read);
-    //read.setDescription("Change by OData");
-    //odataClient.updateTransport(read);
-    //System.out.println(read);
-    
-     //odataClient.deleteTransport(read.getId());
-    //transport.setDescription("Dies ist per OData geaendert");
-    //odataClient.updateTransport(transport);
-    
-  }
 
   public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
 
