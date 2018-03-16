@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -48,6 +49,8 @@ import org.apache.olingo.odata2.api.ep.EntityProviderWriteProperties;
 import org.apache.olingo.odata2.api.exception.ODataException;
 import org.apache.olingo.odata2.api.processor.ODataResponse;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.TransportMarshaller;
 
@@ -276,11 +279,17 @@ public class CMODataClient {
         return this.token;
     }
 
-    private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException {
+    private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException, UnsupportedOperationException, IOException {
 
         if( ! asList(expected).contains(response.getStatusLine().getStatusCode())) {
-            throw new UnexpectedHttpResponseException(format("Unexpected response code %d", response.getStatusLine().getStatusCode()),
-                                            response.getStatusLine());
+
+            try(InputStream content = response.getEntity().getContent()) {
+
+                // TODO hard coded char set is a best guess. Should be retrieved from response.
+                String reason = CharStreams.toString(new InputStreamReader(content, Charsets.UTF_8));
+                throw new UnexpectedHttpResponseException(format("Unexpected response code '%d'. Reason: %s", response.getStatusLine().getStatusCode(), reason),
+                                                response.getStatusLine());
+            }
         }
     }
 }
