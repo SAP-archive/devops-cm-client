@@ -3,7 +3,11 @@
   "name" : "metadata",
   "request" : {
     "url" : "/$metadata",
-    "method" : "GET"
+    "method" : "GET",
+    "basicAuthCredentials" : {
+      "username" : "aliBaba",
+      "password" : "openSesame"
+    }
   },
   "response" : {
     "status" : 200,
