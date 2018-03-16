@@ -64,6 +64,7 @@ public class CMODataClient {
     private final URI endpoint;
     private final HttpClientFactory clientFactory;
     private String token = null;
+    private Edm dataModel = null;
 
     public CMODataClient(String endpoint, String user, String password) throws URISyntaxException {
 
@@ -190,7 +191,7 @@ public class CMODataClient {
           checkStatusCode(httpResponse, SC_CREATED);
           if (Arrays.asList(SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
             return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
-                       getEntityDataModel().getDefaultEntityContainer()
+                       edm.getDefaultEntityContainer()
                       .getEntitySet(TransportRequestBuilder.getEntityKey()),
                         httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
           }
@@ -253,12 +254,16 @@ public class CMODataClient {
 
     private Edm getEntityDataModel() throws IOException, EntityProviderException, UnexpectedHttpResponseException {
 
-        try (CloseableHttpClient edmClient = clientFactory.createClient()) {
-            try (CloseableHttpResponse response = edmClient.execute(new HttpGet(endpoint.toASCIIString() + "/" + "$metadata"))) {
-                checkStatusCode(response, SC_OK);
-                return EntityProvider.readMetadata(response.getEntity().getContent(), false);
+        if(dataModel == null) {
+            try (CloseableHttpClient edmClient = clientFactory.createClient()) {
+                try (CloseableHttpResponse response = edmClient.execute(new HttpGet(endpoint.toASCIIString() + "/" + "$metadata"))) {
+                    checkStatusCode(response, SC_OK);
+                    dataModel = EntityProvider.readMetadata(response.getEntity().getContent(), false);
+                }
             }
         }
+
+        return dataModel;
     }
 
     private String getCSRFToken() throws ClientProtocolException, IOException {
