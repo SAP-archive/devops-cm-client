@@ -54,6 +54,7 @@ import com.sap.cmclient.dto.TransportMarshaller;
 
 public class CMODataClient {
 
+    private final TransportRequestBuilder requestBuilder;
     private final URI endpoint;
     private final HttpClientFactory clientFactory;
     private String csrfToken = null;
@@ -62,7 +63,7 @@ public class CMODataClient {
     public CMODataClient(String endpoint, String user, String password) throws URISyntaxException {
 
         this.endpoint = new URI(endpoint);
-
+        this.requestBuilder = new TransportRequestBuilder(this.endpoint);
 
         // the same instance needs to be used as long as we are in the same session. Hence multiple
         // clients must share the same cookie store. Reason: we are logged on with the first request
@@ -80,10 +81,8 @@ public class CMODataClient {
 
   public Transport getTransport(String transportId) throws IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
 
-      final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
-
       try (CloseableHttpClient client = clientFactory.createClient()) {
-          HttpUriRequest get = builder.getTransport(transportId);
+          HttpUriRequest get = requestBuilder.getTransport(transportId);
           try(CloseableHttpResponse response = client.execute(get)) {
               Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
               checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
@@ -104,11 +103,10 @@ public class CMODataClient {
 
   public void updateTransport(Transport transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
   {
-    final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
     Edm edm = getEntityDataModel();
     try (CloseableHttpClient client = clientFactory.createClient()) {
       
-      HttpPut put = builder.updateTransport(transport.getId());
+      HttpPut put = requestBuilder.updateTransport(transport.getId());
       put.setHeader("x-csrf-token", getCSRFToken());
       EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
@@ -128,10 +126,9 @@ public class CMODataClient {
   }
   public Transport createTransport(Transport transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
   {
-    final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
     Edm edm = getEntityDataModel();
     try (CloseableHttpClient client = clientFactory.createClient()) {
-      HttpPost post = builder.createTransport();
+      HttpPost post = requestBuilder.createTransport();
       post.setHeader("x-csrf-token", getCSRFToken());
       EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
@@ -163,9 +160,8 @@ public class CMODataClient {
 
   public void deleteTransport(String id) throws EntityProviderException, IOException, UnexpectedHttpResponseException
   {
-    final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
     try (CloseableHttpClient client = clientFactory.createClient()) {
-      HttpDelete delete = builder.deleteTransport(id);
+      HttpDelete delete = requestBuilder.deleteTransport(id);
       delete.setHeader("x-csrf-token", getCSRFToken());
       try(CloseableHttpResponse response = client.execute(delete)) {
         checkStatusCode(response, HttpStatus.SC_NO_CONTENT);
@@ -199,7 +195,7 @@ public class CMODataClient {
         //
 
         try (CloseableHttpClient client = clientFactory.createClient()) {
-            HttpPost request = new TransportRequestBuilder(endpoint).upload(transportId);
+            HttpPost request = requestBuilder.upload(transportId);
             request.setEntity(new InputStreamEntity(content));
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
