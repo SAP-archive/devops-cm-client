@@ -58,6 +58,11 @@
           <groupId>org.hamcrest</groupId>
           <artifactId>hamcrest-library</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+        <version>2.15.0</version>
+    </dependency>
     </dependencies>
     <build>
       <resources>
