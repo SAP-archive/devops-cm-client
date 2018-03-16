@@ -16,6 +16,8 @@ import com.google.common.base.Strings;
 
 public class RecordableTest {
 
+    private final static String USER = "aliBaba", PASSWORD = "openSesame";
+
     private final static Path WIREMOCK_HOME = Paths.get("src/test/wiremock");
 
     @ClassRule
@@ -50,11 +52,11 @@ public class RecordableTest {
     }
 
     protected static String getUser() {
-        return System.getProperty("THE_USER", "aliBaba");
+        return isRecording() ? System.getProperty("THE_USER", USER) : USER;
     }
     
     protected static String getPassword() {
-        return System.getProperty("THE_PASSWORD", "openSesame");
+        return isRecording() ? System.getProperty("THE_PASSWORD", PASSWORD) : PASSWORD;
     }
 
     protected static boolean isRecording() {
