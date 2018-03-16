@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.primitives.Ints.asList;
 import static java.lang.String.format;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
@@ -183,8 +184,8 @@ public class CMODataClient {
 
         try(CloseableHttpResponse httpResponse = client.execute(post)) {
           Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
-          checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
-          if (Arrays.asList(HttpStatus.SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
+          checkStatusCode(httpResponse, SC_CREATED);
+          if (Arrays.asList(SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
             return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
                        getEntityDataModel().getDefaultEntityContainer()
                       .getEntitySet(TransportRequestBuilder.getEntityKey()),
