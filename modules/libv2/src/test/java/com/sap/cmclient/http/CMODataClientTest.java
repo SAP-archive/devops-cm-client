@@ -1,6 +1,7 @@
 package com.sap.cmclient.http;
 
 import static java.lang.String.format;
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -16,6 +17,7 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.apache.olingo.odata2.api.ep.EntityProviderException;
 import org.apache.olingo.odata2.api.exception.ODataException;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -119,4 +121,34 @@ public class CMODataClientTest extends RecordableTest {
         assertThat(created.getType(), is(equalTo(Type.W)));
         assertThat(created.getCloud(), is(equalTo("X")));
     }
+
+    @Test
+    public void deleteTransportSucceedsTest() throws EntityProviderException, UnexpectedHttpResponseException, IOException {
+        examinee.deleteTransport("A5DK900042");
+    }
+
+    @Test
+    public void deleteTransportWhichDoesNotExistsFailsTest() throws EntityProviderException, UnexpectedHttpResponseException, IOException {
+
+        thrown.expect(new BaseMatcher<UnexpectedHttpResponseException>() {
+
+            // actually 404 would be more appropriate, but 500 is returned from server...
+            private final int expected = SC_INTERNAL_SERVER_ERROR;
+            private int received = -1;
+
+            @Override
+            public boolean matches(Object item) {
+                this.received = ((UnexpectedHttpResponseException)item).getStatus().getStatusCode();
+                return  received == expected;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(format("Should fail with status code '%d', but got other status code '%d'.", expected, received));
+            }
+        });
+
+        examinee.deleteTransport("A5DK900044");
+    }
+
 }
