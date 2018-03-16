@@ -126,11 +126,13 @@ public class CMODataClient {
               Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
               checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
               if (Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
+                  try(InputStream content = response.getEntity().getContent()) {
                   return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
                                                  getEntityDataModel().getDefaultEntityContainer()
                                                      .getEntitySet(TransportRequestBuilder.getEntityKey()),
-                                                 response.getEntity().getContent(),
+                                                 content,
                                                  EntityProviderReadProperties.init().build()));
+                  }
               }
           }
 
@@ -150,11 +152,15 @@ public class CMODataClient {
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
       URI rootUri = new URI(endpoint.toASCIIString() + "/");
       EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
-      ODataResponse response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
-      put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
-
-      try (CloseableHttpResponse httpResponse = client.execute(put)) {
-          checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
+      ODataResponse response = null;
+      try {
+          response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
+          put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
+          try (CloseableHttpResponse httpResponse = client.execute(put)) {
+              checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
+          }
+      }  finally {
+          if(response != null) response.close();
       }
     }
   }
@@ -169,18 +175,24 @@ public class CMODataClient {
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
       URI rootUri = new URI(endpoint.toASCIIString() + "/");
       EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
-      ODataResponse response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
-      post.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
-    
-      try(CloseableHttpResponse httpResponse = client.execute(post)) {
-        Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
-        checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
-        if (Arrays.asList(HttpStatus.SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
-          return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
-                     getEntityDataModel().getDefaultEntityContainer()
-                    .getEntitySet(TransportRequestBuilder.getEntityKey()),
-                  httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
+      ODataResponse response = null;
+
+      try {
+        response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
+        post.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
+
+        try(CloseableHttpResponse httpResponse = client.execute(post)) {
+          Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
+          checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
+          if (Arrays.asList(HttpStatus.SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
+            return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
+                       getEntityDataModel().getDefaultEntityContainer()
+                      .getEntitySet(TransportRequestBuilder.getEntityKey()),
+                        httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
           }
+        }
+      } finally {
+          if(response != null) response.close();
       }
 
       return null;
