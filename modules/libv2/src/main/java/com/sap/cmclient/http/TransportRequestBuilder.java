@@ -8,8 +8,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 
-import com.sap.cmclient.dto.Transport;
-
 public class TransportRequestBuilder
 {
 
@@ -50,6 +48,10 @@ public class TransportRequestBuilder
     HttpDelete delete = new HttpDelete(createTransportUri(id, null));
     return delete;
 
+  }
+
+  public HttpPost upload(String transportId) {
+      return new HttpPost(endpoint + "/" + getEntityKey() + "('" + transportId + "')/File");
   }
 
   private String createTransportUri(String id, String expand)

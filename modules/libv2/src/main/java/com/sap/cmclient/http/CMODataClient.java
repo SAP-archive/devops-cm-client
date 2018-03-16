@@ -54,11 +54,6 @@ import com.sap.cmclient.dto.TransportMarshaller;
 
 public class CMODataClient {
 
-    private static class Entities {
-        private Entities() {}
-        final static String TRANSPORTS = "Transports";
-    }
-
     private final URI endpoint;
     private final HttpClientFactory clientFactory;
     private String csrfToken = null;
@@ -204,7 +199,7 @@ public class CMODataClient {
         //
 
         try (CloseableHttpClient client = clientFactory.createClient()) {
-            HttpPost request = new HttpPost(endpoint + "/" + Entities.TRANSPORTS + "('" + transportId + "')/File");
+            HttpPost request = new TransportRequestBuilder(endpoint).upload(transportId);
             request.setEntity(new InputStreamEntity(content));
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
