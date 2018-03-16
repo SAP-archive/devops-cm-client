@@ -122,15 +122,16 @@ public class CMODataClient {
 
       try (CloseableHttpClient client = clientFactory.createClient()) {
           HttpUriRequest get = builder.getTransport(transportId);
-          HttpResponse response = client.execute(get);
-          Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
-          checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
-          if (Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
-              return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
-                                             getEntityDataModel().getDefaultEntityContainer()
-                                                 .getEntitySet(TransportRequestBuilder.getEntityKey()),
-                                             response.getEntity().getContent(),
-                                             EntityProviderReadProperties.init().build()));
+          try(CloseableHttpResponse response = client.execute(get)) {
+              Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
+              checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
+              if (Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
+                  return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
+                                                 getEntityDataModel().getDefaultEntityContainer()
+                                                     .getEntitySet(TransportRequestBuilder.getEntityKey()),
+                                                 response.getEntity().getContent(),
+                                                 EntityProviderReadProperties.init().build()));
+              }
           }
 
           return null;
@@ -152,8 +153,9 @@ public class CMODataClient {
       ODataResponse response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
       put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
 
-      HttpResponse httpResponse = client.execute(put);
-      checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
+      try (CloseableHttpResponse httpResponse = client.execute(put)) {
+          checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
+      }
     }
   }
   public Transport createTransport(Transport transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
@@ -170,30 +172,33 @@ public class CMODataClient {
       ODataResponse response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
       post.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
     
-      HttpResponse httpResponse = client.execute(post);
-      Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
-      checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
-      if (Arrays.asList(HttpStatus.SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
-        return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
-              getEntityDataModel().getDefaultEntityContainer()
-                .getEntitySet(TransportRequestBuilder.getEntityKey()),
-                httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
+      try(CloseableHttpResponse httpResponse = client.execute(post)) {
+        Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
+        checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_CREATED);
+        if (Arrays.asList(HttpStatus.SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
+          return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
+                     getEntityDataModel().getDefaultEntityContainer()
+                    .getEntitySet(TransportRequestBuilder.getEntityKey()),
+                  httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
+          }
       }
 
       return null;
     }
   }
-  
+
   public void deleteTransport(String id) throws EntityProviderException, IOException, UnexpectedHttpResponseException
   {
     final TransportRequestBuilder builder = new TransportRequestBuilder(endpoint);
     try (CloseableHttpClient client = clientFactory.createClient()) {
       HttpDelete delete = builder.deleteTransport(id);
       delete.setHeader("x-csrf-token", getCSRFToken());
-      HttpResponse response = client.execute(delete);
-      checkStatusCode(response, HttpStatus.SC_NO_CONTENT);
+      try(CloseableHttpResponse response = client.execute(delete)) {
+        checkStatusCode(response, HttpStatus.SC_NO_CONTENT);
+      }
     }
-    
+
+
   }
 
     public String upload(String transportId, File content) throws IOException, CMODataClientException, UnexpectedHttpResponseException {
