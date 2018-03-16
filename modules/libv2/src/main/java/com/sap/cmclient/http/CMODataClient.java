@@ -63,7 +63,7 @@ public class CMODataClient {
 
     private final URI endpoint;
     private final HttpClientFactory clientFactory;
-    private String token = null;
+    private String csrfToken = null;
     private Edm dataModel = null;
 
     public CMODataClient(String endpoint, String user, String password) throws URISyntaxException {
@@ -268,7 +268,7 @@ public class CMODataClient {
 
     private String getCSRFToken() throws ClientProtocolException, IOException {
 
-        if(this.token == null) {
+        if(this.csrfToken == null) {
             HttpGet httpGet = new HttpGet(this.endpoint);
             httpGet.addHeader("X-CSRF-Token", "Fetch");
             httpGet.addHeader("Accept", "application/xml");
@@ -276,12 +276,12 @@ public class CMODataClient {
                 try(CloseableHttpResponse response = client.execute(httpGet)) {
                     Header[] csrfHeaders = response.getHeaders("x-csrf-token");
                     if(csrfHeaders.length != 1) throw new IllegalStateException("Multiple or no csrfHeaders received.");
-                    this.token = csrfHeaders[0].getValue();
+                    this.csrfToken = csrfHeaders[0].getValue();
                 }
             }
         }
 
-        return this.token;
+        return this.csrfToken;
     }
 
     private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException, UnsupportedOperationException, IOException {
