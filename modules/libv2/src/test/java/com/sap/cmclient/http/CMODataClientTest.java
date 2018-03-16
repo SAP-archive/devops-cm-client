@@ -75,23 +75,7 @@ public class CMODataClientTest extends RecordableTest {
     @Test
     public void getTransportWithWrongCredentialsThrowsExceptionIndicating401Test() throws Exception {
 
-        thrown.expect(new BaseMatcher<UnexpectedHttpResponseException>() {
-
-            private final int expected = SC_UNAUTHORIZED;
-            private int received = -1;
-
-            @Override
-            public boolean matches(Object item) {
-                this.received = ((UnexpectedHttpResponseException)item).getStatus().getStatusCode();
-                return  received == expected;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(format("Should fail with status code '%d', but got other status code '%d'.", expected, received));
-            }
-        });
-
+        thrown.expect(new ResponseCodeMatcher(SC_UNAUTHORIZED));
         new CMODataClient(getWiremockProxy(), "BAD_USER", "BAD_PASSWORD").getTransport("A5DK900014");
     }
 
@@ -130,25 +114,29 @@ public class CMODataClientTest extends RecordableTest {
     @Test
     public void deleteTransportWhichDoesNotExistsFailsTest() throws EntityProviderException, UnexpectedHttpResponseException, IOException {
 
-        thrown.expect(new BaseMatcher<UnexpectedHttpResponseException>() {
-
-            // actually 404 would be more appropriate, but 500 is returned from server...
-            private final int expected = SC_INTERNAL_SERVER_ERROR;
-            private int received = -1;
-
-            @Override
-            public boolean matches(Object item) {
-                this.received = ((UnexpectedHttpResponseException)item).getStatus().getStatusCode();
-                return  received == expected;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(format("Should fail with status code '%d', but got other status code '%d'.", expected, received));
-            }
-        });
-
+        // actually 404 would be more appropriate, but 500 is returned from server...
+        thrown.expect(new ResponseCodeMatcher(SC_INTERNAL_SERVER_ERROR));
         examinee.deleteTransport("A5DK900044");
     }
 
+    private static class ResponseCodeMatcher extends BaseMatcher<UnexpectedHttpResponseException> {
+
+        private final int expected;
+        private int received = -1;
+
+        ResponseCodeMatcher(int expected) {
+          this.expected = expected;
+        }
+
+        @Override
+        public boolean matches(Object item) {
+            this.received = ((UnexpectedHttpResponseException)item).getStatus().getStatusCode();
+            return  received == expected;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText(format("Should fail with status code '%d', but got other status code '%d'.", expected, received));
+        }
+    }
 }
