@@ -73,6 +73,15 @@ public class CMODataClientTest extends RecordableTest {
     }
 
     @Test
+    public void getTransportFailsDueToCutOfResponseTest() throws Exception {
+
+        thrown.expect(EntityProviderException.class);
+        thrown.expectMessage("An exception of type 'XMLStreamException' occurred");
+
+        examinee.getTransport("A5DK900015");
+    }
+
+    @Test
     public void getTransportReturnsNullForNotExistingTransportTest() throws Exception {
 
         Transport transport = examinee.getTransport("DOES_NOT_EXIST");
