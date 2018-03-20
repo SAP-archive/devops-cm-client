@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
  * Command for retrieving the status of a change.
@@ -34,7 +34,7 @@ class GetChangeStatus extends Command {
 
     @Override
     void execute() throws Exception {
-        try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host, user, password)) {
             CMODataChange change = client.getChange(changeId);
             logger.debug(format("Change '%s' retrieved from host '%s'. isInDevelopment: '%b'.", change.getChangeID(), host, change.isInDevelopment()));
             System.out.println(change.isInDevelopment());

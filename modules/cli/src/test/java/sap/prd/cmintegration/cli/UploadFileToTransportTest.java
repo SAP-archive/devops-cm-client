@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 public class UploadFileToTransportTest extends CMTestBase {
 
@@ -105,7 +105,7 @@ public class UploadFileToTransportTest extends CMTestBase {
 
     private ClientFactory setupMock() throws Exception {
 
-        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
+        CMODataSolmanClient clientMock = EasyMock.createMock(CMODataSolmanClient.class);
         clientMock.uploadFileToTransport(capture(changeId), capture(transportId),
             capture(filePath), capture(applicationId)); expectLastCall();
         clientMock.close(); expectLastCall();

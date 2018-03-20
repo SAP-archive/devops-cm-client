@@ -19,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 public class GetChangeTransportsTest extends CMTestBase {
@@ -93,7 +93,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         transports.add(new CMODataTransport("L21K90002D", false, "Description", "Owner"));
         transports.add(new CMODataTransport("L21K90002E", true, "Description", "Owner"));
 
-        CMODataClient clientMock = createMock(CMODataClient.class);
+        CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
 
         ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);

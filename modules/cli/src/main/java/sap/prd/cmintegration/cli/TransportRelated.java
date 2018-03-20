@@ -18,7 +18,7 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 /**
@@ -41,7 +41,7 @@ abstract class TransportRelated extends Command {
     @Override
     final void execute() throws Exception {
 
-        try(CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+        try(CMODataSolmanClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
 
             Optional<CMODataTransport> transport = client.getChangeTransports(changeId).stream()
                 .filter( it -> it.getTransportID().equals(transportId) ).findFirst();

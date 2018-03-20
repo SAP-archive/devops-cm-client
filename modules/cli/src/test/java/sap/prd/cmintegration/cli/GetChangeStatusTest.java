@@ -19,7 +19,7 @@ import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.junit.Test;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 public class GetChangeStatusTest extends CMTestBase {
 
@@ -28,7 +28,7 @@ public class GetChangeStatusTest extends CMTestBase {
     }
 
     private ClientFactory setupMock(Exception ex) throws Exception {
-        CMODataClient clientMock = createMock(CMODataClient.class);
+        CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         clientMock.close(); expectLastCall();
         if(ex == null) {
             CMODataChange change = new CMODataChange("8000038673", true);

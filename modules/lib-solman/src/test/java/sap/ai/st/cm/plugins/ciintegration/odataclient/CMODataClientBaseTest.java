@@ -42,13 +42,13 @@ public class CMODataClientBaseTest {
     }
     protected Capture<URI> address;
 
-    protected CMODataClient examinee;
+    protected CMODataSolmanClient examinee;
 
     protected void setup() throws Exception {
 
         address = Capture.newInstance();
 
-        examinee = new CMODataClient(
+        examinee = new CMODataSolmanClient(
                 SERVICE_ENDPOINT,
                 SERVICE_USER,
                 SERVICE_PASSWORD);
@@ -60,8 +60,8 @@ public class CMODataClientBaseTest {
         address = null;
     }
 
-    protected static void setMock(CMODataClient examinee, ODataClient mock) throws Exception {
-        Field client = CMODataClient.class.getDeclaredField("client");
+    protected static void setMock(CMODataSolmanClient examinee, ODataClient mock) throws Exception {
+        Field client = CMODataSolmanClient.class.getDeclaredField("client");
         client.setAccessible(true);
         client.set(examinee, mock);
         client.setAccessible(false);
@@ -75,7 +75,7 @@ public class CMODataClientBaseTest {
         File versionFile = new File("target/classes/VERSION");
         assumeTrue(versionFile.exists());
 
-        String actualShortVersion = CMODataClient.getShortVersion(),
+        String actualShortVersion = CMODataSolmanClient.getShortVersion(),
                expectedShortVersion = getVersionProperties(versionFile).getProperty("mvnProjectVersion");
 
         assertThat(expectedShortVersion, is(not(nullValue())));
@@ -90,7 +90,7 @@ public class CMODataClientBaseTest {
         assumeTrue(versionFile.exists());
 
         Properties vProps = getVersionProperties(versionFile);
-        String actualLongVersion = CMODataClient.getLongVersion(),
+        String actualLongVersion = CMODataSolmanClient.getLongVersion(),
                expectedLongVersion = format("%s : %s",
                 vProps.getProperty("mvnProjectVersion"),
                 vProps.getProperty("gitCommitId"));

@@ -14,7 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 public class ReleaseTransportTest extends CMTestBase {
 
@@ -68,7 +68,7 @@ public class ReleaseTransportTest extends CMTestBase {
 
     private ClientFactory setupMock(Exception e) throws Exception {
 
-        CMODataClient clientMock = EasyMock.createMock(CMODataClient.class);
+        CMODataSolmanClient clientMock = EasyMock.createMock(CMODataSolmanClient.class);
         clientMock.releaseDevelopmentTransport(capture(changeId), capture(transportId));
         clientMock.close(); expectLastCall();
         if(e == null) expectLastCall(); else expectLastCall().andThrow(e);

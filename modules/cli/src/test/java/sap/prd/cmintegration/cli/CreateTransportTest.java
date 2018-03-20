@@ -15,7 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 public class CreateTransportTest extends CMTestBase {
@@ -128,7 +128,7 @@ public class CreateTransportTest extends CMTestBase {
 
         CMODataTransport transport = new CMODataTransport("myTransport", true, description, owner);
 
-        CMODataClient clientMock = createMock(CMODataClient.class);
+        CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         if(owner != null && description != null) {
             expect(clientMock.createDevelopmentTransportAdvanced(
                 capture(this.changeId), capture(this.description), capture(this.owner))).andReturn(transport);

@@ -15,7 +15,7 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
  * Command for releasing a transport.
@@ -56,7 +56,7 @@ class ReleaseTransport extends Command {
 
     @Override
     void execute() throws Exception {
-        try (CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
             client.releaseDevelopmentTransport(changeId, transportId);
         } catch(Exception e) {
             logger.error(format("Exception caught while releasing transport '%s' for change document '%s': '%s'.", transportId, changeId, e.getMessage()), e);

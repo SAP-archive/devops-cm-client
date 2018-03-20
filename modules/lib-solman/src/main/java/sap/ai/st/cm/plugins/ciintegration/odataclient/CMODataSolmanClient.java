@@ -48,9 +48,9 @@ import com.google.common.net.UrlEscapers;
 /**
  * OData client for handling connections to SAP solution manager.
  */
-public class CMODataClient implements AutoCloseable {
+public class CMODataSolmanClient implements AutoCloseable {
 
-    private final static Logger logger = LoggerFactory.getLogger(CMODataClient.class);
+    private final static Logger logger = LoggerFactory.getLogger(CMODataSolmanClient.class);
 
     private boolean isClosed = false;
 
@@ -59,7 +59,7 @@ public class CMODataClient implements AutoCloseable {
     private String serviceUrl; //REVISIT: uri instead of string?
     private final ODataClient client;
 
-    public CMODataClient(String serviceUrl, String serviceUser, String servicePassword) {
+    public CMODataSolmanClient(String serviceUrl, String serviceUser, String servicePassword) {
 
         checkArgument(!isBlank(serviceUrl), "Service url must not be blank.");
         checkArgument(!isBlank(serviceUser), "Service user must not be blank.");
@@ -482,7 +482,7 @@ public class CMODataClient implements AutoCloseable {
     }
 
     private static Properties getVersionProperties() {
-        try(InputStream version = CMODataClient.class.getResourceAsStream("/VERSION")) {
+        try(InputStream version = CMODataSolmanClient.class.getResourceAsStream("/VERSION")) {
             Properties vProps = new Properties();
             vProps.load(version);
             return vProps;

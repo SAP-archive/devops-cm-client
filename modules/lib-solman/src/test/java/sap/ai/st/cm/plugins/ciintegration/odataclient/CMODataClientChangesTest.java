@@ -93,7 +93,7 @@ public class CMODataClientChangesTest extends CMODataClientBaseTest {
         // we get a generic html page in this case explaining to a human user that
         // there was a problem with the credentials.
 
-        CMODataClient examinee = new CMODataClient(
+        CMODataSolmanClient examinee = new CMODataSolmanClient(
                 SERVICE_ENDPOINT,
                 "NOBODY",
                 SERVICE_PASSWORD);

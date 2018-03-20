@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
  * Helpers for using/calling commands.
@@ -266,7 +266,7 @@ class Commands {
     }
 
     private static void printVersion() throws IOException {
-        System.out.println(CMODataClient.getLongVersion());
+        System.out.println(CMODataSolmanClient.getLongVersion());
     }
 
     private static void printHelp() throws Exception {

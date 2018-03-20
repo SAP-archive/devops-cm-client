@@ -19,7 +19,7 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 /**
@@ -100,7 +100,7 @@ class GetChangeTransports extends Command {
               };
               return it.isModifiable();};
 
-        try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host, user, password)) {
             ArrayList<CMODataTransport> transports = client.getChangeTransports(changeId);
 
             if(transports.isEmpty())  {

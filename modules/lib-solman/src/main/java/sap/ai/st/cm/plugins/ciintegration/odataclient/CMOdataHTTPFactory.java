@@ -36,7 +36,7 @@ public class CMOdataHTTPFactory extends BasicAuthHttpClientFactory {
         final DefaultHttpClient httpClient = super.create(method, uri);
 
         httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
-                format("SAP CM Client/%s based on %s", CMODataClient.getShortVersion(), USER_AGENT));
+                format("SAP CM Client/%s based on %s", CMODataSolmanClient.getShortVersion(), USER_AGENT));
 
         httpClient.setCookieStore(this.cookieStore);
 

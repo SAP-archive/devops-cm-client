@@ -1,9 +1,9 @@
 package sap.prd.cmintegration.cli;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
- * Provides {@link CMODataClient} instances.
+ * Provides {@link CMODataSolmanClient} instances.
  */
 class ClientFactory {
 
@@ -20,13 +20,13 @@ class ClientFactory {
     }
 
     /**
-     * Provides a new instance of {@link CMODataClient}
+     * Provides a new instance of {@link CMODataSolmanClient}
      * @param serviceUrl The OData endpoint of the SAP Solution Manager
      * @param serviceUser The service user.
      * @param servicePassword The password for authenticating.
-     * @return A new instance of {@link CMODataClient}
+     * @return A new instance of {@link CMODataSolmanClient}
      */
-    CMODataClient newClient(String serviceUrl, String serviceUser, String servicePassword) {
-        return new CMODataClient(serviceUrl, serviceUser,  servicePassword);
+    CMODataSolmanClient newClient(String serviceUrl, String serviceUser, String servicePassword) {
+        return new CMODataSolmanClient(serviceUrl, serviceUser,  servicePassword);
     }
 }
