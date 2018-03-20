@@ -45,6 +45,7 @@
 
     <modules>
       <module>modules/lib-solman</module>
+      <module>modules/lib-abap</module>
       <module>modules/cli</module>
       <module>modules/dist.cli</module>
     </modules>
