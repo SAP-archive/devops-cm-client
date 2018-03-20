@@ -11,6 +11,7 @@
     <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <slf4j.version>1.7.7</slf4j.version>
+      <olingo.v2.version>2.0.10</olingo.v2.version>
     </properties>
 
     <scm>
@@ -55,6 +56,16 @@
             <groupId>org.apache.olingo</groupId>
             <artifactId>odata-client-core</artifactId>
             <version>4.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>olingo-odata2-api</artifactId>
+            <version>${olingo.v2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.olingo</groupId>
+            <artifactId>olingo-odata2-core</artifactId>
+            <version>${olingo.v2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
