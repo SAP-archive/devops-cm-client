@@ -44,11 +44,11 @@ public class CMODataClientTest extends RecordableTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    protected CMODataClient examinee;
+    protected CMODataAbapClient examinee;
 
     @Before
     public void setup() throws URISyntaxException {
-        examinee = new CMODataClient(getWiremockProxy(), 
+        examinee = new CMODataAbapClient(getWiremockProxy(), 
                                      getUser(),
                                      getPassword());
     }
@@ -92,7 +92,7 @@ public class CMODataClientTest extends RecordableTest {
     public void getTransportWithWrongCredentialsThrowsExceptionIndicating401Test() throws Exception {
 
         thrown.expect(new ResponseCodeMatcher(SC_UNAUTHORIZED));
-        new CMODataClient(getWiremockProxy(), "BAD_USER", "BAD_PASSWORD").getTransport("A5DK900014");
+        new CMODataAbapClient(getWiremockProxy(), "BAD_USER", "BAD_PASSWORD").getTransport("A5DK900014");
     }
 
     @Test

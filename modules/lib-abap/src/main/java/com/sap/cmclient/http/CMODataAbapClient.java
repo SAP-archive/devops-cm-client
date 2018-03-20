@@ -52,7 +52,7 @@ import com.google.common.io.CharStreams;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.TransportMarshaller;
 
-public class CMODataClient {
+public class CMODataAbapClient {
 
     private final TransportRequestBuilder requestBuilder;
     private final URI endpoint;
@@ -60,7 +60,7 @@ public class CMODataClient {
     private String csrfToken = null;
     private Edm dataModel = null;
 
-    public CMODataClient(String endpoint, String user, String password) throws URISyntaxException {
+    public CMODataAbapClient(String endpoint, String user, String password) throws URISyntaxException {
 
         this.endpoint = new URI(endpoint);
         this.requestBuilder = new TransportRequestBuilder(this.endpoint);
