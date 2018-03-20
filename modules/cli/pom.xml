@@ -23,7 +23,7 @@
       <dependencies>
         <dependency>
           <groupId>${project.parent.groupId}</groupId>
-          <artifactId>ci-integration-lib</artifactId>
+          <artifactId>ci-integration-lib-solman</artifactId>
           <version>${project.parent.version}</version>
         </dependency>
         <dependency>

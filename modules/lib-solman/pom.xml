@@ -10,7 +10,7 @@
     <relativePath>../..</relativePath>
   </parent>
 
-  <artifactId>ci-integration-lib</artifactId>
+  <artifactId>ci-integration-lib-solman</artifactId>
   <packaging>jar</packaging>
 
   <name>SAP SOLMAN Change Management Integration Library</name>
