@@ -10,6 +10,8 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.olingo.client.core.http.BasicAuthHttpClientFactory;
 import org.apache.olingo.commons.api.http.HttpMethod;
 
+import com.sap.cmclient.VersionHelper;
+
 /**
  * Our own factory for http clients.
  * We set
@@ -36,7 +38,7 @@ public class CMOdataHTTPFactory extends BasicAuthHttpClientFactory {
         final DefaultHttpClient httpClient = super.create(method, uri);
 
         httpClient.getParams().setParameter(CoreProtocolPNames.USER_AGENT,
-                format("SAP CM Client/%s based on %s", CMODataSolmanClient.getShortVersion(), USER_AGENT));
+                format("SAP CM Client/%s based on %s", VersionHelper.getShortVersion(), USER_AGENT));
 
         httpClient.setCookieStore(this.cookieStore);
 
