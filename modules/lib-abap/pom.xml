@@ -10,7 +10,7 @@
     <relativePath>../..</relativePath>
   </parent>
 
-  <artifactId>ci-integration-lib-v2</artifactId>
+  <artifactId>ci-integration-lib-abap</artifactId>
   <packaging>jar</packaging>
 
   <name>SAP ABAP Change Management Integration Library</name>
