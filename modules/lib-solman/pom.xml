@@ -13,8 +13,8 @@
   <artifactId>ci-integration-lib</artifactId>
   <packaging>jar</packaging>
 
-  <name>SAP Change Management Integration Library</name>
-  <description>SAP Change Management Integration</description>
+  <name>SAP SOLMAN Change Management Integration Library</name>
+  <description>SAP SOLMAN Change Management Integration</description>
 
     <properties>
       <java.level>1.7</java.level>

@@ -44,7 +44,7 @@
     </licenses>
 
     <modules>
-      <module>modules/lib</module>
+      <module>modules/lib-solman</module>
       <module>modules/cli</module>
       <module>modules/dist.cli</module>
     </modules>
