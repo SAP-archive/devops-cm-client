@@ -13,8 +13,8 @@
   <artifactId>ci-integration-lib-v2</artifactId>
   <packaging>jar</packaging>
 
-  <name>SAP Change Management Integration Library</name>
-  <description>SAP Change Management Integration - ABAP</description>
+  <name>SAP ABAP Change Management Integration Library</name>
+  <description>SAP ABAP Change Management Integration</description>
 
     <properties>
       <java.level>1.7</java.level>
