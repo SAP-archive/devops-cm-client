@@ -9,12 +9,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
@@ -44,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
+import com.sap.cmclient.VersionHelper;
 
 /**
  * OData client for handling connections to SAP solution manager.
@@ -465,8 +464,7 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @return A string denoting the project version.
      */
     public static String getShortVersion() {
-        Properties vProps = getVersionProperties();
-        return (vProps == null) ? "<n/a>" : vProps.getProperty("mvnProjectVersion", "<n/a>");
+        return VersionHelper.getShortVersion();
     }
 
     /**
@@ -475,21 +473,7 @@ public class CMODataSolmanClient implements AutoCloseable {
      *         the basis for the build.
      */
     public static String getLongVersion() {
-        Properties vProps = getVersionProperties();
-        return (vProps == null) ? "<n/a>" : format("%s : %s",
-                                              vProps.getProperty("mvnProjectVersion", "<n/a>"),
-                                              vProps.getProperty("gitCommitId", "<n/a>"));
-    }
-
-    private static Properties getVersionProperties() {
-        try(InputStream version = CMODataSolmanClient.class.getResourceAsStream("/VERSION")) {
-            Properties vProps = new Properties();
-            vProps.load(version);
-            return vProps;
-        } catch(IOException e) {
-            logger.warn("Cannot retrieve version.", e);
-            return null;
-        }
+        return VersionHelper.getLongVersion();
     }
 
     private static void BAD_HACK_setErrorMessageNameSpace() {

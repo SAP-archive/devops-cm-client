@@ -1,0 +1,2 @@
+mvnProjectVersion=${project.version}
+gitCommitId=${git.commit.id}
