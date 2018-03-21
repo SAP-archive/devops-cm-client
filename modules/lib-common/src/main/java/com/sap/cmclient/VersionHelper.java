@@ -41,7 +41,7 @@ public class VersionHelper {
     private static Properties getVersionProperties() {
         try(InputStream version = VersionHelper.class.getResourceAsStream("/VERSION")) {
             Properties vProps = new Properties();
-            vProps.load(version);
+            if(version != null) vProps.load(version);
             return vProps;
         } catch(IOException e) {
             logger.warn("Cannot retrieve version.", e);
