@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.Transport.Status;
 import com.sap.cmclient.dto.Transport.Type;
@@ -55,7 +56,12 @@ public class CMODataClientTest extends RecordableTest {
 
     @After
     public void tearDown() {
+
         if(! isRecording()) {
+
+            for(ServeEvent e : WireMock.getAllServeEvents())
+                if(e.isNoExactMatch()) throw new RuntimeException("There was an unmatched request: " + e.getRequest().getAbsoluteUrl());
+
             WireMock.resetAllRequests();
             WireMock.resetAllScenarios();
         }
@@ -84,8 +90,10 @@ public class CMODataClientTest extends RecordableTest {
     @Test
     public void getTransportReturnsNullForNotExistingTransportTest() throws Exception {
 
-        Transport transport = examinee.getTransport("DOES_NOT_EXIST");
+        Transport transport = examinee.getTransport("A5DK900044");
         assertThat(transport, is(nullValue()));
+
+
     }
 
     @Test
