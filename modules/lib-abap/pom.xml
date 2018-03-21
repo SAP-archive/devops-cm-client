@@ -117,7 +117,11 @@
               <artifactId>maven-surefire-plugin</artifactId>
               <configuration>
                 <systemPropertyVariables>
-                  <org.slf4j.simpleLogger.log.sap.ai.st.cm.plugins.ciintegration.odataclient>TRACE</org.slf4j.simpleLogger.log.sap.ai.st.cm.plugins.ciintegration.odataclient>
+                  <org.slf4j.simpleLogger.defaultLogLevel>trace</org.slf4j.simpleLogger.defaultLogLevel>
+                  <org.apache.commons.logging.Log>org.apache.commons.logging.impl.SimpleLog</org.apache.commons.logging.Log>
+                  <org.apache.commons.logging.simplelog.showdatetime>true</org.apache.commons.logging.simplelog.showdatetime>
+                  <org.apache.commons.logging.simplelog.log.org.apache.http>DEBUG</org.apache.commons.logging.simplelog.log.org.apache.http>
+                  <org.apache.commons.logging.simplelog.log.org.apache.http.wire>DEBUG</org.apache.commons.logging.simplelog.log.org.apache.http.wire>
                 </systemPropertyVariables>
                </configuration>
             </plugin>
