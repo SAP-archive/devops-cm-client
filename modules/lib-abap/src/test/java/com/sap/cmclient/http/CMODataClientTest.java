@@ -146,6 +146,7 @@ public class CMODataClientTest extends RecordableTest {
 
         @Override
         public boolean matches(Object item) {
+            if( ! (item instanceof UnexpectedHttpResponseException)) return false;
             this.received = ((UnexpectedHttpResponseException)item).getStatus().getStatusCode();
             return  received == expected;
         }
