@@ -12,6 +12,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <slf4j.version>1.7.7</slf4j.version>
       <olingo.v2.version>2.0.10</olingo.v2.version>
+      <olingo.v4.version>4.3.0</olingo.v4.version>
     </properties>
 
     <scm>
@@ -56,7 +57,7 @@
         <dependency>
             <groupId>org.apache.olingo</groupId>
             <artifactId>odata-client-core</artifactId>
-            <version>4.3.0</version>
+            <version>${olingo.v4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.olingo</groupId>

@@ -29,6 +29,11 @@ public class VersionHelper {
         return (vProps == null) ? "<n/a>" : vProps.getProperty("mvnProjectVersion", "<n/a>");
     }
 
+    public static String getOlingoV2Version() {
+        Properties vProps = getVersionProperties();
+        return (vProps == null) ? "n/a" : vProps.getProperty("olingoVersionV2", "<n/a>");
+    }
+
     public Object clone() {
         throw new UnsupportedOperationException();
     }
