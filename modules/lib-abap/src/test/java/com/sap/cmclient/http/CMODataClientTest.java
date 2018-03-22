@@ -55,7 +55,7 @@ public class CMODataClientTest extends RecordableTest {
     public void getTransportSucceedsTest() throws Exception {
 
         Transport transport = examinee.getTransport("A5DK900014");
-        assertThat(transport.getId(), is(equalTo("A5DK900014")));
+        assertThat(transport.getTransportID(), is(equalTo("A5DK900014")));
         assertThat(transport.getOwner(), is(equalTo("ODATA")));
         assertThat(transport.getTargetSystem(), is(equalTo("A5T")));
         assertThat(transport.getStatus(), is(Transport.Status.D));
@@ -105,7 +105,7 @@ public class CMODataClientTest extends RecordableTest {
 
         Transport transport = new Transport("", "ODATA", "my transport", "A5T", date, time, "", "", Status.D, Type.W);
         Transport created = examinee.createTransport(transport);
-        assertThat(created.getId().trim(), is(not("")));
+        assertThat(created.getTransportID().trim(), is(not("")));
         assertThat(created.getOwner(), is(equalTo(transport.getOwner())));
         assertThat(created.getTargetSystem(), is(equalTo("A5T")));
         assertThat(created.getDescription(), is(equalTo("my transport")));

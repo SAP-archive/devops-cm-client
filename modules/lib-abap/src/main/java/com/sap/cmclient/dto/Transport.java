@@ -2,7 +2,7 @@ package com.sap.cmclient.dto;
 
 import java.util.GregorianCalendar;
 
-public class Transport {
+public class Transport implements com.sap.cmclient.Transport {
 
     public enum Status {
                           D ("development"),
@@ -87,7 +87,7 @@ public class Transport {
         this.type = type;
     }
 
-    public String getId() {
+    public String getTransportID() {
         return id;
     }
 
@@ -166,6 +166,9 @@ public class Transport {
       this.status = s;
     }
 
+    public Boolean isModifiable() {
+        return false; // TODO: how can we decide about that for abap transports? Most likely the type or the status.
+    }
     @Override
     public String toString() {
         return "Transport [id=" + id + ", owner=" + owner + ", description=" + description + ", targetSystem="

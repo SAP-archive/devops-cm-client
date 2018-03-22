@@ -106,7 +106,7 @@ public class CMODataAbapClient {
     Edm edm = getEntityDataModel();
     try (CloseableHttpClient client = clientFactory.createClient()) {
       
-      HttpPut put = requestBuilder.updateTransport(transport.getId());
+      HttpPut put = requestBuilder.updateTransport(transport.getTransportID());
       put.setHeader("x-csrf-token", getCSRFToken());
       EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());

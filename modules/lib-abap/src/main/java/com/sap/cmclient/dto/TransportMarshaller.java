@@ -27,7 +27,7 @@ public class TransportMarshaller {
     {
       Map<String, Object> p = new HashMap<String, Object>();
       
-      p.put("Id", t.getId());
+      p.put("Id", t.getTransportID());
       p.put("Owner", t.getOwner());
       p.put("Description", t.getDescription());
       p.put("TarSystem", t.getTargetSystem());
