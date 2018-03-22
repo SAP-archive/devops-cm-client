@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
+import com.sap.cmclient.Transport;
 
 /**
  * Command for retrieving the owner of a transport.
@@ -23,7 +23,7 @@ class GetTransportOwner extends TransportRelated {
     }
 
     @Override
-    protected Predicate<CMODataTransport> getOutputPredicate() {
+    protected Predicate<Transport> getOutputPredicate() {
         return it -> { String owner = it.getOwner();
                        if(StringUtils.isBlank(owner)) {
                            logger.debug(String.format("Owner attribute for transport '%s' is blank. Nothing will be emitted.", it.getTransportID()));

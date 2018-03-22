@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
+import com.sap.cmclient.Transport;
 
 /**
  *  Checks if a transport is modifiable.
@@ -25,7 +25,7 @@ class GetTransportModifiable extends TransportRelated {
      * @return A predicate returning <code>true</code> in same something was written to <code>stdout</code>.
      * Otherwise <code>false</code>.
      */
-    protected Predicate<CMODataTransport> getOutputPredicate() {
+    protected Predicate<Transport> getOutputPredicate() {
         return it -> { System.out.println(it.isModifiable()); 
                        return true;};
     }

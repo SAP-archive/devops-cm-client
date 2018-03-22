@@ -19,8 +19,9 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.cmclient.Transport;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 /**
  * Command for for retrieving the transport of a change. Depending on the options
@@ -79,7 +80,7 @@ class GetChangeTransports extends Command {
             logger.debug(format("Flag '-%s' has not beem set. All transports will be returned.", modifiableOnlyOption.getOpt()));
         }
 
-        Predicate<CMODataTransport> log =
+        Predicate<Transport> log =
                 it -> {
                     logger.debug(format("Transport '%s' retrieved from host '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
                       it.getTransportID(),
@@ -89,9 +90,9 @@ class GetChangeTransports extends Command {
                       it.getDescription()));
                     return true;};
 
-        Predicate<CMODataTransport> all = it -> true;
+        Predicate<Transport> all = it -> true;
 
-        Predicate<CMODataTransport> modOnly = it -> {
+        Predicate<Transport> modOnly = it -> {
               if(!it.isModifiable()) {
                 logger.debug(format("Transport '%s' is modifiable. This transport is added to the result set.", it.getTransportID()));
               }
@@ -101,7 +102,7 @@ class GetChangeTransports extends Command {
               return it.isModifiable();};
 
         try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
-            ArrayList<CMODataTransport> transports = client.getChangeTransports(changeId);
+            ArrayList<Transport> transports = client.getChangeTransports(changeId);
 
             if(transports.isEmpty())  {
                 logger.debug(format("No transports retrieved for change document id '%s' from host '%s'.", changeId, host));

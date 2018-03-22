@@ -19,6 +19,8 @@ import org.apache.commons.io.IOUtils;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
+import com.sap.cmclient.Transport;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
@@ -83,7 +85,7 @@ public class GetChangeTransportsTest extends CMTestBase {
 
     private SolmanClientFactory setupMock() throws Exception {
 
-        ArrayList<CMODataTransport> transports = new ArrayList<>();
+        ArrayList<Transport> transports = new ArrayList<>();
         transports.add(new CMODataTransport("L21K900026", false, "Description", "Owner"));
         transports.add(new CMODataTransport("L21K900028", false, "Description", "Owner"));
         transports.add(new CMODataTransport("L21K900029", false, "Description", "Owner"));

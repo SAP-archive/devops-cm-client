@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
 
+import com.sap.cmclient.Transport;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
@@ -38,7 +40,7 @@ public class CMTransportTestBase extends CMTestBase {
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         clientMock.close(); expectLastCall();
         if(ex == null) {
-            ArrayList<CMODataTransport> transports = new ArrayList<>();
+            ArrayList<Transport> transports = new ArrayList<>();
             transports.add(new CMODataTransport(transportId, isModifiable, description, owner));
             expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
         } else {

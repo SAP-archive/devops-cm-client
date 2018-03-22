@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.net.UrlEscapers;
+import com.sap.cmclient.Transport;
 import com.sap.cmclient.VersionHelper;
 
 /**
@@ -117,7 +118,7 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @throws ODataClientErrorException with status code 400 in case no matching 
      *   <code>changeId</code> does exist.
      */
-    public ArrayList<CMODataTransport> getChangeTransports(String changeID) {
+    public ArrayList<Transport> getChangeTransports(String changeID) {
 
         logger.trace(format("Entering 'getChangeTransports'. changeID: '%s'.", changeID));
 
@@ -140,7 +141,7 @@ public class CMODataSolmanClient implements AutoCloseable {
 
             ClientEntitySetIterator<ClientEntitySet, ClientEntity> iterator = response.getBody();
 
-            ArrayList<CMODataTransport> transportList = new ArrayList<>();
+            ArrayList<Transport> transportList = new ArrayList<>();
 
             while (iterator.hasNext()) {
                 transportList.add(toTransport(changeID, iterator.next()));

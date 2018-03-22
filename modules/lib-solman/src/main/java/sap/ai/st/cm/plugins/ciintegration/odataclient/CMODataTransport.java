@@ -1,9 +1,11 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import com.sap.cmclient.Transport;
+
 /**
  * Data transfer object representing a transport.
  */
-public class CMODataTransport {
+public class CMODataTransport implements Transport {
 
     private final String transportID;
     private final Boolean isModifiable;

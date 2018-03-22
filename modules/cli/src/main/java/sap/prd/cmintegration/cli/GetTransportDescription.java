@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
+import com.sap.cmclient.Transport;
 
 /**
  * Command for retrieving the description of a transport.
@@ -23,7 +23,7 @@ class GetTransportDescription extends TransportRelated {
     }
 
     @Override
-    protected Predicate<CMODataTransport> getOutputPredicate() {
+    protected Predicate<Transport> getOutputPredicate() {
         return it -> {
                        String description = it.getDescription();
                        if(StringUtils.isBlank(description)) {

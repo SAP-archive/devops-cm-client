@@ -18,8 +18,9 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.cmclient.Transport;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 /**
  * Base class for all transport related commands.
@@ -36,18 +37,18 @@ abstract class TransportRelated extends Command {
         this.transportId = transportId;
     }
 
-    protected abstract Predicate<CMODataTransport> getOutputPredicate();
+    protected abstract Predicate<Transport> getOutputPredicate();
 
     @Override
     final void execute() throws Exception {
 
         try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host,  user,  password)) {
 
-            Optional<CMODataTransport> transport = client.getChangeTransports(changeId).stream()
+            Optional<Transport> transport = client.getChangeTransports(changeId).stream()
                 .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
 
             if(transport.isPresent()) {
-                CMODataTransport t = transport.get();
+                Transport t = transport.get();
  
                 if(!t.getTransportID().trim().equals(transportId.trim())) {
                     throw new CMCommandLineException(

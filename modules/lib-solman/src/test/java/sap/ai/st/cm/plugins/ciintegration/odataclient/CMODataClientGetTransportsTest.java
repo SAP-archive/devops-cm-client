@@ -12,8 +12,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
+import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
+import com.sap.cmclient.Transport;
 
 public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
@@ -57,7 +58,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     public void testGetTransportsStraightForward() throws Exception {
 
         setMock(examinee, setupMock());
-        ArrayList<CMODataTransport> changeTransports = examinee.getChangeTransports("8000042445");
+        ArrayList<Transport> changeTransports = examinee.getChangeTransports("8000042445");
 
         assertThat(join(getTransportIds(changeTransports), " "), allOf(
                 containsString("L21K90002J"),
@@ -75,9 +76,9 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
      * No java 8 streams for the lib since the lib is also used from the jenkins plugin which
      * has (for some reasons (?)) a constrain to java 7.
      */
-    private static Collection<String> getTransportIds(Collection<CMODataTransport> transports) {
+    private static Collection<String> getTransportIds(Collection<Transport> transports) {
         Collection<String> transportIds = Sets.newHashSet();
-        for(CMODataTransport t : transports) {
+        for(Transport t : transports) {
             transportIds.add(t.getTransportID());
         }
         return transportIds;
