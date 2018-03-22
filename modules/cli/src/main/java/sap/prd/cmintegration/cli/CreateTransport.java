@@ -68,7 +68,7 @@ class CreateTransport extends Command {
 
     @Override
     void execute() throws Exception {
-        try(CMODataSolmanClient client = ClientFactory.getInstance().newClient(host, user,  password)) {
+        try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user,  password)) {
             logger.debug(format("Creating transport request for changeId '%s'.", changeId));
 
             CMODataTransport transport;

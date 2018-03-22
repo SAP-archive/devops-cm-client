@@ -26,15 +26,15 @@ public class CMTransportTestBase extends CMTestBase {
         super.tearDown();
     }
 
-    protected ClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable) throws Exception {
+    protected SolmanClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable) throws Exception {
         return setupMock(transportId, owner, description, isModifiable, null);
     }
 
-    protected ClientFactory setupMock(Exception e) throws Exception {
+    protected SolmanClientFactory setupMock(Exception e) throws Exception {
         return setupMock(null, null, null, false, e);
     }
 
-    private ClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable, Exception ex) throws Exception {
+    private SolmanClientFactory setupMock(String transportId, String owner, String description, boolean isModifiable, Exception ex) throws Exception {
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         clientMock.close(); expectLastCall();
         if(ex == null) {
@@ -44,7 +44,7 @@ public class CMTransportTestBase extends CMTestBase {
         } else {
             expect(clientMock.getChangeTransports(capture(changeId))).andThrow(ex);
         }
-        ClientFactory factoryMock = createMock(ClientFactory.class);
+        SolmanClientFactory factoryMock = createMock(SolmanClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),

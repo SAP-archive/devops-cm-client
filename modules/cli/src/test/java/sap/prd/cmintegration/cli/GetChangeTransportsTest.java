@@ -81,7 +81,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         assertThat(helpText, containsString("-m,--modifiable-only   Returns modifiable transports only."));
     }
 
-    private ClientFactory setupMock() throws Exception {
+    private SolmanClientFactory setupMock() throws Exception {
 
         ArrayList<CMODataTransport> transports = new ArrayList<>();
         transports.add(new CMODataTransport("L21K900026", false, "Description", "Owner"));
@@ -96,7 +96,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);
 
-        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
+        SolmanClientFactory factoryMock = EasyMock.createMock(SolmanClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),

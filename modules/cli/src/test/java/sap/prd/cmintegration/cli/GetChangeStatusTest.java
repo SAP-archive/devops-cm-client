@@ -23,11 +23,11 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 public class GetChangeStatusTest extends CMTestBase {
 
-    private ClientFactory setupMock() throws Exception {
+    private SolmanClientFactory setupMock() throws Exception {
         return setupMock(null);
     }
 
-    private ClientFactory setupMock(Exception ex) throws Exception {
+    private SolmanClientFactory setupMock(Exception ex) throws Exception {
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         clientMock.close(); expectLastCall();
         if(ex == null) {
@@ -36,7 +36,7 @@ public class GetChangeStatusTest extends CMTestBase {
         } else {
             expect(clientMock.getChange(capture(changeId))).andThrow(ex);
         }
-        ClientFactory factoryMock = createMock(ClientFactory.class);
+        SolmanClientFactory factoryMock = createMock(SolmanClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),

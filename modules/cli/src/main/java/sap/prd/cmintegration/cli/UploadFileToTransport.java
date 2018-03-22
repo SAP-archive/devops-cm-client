@@ -69,7 +69,7 @@ class UploadFileToTransport extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
-        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
 
             logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
                     upload.getAbsolutePath(), transportId, changeId, applicationId));

@@ -53,8 +53,8 @@ public class CMTestBase {
         System.setOut(new PrintStream(result));
     }
 
-    protected static void setMock(ClientFactory mock) throws Exception {
-        Field field = ClientFactory.class.getDeclaredField("instance");
+    protected static void setMock(SolmanClientFactory mock) throws Exception {
+        Field field = SolmanClientFactory.class.getDeclaredField("instance");
         field.setAccessible(true);
         field.set(null, mock);
         field.setAccessible(false);

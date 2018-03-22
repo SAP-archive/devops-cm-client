@@ -34,7 +34,7 @@ class GetChangeStatus extends Command {
 
     @Override
     void execute() throws Exception {
-        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
             CMODataChange change = client.getChange(changeId);
             logger.debug(format("Change '%s' retrieved from host '%s'. isInDevelopment: '%b'.", change.getChangeID(), host, change.isInDevelopment()));
             System.out.println(change.isInDevelopment());

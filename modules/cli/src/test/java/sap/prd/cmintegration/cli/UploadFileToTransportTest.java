@@ -103,14 +103,14 @@ public class UploadFileToTransportTest extends CMTestBase {
 
     }
 
-    private ClientFactory setupMock() throws Exception {
+    private SolmanClientFactory setupMock() throws Exception {
 
         CMODataSolmanClient clientMock = EasyMock.createMock(CMODataSolmanClient.class);
         clientMock.uploadFileToTransport(capture(changeId), capture(transportId),
             capture(filePath), capture(applicationId)); expectLastCall();
         clientMock.close(); expectLastCall();
 
-        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
+        SolmanClientFactory factoryMock = EasyMock.createMock(SolmanClientFactory.class);
             expect(factoryMock
                    .newClient(capture(host),
                            capture(user),

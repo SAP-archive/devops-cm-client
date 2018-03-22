@@ -66,14 +66,14 @@ public class ReleaseTransportTest extends CMTestBase {
                 "8000038673", "L21K900026"});
     }
 
-    private ClientFactory setupMock(Exception e) throws Exception {
+    private SolmanClientFactory setupMock(Exception e) throws Exception {
 
         CMODataSolmanClient clientMock = EasyMock.createMock(CMODataSolmanClient.class);
         clientMock.releaseDevelopmentTransport(capture(changeId), capture(transportId));
         clientMock.close(); expectLastCall();
         if(e == null) expectLastCall(); else expectLastCall().andThrow(e);
 
-        ClientFactory factoryMock = EasyMock.createMock(ClientFactory.class);
+        SolmanClientFactory factoryMock = EasyMock.createMock(SolmanClientFactory.class);
         expect(factoryMock
             .newClient(capture(host),
                     capture(user),

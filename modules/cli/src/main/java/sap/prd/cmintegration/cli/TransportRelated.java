@@ -41,7 +41,7 @@ abstract class TransportRelated extends Command {
     @Override
     final void execute() throws Exception {
 
-        try(CMODataSolmanClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+        try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host,  user,  password)) {
 
             Optional<CMODataTransport> transport = client.getChangeTransports(changeId).stream()
                 .filter( it -> it.getTransportID().equals(transportId) ).findFirst();

@@ -120,11 +120,11 @@ public class CreateTransportTest extends CMTestBase {
             is(equalTo("myTransport")));
     }
 
-    private ClientFactory setupStraightForwardMock() throws Exception {
+    private SolmanClientFactory setupStraightForwardMock() throws Exception {
         return setupStraightForwardMock(null, null);
     }
 
-    private ClientFactory setupStraightForwardMock(String owner, String description) throws Exception {
+    private SolmanClientFactory setupStraightForwardMock(String owner, String description) throws Exception {
 
         CMODataTransport transport = new CMODataTransport("myTransport", true, description, owner);
 
@@ -137,7 +137,7 @@ public class CreateTransportTest extends CMTestBase {
         }
 
         clientMock.close(); expectLastCall();
-        ClientFactory factoryMock = createMock(ClientFactory.class);
+        SolmanClientFactory factoryMock = createMock(SolmanClientFactory.class);
         expect(factoryMock
                 .newClient(capture(host),
                         capture(user),

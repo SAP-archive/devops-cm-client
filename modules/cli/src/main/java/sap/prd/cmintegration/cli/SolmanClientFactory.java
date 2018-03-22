@@ -5,16 +5,16 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 /**
  * Provides {@link CMODataSolmanClient} instances.
  */
-class ClientFactory {
+class SolmanClientFactory {
 
-    private static ClientFactory instance;
+    private static SolmanClientFactory instance;
 
-    private ClientFactory() {
+    private SolmanClientFactory() {
     }
 
-    static synchronized ClientFactory getInstance() {
+    static synchronized SolmanClientFactory getInstance() {
         if(instance == null) {
-            instance =  new ClientFactory();
+            instance =  new SolmanClientFactory();
         }
         return instance;
     }

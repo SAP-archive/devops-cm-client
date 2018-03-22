@@ -100,7 +100,7 @@ class GetChangeTransports extends Command {
               };
               return it.isModifiable();};
 
-        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
             ArrayList<CMODataTransport> transports = client.getChangeTransports(changeId);
 
             if(transports.isEmpty())  {

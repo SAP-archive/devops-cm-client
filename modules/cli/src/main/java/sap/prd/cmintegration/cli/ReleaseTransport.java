@@ -56,7 +56,7 @@ class ReleaseTransport extends Command {
 
     @Override
     void execute() throws Exception {
-        try (CMODataSolmanClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host,  user,  password)) {
             client.releaseDevelopmentTransport(changeId, transportId);
         } catch(Exception e) {
             logger.error(format("Exception caught while releasing transport '%s' for change document '%s': '%s'.", transportId, changeId, e.getMessage()), e);
