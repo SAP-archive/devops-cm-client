@@ -42,32 +42,24 @@ abstract class TransportRelated extends Command {
     @Override
     final void execute() throws Exception {
 
-        try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host,  user,  password)) {
-
-            Optional<Transport> transport = client.getChangeTransports(changeId).stream()
-                .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
-
-            if(transport.isPresent()) {
-                Transport t = transport.get();
+        Optional<Transport> transport = getTransport(changeId, transportId);
+        if(transport.isPresent()) {
+            Transport t = transport.get();
  
-                if(!t.getTransportID().trim().equals(transportId.trim())) {
-                    throw new CMCommandLineException(
-                        format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
-                                t.getTransportID(),
-                                transportId));
-                }
- 
-                logger.debug(format("Transport '%s' has been found for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
-                        transportId, changeId,
-                        t.isModifiable(), t.getOwner(), t.getDescription()));
- 
-                getOutputPredicate().test(t);
-            }  else {
-                throw new CMCommandLineException(String.format("Transport '%s' not found for change '%s'.", transportId, changeId));
+            if(!t.getTransportID().trim().equals(transportId.trim())) {
+                throw new CMCommandLineException(
+                    format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
+                            t.getTransportID(),
+                            transportId));
             }
-        } catch(Exception e) {
-            logger.warn(format("Exception caught while getting transport '%s' for change document '%s' from host '%s'.", transportId, changeId, host), e);
-            throw e;
+ 
+            logger.debug(format("Transport '%s' has been found for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+                    transportId, changeId,
+                    t.isModifiable(), t.getOwner(), t.getDescription()));
+ 
+            getOutputPredicate().test(t);
+        }  else {
+            throw new CMCommandLineException(String.format("Transport '%s' not found for change '%s'.", transportId, changeId));
         }
     }
 
@@ -89,6 +81,16 @@ abstract class TransportRelated extends Command {
                 getPassword(commandLine),
                 getChangeId(commandLine),
                 getTransportId(commandLine)).execute();
+    }
+
+    private Optional<Transport> getTransport(String changeId, String transportId) {
+        try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
+            return client.getChangeTransports(changeId).stream()
+                .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
+        } catch(RuntimeException e) {
+            logger.warn(format("Exception caught while getting transport '%s' for change document '%s' from host '%s'.", transportId, changeId, host), e);
+            throw e;
+        }
     }
 
     private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String changeId, String transportId) {
