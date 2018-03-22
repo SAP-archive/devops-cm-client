@@ -21,14 +21,11 @@ import org.apache.olingo.odata2.api.ep.EntityProviderException;
 import org.apache.olingo.odata2.api.exception.ODataException;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.dto.Transport.Status;
 import com.sap.cmclient.dto.Transport.Type;
@@ -52,19 +49,6 @@ public class CMODataClientTest extends RecordableTest {
         examinee = new CMODataAbapClient(getWiremockProxy(), 
                                      getUser(),
                                      getPassword());
-    }
-
-    @After
-    public void tearDown() {
-
-        if(! isRecording()) {
-
-            for(ServeEvent e : WireMock.getAllServeEvents())
-                if(e.isNoExactMatch()) throw new RuntimeException("There was an unmatched request: " + e.getRequest().getAbsoluteUrl());
-
-            WireMock.resetAllRequests();
-            WireMock.resetAllScenarios();
-        }
     }
 
     @Test

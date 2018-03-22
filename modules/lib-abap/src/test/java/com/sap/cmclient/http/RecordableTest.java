@@ -7,11 +7,14 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.google.common.base.Strings;
 
 public class RecordableTest {
@@ -35,9 +38,22 @@ public class RecordableTest {
         }
     }
 
+    @After
+    public void tearDown() {
+
+        if(! isRecording()) {
+
+            for(ServeEvent e : wireMockRule.getAllServeEvents())
+                if(e.isNoExactMatch()) throw new RuntimeException("There was an unmatched request: " + e.getRequest().getAbsoluteUrl());
+
+            WireMock.resetAllRequests();
+            WireMock.resetAllScenarios();
+        }
+    }
+
     @AfterClass
     public static void tearDownClass() {
-        if(!Strings.isNullOrEmpty(getHost())) {
+        if(isRecording()) {
             wireMockRule.stopRecording();
             System.out.println("[INFO] ... recording done.");
         }
