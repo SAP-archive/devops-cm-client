@@ -52,12 +52,14 @@ class ReleaseTransport extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
+        BackendType backendType = getBackendType(commandLine);
+
         new ReleaseTransport(
-                getBackendType(commandLine),
+                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine),
+                getChangeId(backendType, commandLine),
                 TransportRelated.getTransportId(commandLine)).execute();
     }
 

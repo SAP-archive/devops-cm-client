@@ -61,12 +61,14 @@ class CreateTransport extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
+        BackendType backendType = getBackendType(commandLine);
+
         new CreateTransport(
-                getBackendType(commandLine),
+                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine),
+                getChangeId(backendType, commandLine),
                 commandLine.getOptionValue(owner.getOpt()),
                 commandLine.getOptionValue(description.getOpt())).execute();
     }

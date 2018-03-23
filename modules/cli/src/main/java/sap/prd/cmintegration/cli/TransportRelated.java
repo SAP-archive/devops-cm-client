@@ -85,12 +85,14 @@ abstract class TransportRelated extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
+        BackendType backendType = getBackendType(commandLine);
+
         newInstance(clazz,
-                getBackendType(commandLine),
+                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine),
+                getChangeId(backendType, commandLine),
                 getTransportId(commandLine)).execute();
     }
 

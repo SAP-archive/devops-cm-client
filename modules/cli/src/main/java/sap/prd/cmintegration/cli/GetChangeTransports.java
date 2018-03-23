@@ -65,12 +65,14 @@ class GetChangeTransports extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
+        BackendType backendType = getBackendType(commandLine);
+
         new GetChangeTransports(
-                getBackendType(commandLine),
+                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine),
+                getChangeId(backendType, commandLine),
                 commandLine.hasOption(modifiableOnlyOption.getOpt())).execute();
     }
 

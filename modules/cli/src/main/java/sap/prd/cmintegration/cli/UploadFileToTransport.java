@@ -57,12 +57,14 @@ class UploadFileToTransport extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
+        BackendType backendType = getBackendType(commandLine);
+
         new UploadFileToTransport(
-                getBackendType(commandLine),
+                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine),
+                getChangeId(backendType, commandLine),
                 TransportRelated.getTransportId(commandLine),
                 getArg(commandLine, 1, "applicationId"),
                 getArg(commandLine, 2, "filePath")).execute();
