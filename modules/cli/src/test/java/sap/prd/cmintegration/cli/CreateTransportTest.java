@@ -46,7 +46,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "8000038673"});
+                "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.hasCaptured(), is(equalTo(false)));
@@ -68,7 +68,7 @@ public class CreateTransportTest extends CMTestBase {
                 "dummy-cmd",
                 "--owner", "me",
                 "--description", "lorem ipsum",
-                "8000038673"});
+                "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.getValue(), is(equalTo("me")));
@@ -89,7 +89,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "--owner", "me",
-                "8000038673"});
+                "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.getValue(), is(equalTo("me")));
@@ -110,7 +110,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
                 "--description", "lorem ipsum",
-                "8000038673"});
+                "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.getValue(), is(equalTo(SERVICE_USER)));

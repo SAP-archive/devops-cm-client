@@ -14,7 +14,9 @@ import java.util.function.Predicate;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,10 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
  * Base class for all transport related commands.
  */
 abstract class TransportRelated extends Command {
+
+    protected static class Opts {
+        protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
+    }
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
     protected final String changeId, transportId;
@@ -69,6 +75,8 @@ abstract class TransportRelated extends Command {
 
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
+        options.addOption(Commands.CMOptions.CHANGE_ID);
+        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
             handleHelpOption(usage, helpText, new Options()); return;
@@ -103,11 +111,11 @@ abstract class TransportRelated extends Command {
     }
 
     static String getTransportId(CommandLine commandLine) {
-        try {
-            return Commands.Helpers.getArg(commandLine, 2);
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        String transportID = commandLine.getOptionValue(Opts.TRANSPORT_ID.getOpt());
+        if(StringUtils.isEmpty(transportID)) {
             throw new CMCommandLineException("No transportId specified.");
         }
+        return transportID;
     }
 
 }

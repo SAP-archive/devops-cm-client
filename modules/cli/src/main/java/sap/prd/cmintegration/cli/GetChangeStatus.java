@@ -49,9 +49,10 @@ class GetChangeStatus extends Command {
         logger.debug(format("%s called with arguments: '%s'.", GetChangeStatus.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
+        options.addOption(Commands.CMOptions.CHANGE_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s <changeId>", getCommandName(GetChangeStatus.class)),
+            handleHelpOption(format("%s -cID <changeId>", getCommandName(GetChangeStatus.class)),
                     "Returns 'true' if the change specified by <changeId> is in development. Otherwise 'false'.", new Options()); return;
         }
 

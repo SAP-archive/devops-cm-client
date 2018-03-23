@@ -38,7 +38,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
-        "8000038673"});
+        "-cID", "8000038673"});
 
         Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));
         assertThat(transportIds, contains(
@@ -67,7 +67,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "dummy-cmd", "-m",
-        "8000038673"});
+        "-cID", "8000038673"});
 
         Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));
         assertThat(transportIds, contains("L21K90002E"));

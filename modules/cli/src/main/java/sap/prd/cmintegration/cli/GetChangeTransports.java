@@ -51,12 +51,12 @@ class GetChangeTransports extends Command {
         logger.debug(format("%s called with arguments: '%s'.", GetChangeTransports.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
-
+        options.addOption(Commands.CMOptions.CHANGE_ID);
 
         options.addOption(modifiableOnlyOption);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [SUBCOMMAND_OPTIONS] <changeId>", getCommandName(GetChangeTransports.class)),
+            handleHelpOption(format("%s [SUBCOMMAND_OPTIONS] -cID <changeId>", getCommandName(GetChangeTransports.class)),
                     "Returns the ids of the transports for the change represented by <changeId>.",
                       new Options().addOption(modifiableOnlyOption)); return;
         }
