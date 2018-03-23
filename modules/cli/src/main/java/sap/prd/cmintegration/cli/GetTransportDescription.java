@@ -41,7 +41,7 @@ class GetTransportDescription extends TransportRelated {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportDescription.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         TransportRelated.main(GetTransportDescription.class, args,
-                format("%s -cID <changeId>  -tID <transportId>", getCommandName(GetTransportDescription.class)),
-                "Returns the description for the transport represented by <changeId>, <transportId>.");
+                format("%s [-cID <changeId>]  -tID <transportId>", getCommandName(GetTransportDescription.class)),
+                "Returns the description for the transport represented by <changeId>, <transportId>. ChangeId must not be provided for ABAP backends.");
     }
 }

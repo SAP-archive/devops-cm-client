@@ -55,7 +55,7 @@ class GetChangeStatus extends Command {
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s -cID <changeId>", getCommandName(GetChangeStatus.class)),
-                    "Returns 'true' if the change specified by <changeId> is in development. Otherwise 'false'.", new Options()); return;
+                    "Returns 'true' if the change specified by <changeId> is in development. Otherwise 'false'. This command is only available for SOLMAN backends.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

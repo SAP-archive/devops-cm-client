@@ -46,8 +46,8 @@ class ReleaseTransport extends Command {
 
         if(helpRequested(args)) {
             handleHelpOption(
-                format("%s -cID <changeId> -tID <transportId>", getCommandName(ReleaseTransport.class)),
-                "Releases the transport specified by <changeId>, <transportId>.", new Options()); return;
+                format("%s [-cID <changeId>] -tID <transportId>", getCommandName(ReleaseTransport.class)),
+                "Releases the transport specified by [<changeId>,] <transportId>. ChangeId must not be provided for ABAP backends.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);

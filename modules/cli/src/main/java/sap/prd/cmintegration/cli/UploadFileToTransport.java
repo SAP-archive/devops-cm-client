@@ -50,8 +50,8 @@ class UploadFileToTransport extends Command {
         options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s -cID <changeId> -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
-                    "Uploads the file specified by <filePath> to transport <transportId> for change <changeId>. "
+            handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
+                    "Uploads the file specified by <filePath> to transport <transportId> [for change <changeId>]. ChangeId must not be provided for ABAP backends. "
                     + "<applicationId> specifies how the file needs to be handled on server side.", new Options()); return;
         }
 
