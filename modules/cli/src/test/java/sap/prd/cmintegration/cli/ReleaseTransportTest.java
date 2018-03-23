@@ -43,7 +43,7 @@ public class ReleaseTransportTest extends CMTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "-cID", "8000038673", "L21K90002K"});
+                "-cID", "8000038673", "-tID", "L21K90002K"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(transportId.getValue(), is(equalTo("L21K90002K")));
@@ -63,7 +63,7 @@ public class ReleaseTransportTest extends CMTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "-cID", "8000038673", "L21K900026"});
+                "-cID", "8000038673", "-tID", "L21K900026"});
     }
 
     private ClientFactory setupMock(Exception e) throws Exception {

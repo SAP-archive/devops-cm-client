@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 /**
  * Command for uploading a file into a transport.
@@ -44,9 +45,10 @@ class UploadFileToTransport extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
+        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s -cID <changeId> <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
+            handleHelpOption(format("%s -cID <changeId> -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
                     "Uploads the file specified by <filePath> to transport <transportId> for change <changeId>. "
                     + "<applicationId> specifies how the file needs to be handled on server side.", new Options()); return;
         }
@@ -58,9 +60,9 @@ class UploadFileToTransport extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                getArg(commandLine, 1, "transportId"),
-                getArg(commandLine, 2, "applicationId"),
-                getArg(commandLine, 3, "filePath")).execute();
+                TransportRelated.getTransportId(commandLine),
+                getArg(commandLine, 1, "applicationId"),
+                getArg(commandLine, 2, "filePath")).execute();
     }
 
     @Override

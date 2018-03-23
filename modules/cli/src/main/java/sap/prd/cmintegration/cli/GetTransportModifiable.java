@@ -33,7 +33,7 @@ class GetTransportModifiable extends TransportRelated {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportModifiable.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         TransportRelated.main(GetTransportModifiable.class, args,
-            format("%s -cID <changeId>, <transportId>", getCommandName(GetTransportModifiable.class)),
+            format("%s -cID <changeId>, -tID <transportId>", getCommandName(GetTransportModifiable.class)),
             "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }
 }

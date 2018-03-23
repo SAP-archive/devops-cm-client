@@ -51,7 +51,8 @@ class Commands {
                       HELP = new Option("h", "help", false, "Prints this help."),
                       VERSION = new Option("v", "version", false, "Prints the version."),
 
-                      CHANGE_ID = new Option("cID", "change-id", true, "changeID");
+                      CHANGE_ID = new Option("cID", "change-id", true, "changeID"),
+                      TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
 
         static {
             USER.setRequired(true);

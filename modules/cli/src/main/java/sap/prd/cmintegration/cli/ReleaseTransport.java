@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 /**
  * Command for releasing a transport.
@@ -39,10 +40,11 @@ class ReleaseTransport extends Command {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
+        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
             handleHelpOption(
-                format("%s -cID <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
+                format("%s -cID <changeId> -tID <transportId>", getCommandName(ReleaseTransport.class)),
                 "Releases the transport specified by <changeId>, <transportId>.", new Options()); return;
         }
 
