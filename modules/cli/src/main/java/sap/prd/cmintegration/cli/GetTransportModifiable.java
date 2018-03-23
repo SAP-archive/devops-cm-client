@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+
 /**
  *  Checks if a transport is modifiable.
  */
@@ -17,8 +19,8 @@ import com.sap.cmclient.Transport;
 class GetTransportModifiable extends TransportRelated {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiable.class);
-    GetTransportModifiable(String host, String user, String password, String changeId, String transportId) {
-        super(host, user, password, changeId, transportId);
+    GetTransportModifiable(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
+        super(backendType, host, user, password, changeId, transportId);
     }
 
     /**

@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+
 /**
  * Command for retrieving the description of a transport.
  */
@@ -18,8 +20,8 @@ import com.sap.cmclient.Transport;
 class GetTransportDescription extends TransportRelated {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportDescription.class);
-    GetTransportDescription(String host, String user, String password, String changeId, String transportId) {
-        super(host, user, password, changeId, transportId);
+    GetTransportDescription(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
+        super(backendType, host, user, password, changeId, transportId);
     }
 
     @Override

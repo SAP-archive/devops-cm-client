@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Command for creating a transport for a change in SAP Solution Manager.
@@ -29,9 +31,9 @@ class CreateTransport extends Command {
     final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
     private final String changeId, owner, description;
 
-    public CreateTransport(String host, String user, String password, String changeId,
+    public CreateTransport(BackendType backendType, String host, String user, String password, String changeId,
             String owner, String description) {
-        super(host, user, password);
+        super(backendType, host, user, password);
         this.changeId = changeId;
         this.owner = owner;
         this.description = description;
@@ -59,7 +61,9 @@ class CreateTransport extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        new CreateTransport(getHost(commandLine),
+        new CreateTransport(
+                getBackendType(commandLine),
+                getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),

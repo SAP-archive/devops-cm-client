@@ -42,6 +42,7 @@ public class ReleaseTransportTest extends CMTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673", "-tID", "L21K90002K"});
 
@@ -62,6 +63,7 @@ public class ReleaseTransportTest extends CMTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673", "-tID", "L21K900026"});
     }

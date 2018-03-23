@@ -3,6 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Command for retrieving the status of a change.
@@ -27,8 +29,8 @@ class GetChangeStatus extends Command {
     final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
     private String changeId;
 
-    GetChangeStatus(String host, String user, String password, String changeId) {
-        super(host, user, password);
+    GetChangeStatus(BackendType backendType, String host, String user, String password, String changeId) {
+        super(backendType, host, user, password);
         this.changeId = changeId;
     }
 
@@ -58,6 +60,7 @@ class GetChangeStatus extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
         new GetChangeStatus(
+                getBackendType(commandLine),
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

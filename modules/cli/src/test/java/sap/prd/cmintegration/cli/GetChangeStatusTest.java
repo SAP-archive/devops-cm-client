@@ -57,6 +57,7 @@ public class GetChangeStatusTest extends CMTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
         "dummy-cmd",
         "-cID", "8000038673"});
 
@@ -81,6 +82,7 @@ public class GetChangeStatusTest extends CMTestBase {
         "-u", "DOES_NOT_EXIST",
         "-p", "********",
         "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
         "dummy-cmd",
         "-cID", "8000038673"});
     }
@@ -99,6 +101,7 @@ public class GetChangeStatusTest extends CMTestBase {
             "-u", SERVICE_USER,
             "-p", SERVICE_PASSWORD,
             "-e", SERVICE_ENDPOINT,
+            "-t", "SOLMAN",
             "dummy-cmd",
             "-cID", "DOES_NOT_EXIST"});
         } catch(Exception e) {
@@ -119,7 +122,8 @@ public class GetChangeStatusTest extends CMTestBase {
         GetChangeStatus.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
-        "-e", SERVICE_ENDPOINT});
+        "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN"});
     }
 
     @Test
@@ -137,6 +141,7 @@ public class GetChangeStatusTest extends CMTestBase {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
+          "-t", "SOLMAN",
           "dummy-cmd",
           "-cID", "8000038673"});
         } finally {
@@ -164,6 +169,7 @@ public class GetChangeStatusTest extends CMTestBase {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
+          "-t", "SOLMAN",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -187,6 +193,7 @@ public class GetChangeStatusTest extends CMTestBase {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
+          "-t", "SOLMAN",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -206,6 +213,7 @@ public class GetChangeStatusTest extends CMTestBase {
         GetChangeStatus.main(new String[] {
         "-u", SERVICE_USER,
         "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
         "8000038673"});
     }
 }

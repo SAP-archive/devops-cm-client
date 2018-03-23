@@ -4,6 +4,7 @@ import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.prd.cmintegration.cli.TransportRelated.Opts;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Command for uploading a file into a transport.
@@ -31,9 +33,9 @@ class UploadFileToTransport extends Command {
     private final String changeId, transportId, applicationId;
     private final File upload;
 
-    UploadFileToTransport(String host, String user, String password,
+    UploadFileToTransport(BackendType backendType, String host, String user, String password,
             String changeId, String transportId, String applicationId, String filePath) {
-        super(host, user, password);
+        super(backendType, host, user, password);
         this.changeId = changeId;
         this.transportId = transportId;
         this.applicationId = applicationId;
@@ -56,6 +58,7 @@ class UploadFileToTransport extends Command {
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
         new UploadFileToTransport(
+                getBackendType(commandLine),
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

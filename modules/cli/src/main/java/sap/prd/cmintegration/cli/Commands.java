@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Helpers for using/calling commands.
@@ -47,6 +48,7 @@ class Commands {
 
         static Option USER = new Option("u", "user", true, "Service user."),
                       PASSWORD = new Option("p", "password", true, "Service password, if '-' is provided, password will be read from stdin."),
+                      BACKEND_TYPE = new Option("t", "backend-type", true, format("Backend Type, one of %s ", (Object[])BackendType.values())),
                       HOST = new Option("e", "endpoint", true, "Service endpoint"),
                       HELP = new Option("h", "help", false, "Prints this help."),
                       VERSION = new Option("v", "version", false, "Prints the version."),
@@ -57,6 +59,7 @@ class Commands {
         static {
             USER.setRequired(true);
             PASSWORD.setRequired(true);
+            BACKEND_TYPE.setRequired(true);
             HOST.setRequired(true);
             HELP.setRequired(false);
             VERSION.setRequired(false);
@@ -79,6 +82,7 @@ class Commands {
         static Options addStandardParameters(Options options) {
             options.addOption(CMOptions.USER);
             options.addOption(CMOptions.PASSWORD);
+            options.addOption(CMOptions.BACKEND_TYPE);
             options.addOption(CMOptions.HOST);
             options.addOption(CMOptions.HELP);
             options.addOption(CMOptions.VERSION);
@@ -93,6 +97,10 @@ class Commands {
 
         static String getUser(CommandLine commandLine) {
             return commandLine.getOptionValue(CMOptions.USER.getOpt());
+        }
+
+        static BackendType getBackendType(CommandLine commandLine) {
+            return BackendType.valueOf(commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt()));
         }
 
         static String getHost(CommandLine commandLine) {

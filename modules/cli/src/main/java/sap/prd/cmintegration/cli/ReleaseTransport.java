@@ -3,6 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.prd.cmintegration.cli.TransportRelated.Opts;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Command for releasing a transport.
@@ -27,10 +29,10 @@ class ReleaseTransport extends Command {
     final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);
     private final String changeId, transportId;
 
-    ReleaseTransport(String host, String user, String password,
+    ReleaseTransport(BackendType backendType, String host, String user, String password,
             String changeId, String transportId) {
 
-        super(host, user, password);
+        super(backendType, host, user, password);
         this.changeId = changeId;
         this.transportId = transportId;
     }
@@ -50,7 +52,9 @@ class ReleaseTransport extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        new ReleaseTransport(getHost(commandLine),
+        new ReleaseTransport(
+                getBackendType(commandLine),
+                getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),

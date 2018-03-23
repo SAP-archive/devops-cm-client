@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Base class for all transport related commands.
@@ -36,9 +37,9 @@ abstract class TransportRelated extends Command {
     final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
     protected final String changeId, transportId;
 
-    protected TransportRelated(String host, String user, String password,
+    protected TransportRelated(BackendType type, String host, String user, String password,
             String changeId, String transportId) {
-        super(host, user, password);
+        super(type, host, user, password);
         this.changeId = changeId;
         this.transportId = transportId;
     }
@@ -84,7 +85,9 @@ abstract class TransportRelated extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        newInstance(clazz, getHost(commandLine),
+        newInstance(clazz,
+                getBackendType(commandLine),
+                getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
@@ -92,19 +95,13 @@ abstract class TransportRelated extends Command {
     }
 
     private Optional<Transport> getTransport(String changeId, String transportId) {
-        try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
-            return client.getChangeTransports(changeId).stream()
-                .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
-        } catch(RuntimeException e) {
-            logger.warn(format("Exception caught while getting transport '%s' for change document '%s' from host '%s'.", transportId, changeId, host), e);
-            throw e;
-        }
+            return TransportRetriever.get(type, host, user, password).getTransport(type, changeId, transportId);
     }
 
-    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String changeId, String transportId) {
+    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, BackendType backendType, String host, String user, String password, String changeId, String transportId) {
         try {
-            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, String.class})
-            .newInstance(new Object[] {host, user, password, changeId, transportId});
+            return clazz.getDeclaredConstructor(new Class[] {BackendType.class, String.class, String.class, String.class, String.class, String.class})
+            .newInstance(new Object[] {backendType, host, user, password, changeId, transportId});
         } catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }

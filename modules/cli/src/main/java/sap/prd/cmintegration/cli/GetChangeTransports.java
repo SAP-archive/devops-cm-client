@@ -3,6 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.sap.cmclient.Transport;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
+import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 
 /**
  * Command for for retrieving the transport of a change. Depending on the options
@@ -39,9 +41,9 @@ class GetChangeTransports extends Command {
     private final boolean modifiableOnly;
 
     
-    GetChangeTransports(String host, String user, String password, String changeId,
+    GetChangeTransports(BackendType backendTye, String host, String user, String password, String changeId,
             boolean modifiableOnly) {
-        super(host, user, password);
+        super(backendTye, host, user, password);
         this.changeId = changeId;
         this.modifiableOnly = modifiableOnly;
     }
@@ -64,6 +66,7 @@ class GetChangeTransports extends Command {
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
         new GetChangeTransports(
+                getBackendType(commandLine),
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

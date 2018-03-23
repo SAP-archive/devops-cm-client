@@ -18,6 +18,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673", "-tID", "L21K900026"});
 
@@ -35,6 +36,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673", "-tID", "L21K900026"});
 
@@ -55,6 +57,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673", "-tID", "DOES_NOT_EXIST"});
     }
@@ -73,6 +76,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "DOES_NOT_EXIST", "-tID", "NOT_NEEDED"});
         } catch(ODataClientErrorException ex) {
@@ -91,6 +95,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673"});
     }

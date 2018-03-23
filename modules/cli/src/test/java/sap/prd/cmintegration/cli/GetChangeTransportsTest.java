@@ -37,6 +37,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
         "dummy-cmd",
         "-cID", "8000038673"});
 
@@ -66,6 +67,7 @@ public class GetChangeTransportsTest extends CMTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
         "dummy-cmd", "-m",
         "-cID", "8000038673"});
 

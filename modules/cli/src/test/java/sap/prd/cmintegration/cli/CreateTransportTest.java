@@ -45,6 +45,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "-cID", "8000038673"});
 
@@ -65,6 +66,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "--owner", "me",
                 "--description", "lorem ipsum",
@@ -87,6 +89,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "--owner", "me",
                 "-cID", "8000038673"});
@@ -108,6 +111,7 @@ public class CreateTransportTest extends CMTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
                 "dummy-cmd",
                 "--description", "lorem ipsum",
                 "-cID", "8000038673"});
