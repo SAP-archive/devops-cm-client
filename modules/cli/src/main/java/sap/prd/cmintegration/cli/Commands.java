@@ -259,7 +259,7 @@ class Commands {
     private static String getCommandName(String[] args) throws ParseException {
 
         Options opts = new Options();
-        asList(CMOptions.HELP, CMOptions.VERSION, CMOptions.HOST, CMOptions.USER, CMOptions.PASSWORD).stream().map(
+        asList(CMOptions.HELP, CMOptions.VERSION, CMOptions.BACKEND_TYPE, CMOptions.HOST, CMOptions.USER, CMOptions.PASSWORD).stream().map(
            new Function<Option, Option>() {
 
               @Override
