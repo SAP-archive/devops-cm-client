@@ -100,7 +100,11 @@ class Commands {
         }
 
         static BackendType getBackendType(CommandLine commandLine) {
-            return BackendType.valueOf(commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt()));
+            try {
+                return BackendType.valueOf(commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt()));
+            } catch(IllegalArgumentException e) {
+                throw new RuntimeException("Cannot retrieve backend type.", e);
+            }
         }
 
         static String getHost(CommandLine commandLine) {
