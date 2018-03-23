@@ -19,6 +19,8 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.cmclient.http.CMODataAbapClient;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.prd.cmintegration.cli.TransportRelated.Opts;
 import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
@@ -52,7 +54,7 @@ class UploadFileToTransport extends Command {
         if(helpRequested(args)) {
             handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
                     "Uploads the file specified by <filePath> to transport <transportId> [for change <changeId>]. ChangeId must not be provided for ABAP backends. "
-                    + "<applicationId> specifies how the file needs to be handled on server side.", new Options()); return;
+                    + "<applicationId> specifies how the file needs to be handled on server side. In case of an ABAP backend the URL of the uploaded file is echoed to stdout.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -66,8 +68,24 @@ class UploadFileToTransport extends Command {
                 getPassword(commandLine),
                 getChangeId(backendType, commandLine),
                 TransportRelated.getTransportId(commandLine),
-                getArg(commandLine, 1, "applicationId"),
-                getArg(commandLine, 2, "filePath")).execute();
+                getApplicationId(backendType, commandLine),
+                getFilePath(backendType, commandLine)).execute();
+    }
+
+    static String getApplicationId(BackendType type, CommandLine commandLine) {
+        return (type == BackendType.ABAP) ? null : getArg(commandLine, 1, "applicationId");
+    }
+
+    static String getFilePath(BackendType type, CommandLine commandLine) {
+        int index;
+        if(type == BackendType.ABAP) {
+            index = 1;
+        } else if (type == BackendType.SOLMAN) {
+            index = 2;
+        } else {
+            throw new IllegalArgumentException(String.format("Invalid backend type: '%s'.", type));
+        }
+        return getArg(commandLine, index, "filePath");
     }
 
     @Override
@@ -77,19 +95,43 @@ class UploadFileToTransport extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
-        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
+        if(type == BackendType.SOLMAN) {
+            try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
 
-            logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
-                    upload.getAbsolutePath(), transportId, changeId, applicationId));
+                logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
+                        upload.getAbsolutePath(), transportId, changeId, applicationId));
 
-            client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+                client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
 
-            logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
-                    upload.getAbsolutePath(), transportId, changeId, applicationId));
-        } catch(Exception e) {
-            logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
-                    upload.getAbsolutePath(), transportId, changeId, applicationId));
-            throw new ExitException(e, 1);
+                logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
+                        upload.getAbsolutePath(), transportId, changeId, applicationId));
+            } catch(Exception e) {
+                logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
+                        upload.getAbsolutePath(), transportId, changeId, applicationId));
+                throw new ExitException(e, 1);
+            }
+
+        } else if(type == BackendType.ABAP) {
+
+            try {
+
+                logger.debug(format("Uploading file '%s' to transport '%s'.",
+                        upload.getAbsolutePath(), transportId));
+
+                String location = new CMODataAbapClient(host, user, password).upload(transportId, upload);
+                location += "/$value";
+
+                System.out.println(location);
+
+                logger.debug(format("File '%s' uploaded to transport '%s'. The file can be accessed via '%s'.",
+                        upload.getAbsolutePath(), transportId, location));
+            } catch(Exception e) {
+                logger.error(format("Exception caught while uploading file '%s' to transport '%s'",
+                        upload.getAbsolutePath(), transportId));
+                throw new ExitException(e, 1);
+            }
+        } else {
+            throw new IllegalArgumentException(format("Invalid backend type: '%s'.", type));
         }
     }
 }
