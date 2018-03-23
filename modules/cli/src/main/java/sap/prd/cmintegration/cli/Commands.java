@@ -49,7 +49,9 @@ class Commands {
                       PASSWORD = new Option("p", "password", true, "Service password, if '-' is provided, password will be read from stdin."),
                       HOST = new Option("e", "endpoint", true, "Service endpoint"),
                       HELP = new Option("h", "help", false, "Prints this help."),
-                      VERSION = new Option("v", "version", false, "Prints the version.");
+                      VERSION = new Option("v", "version", false, "Prints the version."),
+
+                      CHANGE_ID = new Option("cID", "change-id", true, "changeID");
 
         static {
             USER.setRequired(true);
@@ -97,7 +99,11 @@ class Commands {
         }
 
         static String getChangeId(CommandLine commandLine) {
-            return getArg(commandLine, 1, "changeId");
+            String changeID = commandLine.getOptionValue(CMOptions.CHANGE_ID.getOpt());
+            if(StringUtils.isEmpty(changeID)) {
+                throw new CMCommandLineException("No changeId specified.");
+            }
+            return changeID;
         }
 
         static String getArg(CommandLine commandLine, int index, String name) {

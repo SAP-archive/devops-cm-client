@@ -18,7 +18,7 @@ public class GetChangeTransportOwnerTest extends CMTransportTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "8000038673", "L21K900026"});
+                "-cID" ,"8000038673", "L21K900026"});
 
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")),
                 is(equalTo("xOwner")));

@@ -19,7 +19,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "8000038673", "L21K900026"});
+                "-cID", "8000038673", "L21K900026"});
 
         assertThat(Boolean.valueOf(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8"))),
                 is(equalTo(false)));
@@ -36,7 +36,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "8000038673", "L21K900026"});
+                "-cID", "8000038673", "L21K900026"});
 
         assertThat(Boolean.valueOf(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8"))),
                 is(equalTo(true)));
@@ -56,7 +56,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "8000038673", "DOES_NOT_EXIST"});
+                "-cID", "8000038673", "DOES_NOT_EXIST"});
     }
 
     @Test
@@ -74,7 +74,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "DOES_NOT_EXIST", "NOT_NEEDED"});
+                "-cID", "DOES_NOT_EXIST", "NOT_NEEDED"});
         } catch(ODataClientErrorException ex) {
             assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
             throw ex;
@@ -92,6 +92,6 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "dummy-cmd",
-                "8000038673"});
+                "-cID", "8000038673"});
     }
 }

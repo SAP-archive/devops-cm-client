@@ -48,7 +48,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
-        "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
+        "-cID", "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
         assertThat(changeId.getValue(), is(equalTo("8000042445")));
@@ -98,7 +98,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
-        "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
+        "-cID", "8000042445", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
     }

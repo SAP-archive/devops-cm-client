@@ -58,7 +58,7 @@ public class GetChangeStatusTest extends CMTestBase {
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
-        "8000038673"});
+        "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(user.getValue(), is(equalTo(SERVICE_USER)));
@@ -82,7 +82,7 @@ public class GetChangeStatusTest extends CMTestBase {
         "-p", "********",
         "-e", SERVICE_ENDPOINT,
         "dummy-cmd",
-        "8000038673"});
+        "-cID", "8000038673"});
     }
 
     @Test
@@ -100,7 +100,7 @@ public class GetChangeStatusTest extends CMTestBase {
             "-p", SERVICE_PASSWORD,
             "-e", SERVICE_ENDPOINT,
             "dummy-cmd",
-            "DOES_NOT_EXIST"});
+            "-cID", "DOES_NOT_EXIST"});
         } catch(Exception e) {
             assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
             throw e;
@@ -138,7 +138,7 @@ public class GetChangeStatusTest extends CMTestBase {
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
           "dummy-cmd",
-          "8000038673"});
+          "-cID", "8000038673"});
         } finally {
             System.setIn(oldIn);
         }

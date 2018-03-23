@@ -38,10 +38,11 @@ class ReleaseTransport extends Command {
         logger.debug(format("%s called with arguments: '%s'.", ReleaseTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
+        options.addOption(Commands.CMOptions.CHANGE_ID);
 
         if(helpRequested(args)) {
             handleHelpOption(
-                format("%s <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
+                format("%s -cID <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
                 "Releases the transport specified by <changeId>, <transportId>.", new Options()); return;
         }
 

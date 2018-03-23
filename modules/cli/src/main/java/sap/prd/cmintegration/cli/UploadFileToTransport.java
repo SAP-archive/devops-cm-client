@@ -43,9 +43,10 @@ class UploadFileToTransport extends Command {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
+        options.addOption(Commands.CMOptions.CHANGE_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s <changeId> <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
+            handleHelpOption(format("%s -cID <changeId> <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
                     "Uploads the file specified by <filePath> to transport <transportId> for change <changeId>. "
                     + "<applicationId> specifies how the file needs to be handled on server side.", new Options()); return;
         }
@@ -57,9 +58,9 @@ class UploadFileToTransport extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                getArg(commandLine, 2, "transportId"),
-                getArg(commandLine, 3, "applicationId"),
-                getArg(commandLine, 4, "filePath")).execute();
+                getArg(commandLine, 1, "transportId"),
+                getArg(commandLine, 2, "applicationId"),
+                getArg(commandLine, 3, "filePath")).execute();
     }
 
     @Override
