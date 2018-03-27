@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArgsLogString;
@@ -79,13 +80,26 @@ class Commands {
             return addStandardParameters(new Options());
         }
 
-        static Options addStandardParameters(Options options) {
-            options.addOption(CMOptions.USER);
-            options.addOption(CMOptions.PASSWORD);
-            options.addOption(CMOptions.BACKEND_TYPE);
-            options.addOption(CMOptions.HOST);
-            options.addOption(CMOptions.HELP);
-            options.addOption(CMOptions.VERSION);
+        static Options addStandardParameters(Options o) {
+            return getStandardParameters(o, false);
+        }
+
+        static Options getStandardParameters(boolean optional) {
+            return getStandardParameters(new Options(), optional);
+        }
+
+        static Options getStandardParameters(Options options, boolean optional) {
+            Set<Option> standardOpts = newHashSet(
+              CMOptions.USER,
+              CMOptions.PASSWORD,
+              CMOptions.BACKEND_TYPE,
+              CMOptions.HOST,
+              CMOptions.HELP,
+              CMOptions.VERSION);
+
+            standardOpts.stream().forEach(o -> { Option c = (Option)o.clone();
+                                                 if(optional) c.setRequired(false);
+                                                 options.addOption(c);});
             return options;
         }
 
