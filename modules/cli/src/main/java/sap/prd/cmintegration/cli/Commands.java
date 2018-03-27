@@ -46,7 +46,7 @@ class Commands {
 
         static Option USER = new Option("u", "user", true, "Service user."),
                       PASSWORD = new Option("p", "password", true, "Service password, if '-' is provided, password will be read from stdin."),
-                      BACKEND_TYPE = new Option("t", "backend-type", true, format("Backend Type, one of %s ", (Object[])BackendType.values())),
+                      BACKEND_TYPE = new Option("t", "backend-type", true, format("Backend Type, one of %s", asList(BackendType.values()))),
                       HOST = new Option("e", "endpoint", true, "Service endpoint"),
                       HELP = new Option("h", "help", false, "Prints this help."),
                       VERSION = new Option("v", "version", false, "Prints the version."),
