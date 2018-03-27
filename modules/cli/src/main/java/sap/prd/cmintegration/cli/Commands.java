@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -147,7 +148,8 @@ class Commands {
         }
 
         static boolean helpRequested(String[] args) {
-            return asList(args).contains("--help");
+            List<String> l = asList(args);
+            return l.contains("--help") || l.contains("-h");
         }
 
         static void handleHelpOption(String usage, String header, Options options) {
