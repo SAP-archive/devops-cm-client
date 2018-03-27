@@ -29,20 +29,17 @@ import sap.prd.cmintegration.cli.BackendType;
 /**
  * Base class for all transport related commands.
  */
-abstract class TransportRelatedSOLMAN extends Command {
+abstract class TransportRelatedSOLMAN extends TransportRelated {
 
     protected static class Opts {
         protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
     }
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
-    protected final String changeId, transportId;
 
     protected TransportRelatedSOLMAN(BackendType type, String host, String user, String password,
             String changeId, String transportId) {
-        super(type, host, user, password);
-        this.changeId = changeId;
-        this.transportId = transportId;
+        super(host, user, password, changeId, transportId);
     }
 
     protected abstract Predicate<Transport> getOutputPredicate();
