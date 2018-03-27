@@ -15,7 +15,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  *  Checks if a transport is modifiable.
  */
-@CommandDescriptor(name="is-transport-modifiable")
+@CommandDescriptor(name="is-transport-modifiable", type = BackendType.SOLMAN)
 class GetTransportModifiable extends TransportRelated {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiable.class);

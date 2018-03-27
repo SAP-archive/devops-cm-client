@@ -237,17 +237,19 @@ class Commands {
 
         final String commandName = getCommandName(commandLine, args);
         final BackendType type = getBackendType(commandLine, args);
+ 
         try {
             Optional<Class<? extends Command>> command = commands.stream()
-                .filter( it -> it.getAnnotation(CommandDescriptor.class)
-                        .name().equals(commandName)).findFirst();
+                .filter (it ->
+                { CommandDescriptor a = it.getAnnotation(CommandDescriptor.class);
+                  return a.name().equals(commandName) && a.type() == type;}).findFirst();
 
             if(command.isPresent()) {
                 logger.debug(format("Command name '%s' resolved to implementing class '%s'.", commandName, command.get().getName()));
                 command.get().getDeclaredMethod("main", String[].class)
                 .invoke(null, new Object[] { args });
             } else {
-                throw new CMCommandLineException(String.format("Command '%s' not found.", commandName));
+                throw new CMCommandLineException(String.format("Command '%s' not found for backend type '%s'.", commandName, type));
             }
 
         } catch (InvocationTargetException e) {

@@ -30,7 +30,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
  * handed over to that command only the mofifiable transports are
  * returned.
  */
-@CommandDescriptor(name="get-transports")
+@CommandDescriptor(name="get-transports", type = BackendType.SOLMAN)
 class GetChangeTransports extends Command {
 
     private final static Option modifiableOnlyOption = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");

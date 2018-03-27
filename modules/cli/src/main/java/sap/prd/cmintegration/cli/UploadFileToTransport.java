@@ -28,7 +28,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  * Command for uploading a file into a transport.
  */
-@CommandDescriptor(name="upload-file-to-transport")
+@CommandDescriptor(name="upload-file-to-transport", type = BackendType.SOLMAN)
 class UploadFileToTransport extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);

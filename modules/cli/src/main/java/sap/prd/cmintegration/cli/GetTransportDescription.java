@@ -16,7 +16,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  * Command for retrieving the description of a transport.
  */
-@CommandDescriptor(name="get-transport-description")
+@CommandDescriptor(name="get-transport-description", type = BackendType.SOLMAN)
 class GetTransportDescription extends TransportRelated {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportDescription.class);

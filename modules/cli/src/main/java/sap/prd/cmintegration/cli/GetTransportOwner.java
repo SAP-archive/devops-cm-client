@@ -16,7 +16,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  * Command for retrieving the owner of a transport.
  */
-@CommandDescriptor(name="get-transport-owner")
+@CommandDescriptor(name="get-transport-owner", type = BackendType.SOLMAN)
 class GetTransportOwner extends TransportRelated {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportOwner.class);

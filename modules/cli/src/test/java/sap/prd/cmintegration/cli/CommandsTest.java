@@ -129,7 +129,7 @@ public class CommandsTest extends CMTestBase {
     @Test
     public void testExecuteNotExistingCommand() throws Exception {
         thrown.expect(CMCommandLineException.class);
-        thrown.expectMessage("Command 'does-not-exist' not found.");
+        thrown.expectMessage("Command 'does-not-exist' not found for backend type 'SOLMAN'.");
         Commands.main(new String[] {"-t", "SOLMAN", "does-not-exist"});
     }
 
@@ -146,7 +146,7 @@ public class CommandsTest extends CMTestBase {
     @Test
     public void testExecuteWithOptionsBeforeSubcommandName() throws Exception {
         thrown.expect(CMCommandLineException.class);
-        thrown.expectMessage("Command 'does-not-exist' not found.");
+        thrown.expectMessage("Command 'does-not-exist' not found for backend type 'SOLMAN'.");
         Commands.main(new String[] {"-e", "https://www.example.org/mypath",
                                     "-u", "nobody",
                                     "-p", "secret",
@@ -166,7 +166,7 @@ public class CommandsTest extends CMTestBase {
     @Test
     public void testPrintHelpWithNotExistingSubcommand() throws Exception {
         thrown.expect(CMCommandLineException.class);
-        thrown.expectMessage("Command 'does-not-exist' not found.");
+        thrown.expectMessage("Command 'does-not-exist' not found for backend type 'SOLMAN'.");
         Commands.main(new String[] {"--help", "-t", "SOLMAN", "does-not-exist"});
     }
 

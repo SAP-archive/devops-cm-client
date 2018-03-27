@@ -23,7 +23,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  * Command for releasing a transport.
  */
-@CommandDescriptor(name="release-transport")
+@CommandDescriptor(name="release-transport", type = BackendType.SOLMAN)
 class ReleaseTransport extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);

@@ -23,7 +23,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  * Command for retrieving the status of a change.
  */
-@CommandDescriptor(name = "is-change-in-development")
+@CommandDescriptor(name = "is-change-in-development", type = BackendType.SOLMAN)
 class GetChangeStatus extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);

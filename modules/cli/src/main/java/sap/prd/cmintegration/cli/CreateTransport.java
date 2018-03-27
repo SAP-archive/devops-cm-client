@@ -25,7 +25,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 /**
  * Command for creating a transport for a change in SAP Solution Manager.
  */
-@CommandDescriptor(name = "create-transport")
+@CommandDescriptor(name = "create-transport", type = BackendType.SOLMAN)
 class CreateTransport extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
