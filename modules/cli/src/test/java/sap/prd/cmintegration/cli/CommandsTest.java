@@ -84,14 +84,14 @@ public class CommandsTest extends CMTestBase {
 
     @Test
     public void testPrintHelpWithSubcommandHelpBeforeCommand() throws Exception {
-        Commands.main(new String[] {"--help", "is-change-in-development"});
+        Commands.main(new String[] {"--help", "-t", "SOLMAN", "is-change-in-development"});
         String help = IOUtils.toString(result.toByteArray(), "UTF-8");
         assertThat(help, Matchers.containsString("usage: <CMD> [COMMON_OPTIONS] is-change-in-development"));
     }
 
     @Test
     public void testPrintHelpWithSubcommandHelpAfterCommand() throws Exception {
-        Commands.main(new String[] {"is-change-in-development", "--help"});
+        Commands.main(new String[] {"-t", "SOLMAN", "is-change-in-development", "--help"});
         String help = IOUtils.toString(result.toByteArray(), "UTF-8");
         assertThat(help, Matchers.containsString("usage: <CMD> [COMMON_OPTIONS] is-change-in-development"));
     }
@@ -112,14 +112,14 @@ public class CommandsTest extends CMTestBase {
     @Test
     public void testGetCommandHelpLongOption() throws Exception {
 
-        Commands.main(new String[] {"is-change-in-development", "--help"});
+        Commands.main(new String[] {"-t", "SOLMAN", "is-change-in-development", "--help"});
         commandHelpAssert();
     }
 
     @Test
     public void testGetCommandHelpShortOption() throws Exception {
 
-        Commands.main(new String[] {"is-change-in-development", "-h"});
+        Commands.main(new String[] {"-t", "SOLMAN","is-change-in-development", "-h"});
         commandHelpAssert();
     }
     private void commandHelpAssert() throws Exception {
@@ -130,7 +130,17 @@ public class CommandsTest extends CMTestBase {
     public void testExecuteNotExistingCommand() throws Exception {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("Command 'does-not-exist' not found.");
-        Commands.main(new String[] {"does-not-exist"});
+        Commands.main(new String[] {"-t", "SOLMAN", "does-not-exist"});
+    }
+
+    @Test
+    public void testExecuteWithoutOptionBackendType() throws Exception {
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Cannot retrieve backend type.");
+        Commands.main(new String[] {"-e", "https://www.example.org/mypath",
+                                    "-u", "nobody",
+                                    "-p", "secret",
+                                    "does-not-exist"});
     }
 
     @Test
@@ -140,6 +150,7 @@ public class CommandsTest extends CMTestBase {
         Commands.main(new String[] {"-e", "https://www.example.org/mypath",
                                     "-u", "nobody",
                                     "-p", "secret",
+                                    "-t", "SOLMAN",
                                     "does-not-exist"});
     }
 
@@ -156,7 +167,7 @@ public class CommandsTest extends CMTestBase {
     public void testPrintHelpWithNotExistingSubcommand() throws Exception {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("Command 'does-not-exist' not found.");
-        Commands.main(new String[] {"--help", "does-not-exist"});
+        Commands.main(new String[] {"--help", "-t", "SOLMAN", "does-not-exist"});
     }
 
     @Test

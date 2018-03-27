@@ -236,6 +236,7 @@ class Commands {
         }
 
         final String commandName = getCommandName(commandLine, args);
+        final BackendType type = getBackendType(commandLine, args);
         try {
             Optional<Class<? extends Command>> command = commands.stream()
                 .filter( it -> it.getAnnotation(CommandDescriptor.class)
@@ -266,6 +267,12 @@ class Commands {
             logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
             throw e;
         }
+    }
+
+    private static BackendType getBackendType(CommandLine commandLine, String[] args) {
+        String b = commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt());
+        if(StringUtils.isEmpty(b)) throw new CMCommandLineException("Cannot retrieve backend type.");
+        return BackendType.valueOf(b);
     }
 
     private static String getCommandName(CommandLine commandLine, String[] args) throws ParseException {
