@@ -224,10 +224,12 @@ class Commands {
     public final static void main(String[] args) throws Exception {
 
         logger.debug(format("CM Client has been called with command line '%s'.", getArgsLogString(args)));
+
+        CommandLine commandLine = new DefaultParser().parse(Helpers.getStandardParameters(true), args, true);
+
         Collection<String> _args = Arrays.asList(args);
 
-        if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
-           _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
+        if((commandLine.hasOption(CMOptions.HELP.getOpt()) &&
            args.length <= 1) || args.length == 0) {
             logger.debug("Printing help and return.");
             printHelp();
