@@ -235,7 +235,7 @@ class Commands {
             return;
         }
 
-        final String commandName = getCommandName(args);
+        final String commandName = getCommandName(commandLine, args);
         try {
             Optional<Class<? extends Command>> command = commands.stream()
                 .filter( it -> it.getAnnotation(CommandDescriptor.class)
@@ -268,16 +268,14 @@ class Commands {
         }
     }
 
-    private static String getCommandName(String[] args) throws ParseException {
+    private static String getCommandName(CommandLine commandLine, String[] args) throws ParseException {
 
-        Options opts = new Options();
-        Helpers.getStandardParameters(opts, true);
-        CommandLine parser = new DefaultParser().parse(opts, args, true);
-        if(parser.getArgs().length == 0) {
+        if(commandLine.getArgs().length == 0) {
             throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
                         getArgsLogString(args)));
         }
-        String commandName = parser.getArgs()[0];
+
+        String commandName = commandLine.getArgs()[0];
         logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
         return commandName;
     }
