@@ -2,9 +2,9 @@ package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.sap.cmclient.http.CMODataAbapClient;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRelatedSOLMAN.Opts;
-import sap.prd.cmintegration.cli.BackendType;
+import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 /**
  * Command for uploading a file into a transport.

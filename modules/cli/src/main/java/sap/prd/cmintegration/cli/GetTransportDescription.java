@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.prd.cmintegration.cli.BackendType;
-
 /**
  * Command for retrieving the description of a transport.
  */

@@ -36,10 +36,6 @@ import sap.prd.cmintegration.cli.BackendType;
  */
 abstract class TransportRelatedABAP extends TransportRelated {
 
-    protected static class Opts {
-        protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
-    }
-
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedABAP.class);
 
     protected TransportRelatedABAP(BackendType type, String host, String user, String password,

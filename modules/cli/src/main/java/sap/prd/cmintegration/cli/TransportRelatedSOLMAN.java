@@ -31,10 +31,6 @@ import sap.prd.cmintegration.cli.BackendType;
  */
 abstract class TransportRelatedSOLMAN extends TransportRelated {
 
-    protected static class Opts {
-        protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
-    }
-
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
 
     protected TransportRelatedSOLMAN(BackendType type, String host, String user, String password,
@@ -47,7 +43,7 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
     @Override
     final void execute() throws Exception {
 
-        Optional<Transport> transport = getTransport(changeId, transportId);
+        Optional<Transport> transport = getTransport();
         if(transport.isPresent()) {
             Transport t = transport.get();
  
@@ -95,7 +91,7 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
     }
 
 
-    protected Optional<Transport> getTransport(String changeId, String transportId) {
+    protected Optional<Transport> getTransport() {
         try(CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
             return client.getChangeTransports(changeId)
                        .stream()

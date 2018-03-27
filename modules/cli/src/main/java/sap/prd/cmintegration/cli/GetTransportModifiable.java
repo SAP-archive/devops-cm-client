@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.prd.cmintegration.cli.BackendType;
-
 /**
  *  Checks if a transport is modifiable.
  */
