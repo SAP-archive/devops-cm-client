@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for retrieving the status of a change.

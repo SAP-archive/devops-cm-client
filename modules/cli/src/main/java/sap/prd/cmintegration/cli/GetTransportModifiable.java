@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  *  Checks if a transport is modifiable.
  */
 @CommandDescriptor(name="is-transport-modifiable", type = BackendType.SOLMAN)
-class GetTransportModifiable extends TransportRelated {
+class GetTransportModifiable extends TransportRelatedSOLMAN {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiable.class);
     GetTransportModifiable(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
@@ -34,7 +34,7 @@ class GetTransportModifiable extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportModifiable.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        TransportRelated.main(GetTransportModifiable.class, args,
+        TransportRelatedSOLMAN.main(GetTransportModifiable.class, args,
             format("%s [-cID <changeId>,] -tID <transportId>", getCommandName(GetTransportModifiable.class)),
             "ChangeId must not be provided for ABAP backends. .Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }

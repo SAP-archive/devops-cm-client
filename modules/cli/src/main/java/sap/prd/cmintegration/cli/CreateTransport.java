@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for creating a transport for a change in SAP Solution Manager.

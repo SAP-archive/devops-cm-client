@@ -1,6 +1,6 @@
 package sap.prd.cmintegration.cli;
 
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Root class for all commands.

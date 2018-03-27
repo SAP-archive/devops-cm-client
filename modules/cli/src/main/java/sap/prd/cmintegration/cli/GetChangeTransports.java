@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.sap.cmclient.Transport;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for for retrieving the transport of a change. Depending on the options

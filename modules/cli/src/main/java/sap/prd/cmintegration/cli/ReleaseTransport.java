@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.TransportRelatedSOLMAN.Opts;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for releasing a transport.
@@ -60,7 +60,7 @@ class ReleaseTransport extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(backendType, commandLine),
-                TransportRelated.getTransportId(commandLine)).execute();
+                TransportRelatedSOLMAN.getTransportId(commandLine)).execute();
     }
 
     @Override

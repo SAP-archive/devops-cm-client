@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for retrieving the description of a transport.
  */
 @CommandDescriptor(name="get-transport-description", type = BackendType.SOLMAN)
-class GetTransportDescription extends TransportRelated {
+class GetTransportDescription extends TransportRelatedSOLMAN {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportDescription.class);
     GetTransportDescription(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
@@ -40,7 +40,7 @@ class GetTransportDescription extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportDescription.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        TransportRelated.main(GetTransportDescription.class, args,
+        TransportRelatedSOLMAN.main(GetTransportDescription.class, args,
                 format("%s [-cID <changeId>]  -tID <transportId>", getCommandName(GetTransportDescription.class)),
                 "Returns the description for the transport represented by <changeId>, <transportId>. ChangeId must not be provided for ABAP backends.");
     }

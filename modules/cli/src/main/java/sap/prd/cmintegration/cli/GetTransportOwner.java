@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for retrieving the owner of a transport.
  */
 @CommandDescriptor(name="get-transport-owner", type = BackendType.SOLMAN)
-class GetTransportOwner extends TransportRelated {
+class GetTransportOwner extends TransportRelatedSOLMAN {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportOwner.class);
     GetTransportOwner(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
@@ -39,7 +39,7 @@ class GetTransportOwner extends TransportRelated {
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportOwner.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        TransportRelated.main(GetTransportOwner.class, args,
+        TransportRelatedSOLMAN.main(GetTransportOwner.class, args,
                 format("%s [-cID <changeId>] -tID <transportId>", getCommandName(GetTransportOwner.class)),
                 "Returns the owner of the transport represented by [<changeId>,] <transportId>. ChangeId must not be provided for ABAP backends.");
     }

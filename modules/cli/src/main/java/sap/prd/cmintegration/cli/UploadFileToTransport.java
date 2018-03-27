@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import com.sap.cmclient.http.CMODataAbapClient;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
-import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
+import sap.prd.cmintegration.cli.TransportRelatedSOLMAN.Opts;
+import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for uploading a file into a transport.
@@ -31,7 +31,7 @@ import sap.prd.cmintegration.cli.TransportRetriever.BackendType;
 @CommandDescriptor(name="upload-file-to-transport", type = BackendType.SOLMAN)
 class UploadFileToTransport extends Command {
 
-    final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
+    final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
     private final String changeId, transportId, applicationId;
     private final File upload;
 
@@ -67,7 +67,7 @@ class UploadFileToTransport extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(backendType, commandLine),
-                TransportRelated.getTransportId(commandLine),
+                TransportRelatedSOLMAN.getTransportId(commandLine),
                 getApplicationId(backendType, commandLine),
                 getFilePath(backendType, commandLine)).execute();
     }
