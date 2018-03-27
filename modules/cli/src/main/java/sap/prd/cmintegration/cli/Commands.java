@@ -278,25 +278,15 @@ class Commands {
     private static String getCommandName(String[] args) throws ParseException {
 
         Options opts = new Options();
-        asList(CMOptions.HELP, CMOptions.VERSION, CMOptions.BACKEND_TYPE, CMOptions.HOST, CMOptions.USER, CMOptions.PASSWORD).stream().map(
-           new Function<Option, Option>() {
-
-              @Override
-              public Option apply(Option o) {
-                Option c = (Option)o.clone();
-                c.setRequired(false);
-                return c;
-              }
-          }).forEach(o -> opts.addOption(o));
-
-          CommandLine parser = new DefaultParser().parse(opts, args, true);
-          if(parser.getArgs().length == 0) {
-              throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+        Helpers.getStandardParameters(opts, true);
+        CommandLine parser = new DefaultParser().parse(opts, args, true);
+        if(parser.getArgs().length == 0) {
+            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
                         getArgsLogString(args)));
-          }
-          String commandName = parser.getArgs()[0];
-          logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
-          return commandName;
+        }
+        String commandName = parser.getArgs()[0];
+        logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
+        return commandName;
     }
 
     private static void printVersion() throws IOException {
