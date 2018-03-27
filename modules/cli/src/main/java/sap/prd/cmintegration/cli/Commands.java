@@ -225,8 +225,6 @@ class Commands {
 
         CommandLine commandLine = new DefaultParser().parse(Helpers.getStandardParameters(true), args, true);
 
-        Collection<String> _args = Arrays.asList(args);
-
         if((commandLine.hasOption(CMOptions.HELP.getOpt()) &&
            args.length <= 1) || args.length == 0) {
             logger.debug("Printing help and return.");
@@ -235,8 +233,7 @@ class Commands {
             return;
         }
 
-        if(_args.contains(DASH+CMOptions.VERSION.getOpt()) ||
-           _args.contains(TWO_DASHES+CMOptions.VERSION.getLongOpt())) {
+        if(commandLine.hasOption(CMOptions.VERSION.getOpt())) {
             logger.debug("Printing version and return.");
             printVersion();
             return;
