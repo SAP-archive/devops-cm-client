@@ -38,7 +38,6 @@ class Commands {
 
     final static private Logger logger = LoggerFactory.getLogger(Commands.class);
     private final static String DASH = "-";
-    private final static String TWO_DASHES = DASH+DASH;
 
     /**
      * The common command line options used by all commands.
