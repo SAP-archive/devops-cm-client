@@ -1,10 +1,29 @@
 package com.sap.cmclient.dto;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
 
 public class Transport {
 
-    public enum Status {
+  private static final String ID = "Id";
+  private static final String OWNER = "Owner";
+  private static final String DESCRIPTION = "Description";
+  private static final String TARGETSYSTEM = "TarSystem";
+  private static final String DATE = "Date";
+  private static final String TIME = "Time";
+  private static final String REQUESTREF = "RequestRef";
+  private static final String CLOUD = "Cloud";
+  private static final String STATUS = "Status";
+  private static final String TYPE = "Type";
+  
+  
+  public enum Status {
                           D ("development"),
                           R ("release"),
                           UNKNOWN("unknown"); // in order to simplify null handling.
@@ -53,122 +72,122 @@ public class Transport {
      }
 
     
-    private  String id,
-                         owner, 
-                         description,
-                         requestRef,
-                         cloud,
-                         targetSystem;
+    private final Map<String, Object> values;
     
-    private final GregorianCalendar date, time;
-
-    private Status status;
-    private final Type type;
-
-    public Transport(String id,
-                     String owner,
-                     String description,
-                     String targetSystem,
-                     GregorianCalendar date,
-                     GregorianCalendar time,
-                     String requestRef,
-                     String cloud,
-                     Status status,
-                     Type type) {
-        this.id = id;
-        this.owner = owner;
-        this.description = description;
-        this.targetSystem = targetSystem;
-        this.date = date;
-        this.time = time;
-        this.requestRef = requestRef;
-        this.cloud = cloud;
-        this.status = status;
-        this.type = type;
+    public Transport(ODataEntry entry)
+    {
+      values =  new HashMap<String, Object>(entry.getProperties());
     }
-
+     
+    private Transport()
+    {
+      values = null;
+    }
+    
+    public static Map<String, Object> createNewTransport( String owner, 
+                           String description, 
+                           String targetSystem,
+                           String requestRef,
+                           Type type )
+    {
+      Map<String, Object> m = new HashMap<String, Object>();
+      GregorianCalendar cal = new GregorianCalendar();
+      GregorianCalendar time = new GregorianCalendar(0, 0, 0, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
+      m.put(OWNER, owner);
+      m.put(DESCRIPTION, description);
+      m.put(TARGETSYSTEM, targetSystem);
+      m.put(REQUESTREF, requestRef);
+      m.put(TYPE, type.toString());
+      m.put(ID, " ");
+      m.put(STATUS, " ");
+      m.put(DATE, cal);
+      m.put(TIME, time);
+      m.put(CLOUD, "X");
+      return m;
+      
+    }
+    
+    
     public String getId() {
-        return id;
+        return (String) values.get(ID);
     }
 
     public String getOwner() {
-        return owner;
+        return (String) values.get(OWNER);
+    }
+    
+    public void setOwner(String owner) {
+        values.put(OWNER, owner);
     }
 
     public String getDescription() {
-        return description;
+        return (String) values.get(DESCRIPTION);
+    }
+    
+    public void setDescription(String description) {
+        values.put(DESCRIPTION, description);   
     }
 
     public String getTargetSystem() {
-        return targetSystem;
+        return (String) values.get(TARGETSYSTEM);
     }
 
     public Status getStatus() {
-        return status;
+        return Status.get((String) values.get(STATUS));
+    }
+    
+    public void setStatus(Status status) {
+        values.put(STATUS, status.toString());
     }
     
     public Type getType() {
-        return type;
+        return Type.get((String) values.get(TYPE));
     }
-    
-    public void setDescription(String d)
-    {
-      this.description = d;
-    }
-    
+     
     public GregorianCalendar getDate()
     {
-      return date;
+      return (GregorianCalendar) values.get(DATE);
     }
 
     public GregorianCalendar getTime()
     {
-      return time;
+      return (GregorianCalendar) values.get(TIME);
     }
 
     public String getRequestRef()
     {
-      return requestRef;
+      return (String) values.get(REQUESTREF);
     }
 
     public String getCloud()
     {
-      return cloud;
+      return (String) values.get(CLOUD);
     }
     
-    public void setId(String id)
-    {
-      this.id = id;
-    }
-
-    public void setOwner(String owner)
-    {
-      this.owner = owner;
-    }
-
-    public void setRequestRef(String requestRef)
-    {
-      this.requestRef = requestRef;
-    }
-
-    public void setCloud(String cloud)
-    {
-      this.cloud = cloud;
-    }
-
-    public void setTargetSystem(String targetSystem)
-    {
-      this.targetSystem = targetSystem;
+    public Map<String, Object> getValueMap(){
+      return new HashMap<String, Object>(values);
     }
     
-    public void setStatus(Status s)
-    {
-      this.status = s;
-    }
-
     @Override
     public String toString() {
-        return "Transport [id=" + id + ", owner=" + owner + ", description=" + description + ", targetSystem="
-                + targetSystem + ", date= " + date +", time= " + time + ", requestRef= "+ requestRef + ", cloud= " + cloud +", status=" + status + ", type=" + type + "]";
+        return "Transport [id=" + getId() + ", owner=" + getOwner() + ", description=" + getDescription() + ", targetSystem="
+                + getTargetSystem() + ", date= " + getDate() +", time= " + getTime() + ", requestRef= "+ getRequestRef() + ", cloud= " + getCloud() +", status=" + getStatus() + ", type=" + getType() + "]";
+    }
+    
+    @Override
+    public int hashCode() {
+      return values.get(ID).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+      if(this != o) return false;
+      if (o instanceof Transport) {
+      Transport t = (Transport) o;
+      return this.values.equals(t.values);
+      }
+      else {
+        return false;
+      }
     }
 }
