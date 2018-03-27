@@ -66,10 +66,6 @@ class Commands {
             HELP.setRequired(false);
             VERSION.setRequired(false);
         }
-
-        static Option clone(Option o) {
-            return new Option(o.getOpt(), o.getLongOpt(), o.hasArg(), o.getDescription());
-        }
     }
 
     /**
@@ -287,7 +283,7 @@ class Commands {
 
               @Override
               public Option apply(Option o) {
-                Option c = CMOptions.clone(o);
+                Option c = (Option)o.clone();
                 c.setRequired(false);
                 return c;
               }
