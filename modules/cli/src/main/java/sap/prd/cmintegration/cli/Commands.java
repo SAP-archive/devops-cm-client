@@ -302,7 +302,8 @@ class Commands {
         String CRLF = "\r\n";
         StringWriter subCommandsHelp = new StringWriter();
 
-            commands.stream().map(it -> it.getAnnotation(CommandDescriptor.class).name())
+            commands.stream().map(it -> { CommandDescriptor cDesc = it.getAnnotation(CommandDescriptor.class);
+                                          return format("%s (%s)", cDesc.name(), cDesc.type());})
             .sorted().forEach(subcmd ->
             subCommandsHelp.append(StringUtils.repeat(' ', 4))
                            .append(subcmd)
