@@ -273,7 +273,10 @@ class Commands {
 
     private static BackendType getBackendType(CommandLine commandLine, String[] args) {
         String b = commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt());
-        if(StringUtils.isEmpty(b)) throw new CMCommandLineException("Cannot retrieve backend type.");
+        if(StringUtils.isEmpty(b)) {
+            printHelp();
+            throw new CMCommandLineException(format("Cannot retrieve backend type. Provide common option '-%s'. Values: %s.", CMOptions.BACKEND_TYPE.getOpt(), asList(BackendType.values())));
+        }
         return BackendType.valueOf(b);
     }
 
@@ -293,7 +296,7 @@ class Commands {
         System.out.println(CMODataSolmanClient.getLongVersion());
     }
 
-    private static void printHelp() throws Exception {
+    private static void printHelp() {
 
         String cmd = "<CMD>";
         String CRLF = "\r\n";
