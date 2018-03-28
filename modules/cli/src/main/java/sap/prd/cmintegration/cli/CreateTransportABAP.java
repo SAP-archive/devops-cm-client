@@ -35,9 +35,9 @@ class CreateTransportABAP extends Command {
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
     private final String changeId, owner, description;
 
-    public CreateTransportABAP(BackendType backendType, String host, String user, String password, String changeId,
+    public CreateTransportABAP(String host, String user, String password, String changeId,
             String owner, String description) {
-        super(backendType, host, user, password);
+        super(null, host, user, password);
         this.changeId = changeId;
         this.owner = owner;
         this.description = description;
@@ -68,7 +68,6 @@ class CreateTransportABAP extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         new CreateTransportABAP(
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

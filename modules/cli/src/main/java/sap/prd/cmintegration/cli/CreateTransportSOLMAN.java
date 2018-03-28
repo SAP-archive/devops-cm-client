@@ -31,9 +31,9 @@ class CreateTransportSOLMAN extends Command {
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportSOLMAN.class);
     private final String changeId, owner, description;
 
-    public CreateTransportSOLMAN(BackendType backendType, String host, String user, String password, String changeId,
+    public CreateTransportSOLMAN(String host, String user, String password, String changeId,
             String owner, String description) {
-        super(backendType, host, user, password);
+        super(null, host, user, password);
         this.changeId = changeId;
         this.owner = owner;
         this.description = description;
@@ -64,7 +64,6 @@ class CreateTransportSOLMAN extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         new CreateTransportSOLMAN(
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
