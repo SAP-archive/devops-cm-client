@@ -1,7 +1,6 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -51,13 +50,11 @@ class ReleaseTransport extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        BackendType backendType = getBackendType(commandLine);
-
         new ReleaseTransport(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(backendType, commandLine),
+                getChangeId(commandLine),
                 TransportRelatedSOLMAN.getTransportId(commandLine)).execute();
     }
 

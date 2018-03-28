@@ -43,7 +43,7 @@ public class UploadFileToTransportTest extends CMTestBase {
         File upload = tmp.newFile(fileName);
         FileUtils.touch(upload);
 
-        UploadFileToTransport.main(new String[] {
+        UploadFileToTransportSOLMAN.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
@@ -94,7 +94,7 @@ public class UploadFileToTransportTest extends CMTestBase {
 
         setMock(setupMock());
 
-        UploadFileToTransport.main(new String[] {
+        UploadFileToTransportSOLMAN.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,

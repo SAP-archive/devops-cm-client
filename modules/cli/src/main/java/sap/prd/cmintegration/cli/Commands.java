@@ -118,8 +118,7 @@ class Commands {
             return commandLine.getOptionValue(CMOptions.HOST.getOpt());
         }
 
-        static String getChangeId(BackendType type, CommandLine commandLine) {
-            if(type == BackendType.ABAP) return null;
+        static String getChangeId(CommandLine commandLine) {
             String changeID = commandLine.getOptionValue(CMOptions.CHANGE_ID.getOpt());
             if(StringUtils.isEmpty(changeID)) {
                 throw new CMCommandLineException("No changeId specified.");
@@ -208,7 +207,8 @@ class Commands {
         commands.add(GetTransportOwnerABAP.class);
         commands.add(GetTransportDescriptionSOLMAN.class);
         commands.add(GetTransportDescriptionABAP.class);
-        commands.add(UploadFileToTransport.class);
+        commands.add(UploadFileToTransportSOLMAN.class);
+        commands.add(UploadFileToTransportABAP.class);
         commands.add(CreateTransportSOLMAN.class);
         commands.add(CreateTransportABAP.class);
         commands.add(ReleaseTransport.class);

@@ -4,7 +4,6 @@ import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
-import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Command for creating a transport for a change in SAP Solution Manager.
@@ -61,13 +59,11 @@ class CreateTransportSOLMAN extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        BackendType backendType = getBackendType(commandLine);
-
         new CreateTransportSOLMAN(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(backendType, commandLine),
+                getChangeId(commandLine),
                 commandLine.getOptionValue(owner.getOpt()),
                 commandLine.getOptionValue(description.getOpt())).execute();
     }

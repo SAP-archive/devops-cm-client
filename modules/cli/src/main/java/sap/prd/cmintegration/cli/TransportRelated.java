@@ -1,7 +1,6 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -123,13 +122,11 @@ public abstract class TransportRelated extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        BackendType backendType = getBackendType(commandLine);
-
         newInstance(clazz,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(backendType, commandLine),
+                getChangeId(commandLine),
                 getTransportId(commandLine)).execute();
     }
 

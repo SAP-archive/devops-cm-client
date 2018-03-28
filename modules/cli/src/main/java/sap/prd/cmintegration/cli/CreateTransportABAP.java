@@ -2,8 +2,6 @@ package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -33,12 +31,10 @@ import com.sap.cmclient.http.CMODataAbapClient;
 class CreateTransportABAP extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
-    private final String changeId, owner, description;
+    private final String owner, description;
 
-    public CreateTransportABAP(String host, String user, String password, String changeId,
-            String owner, String description) {
+    public CreateTransportABAP(String host, String user, String password, String owner, String description) {
         super(host, user, password);
-        this.changeId = changeId;
         this.owner = owner;
         this.description = description;
     }
@@ -65,13 +61,10 @@ class CreateTransportABAP extends Command {
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        BackendType backendType = getBackendType(commandLine);
-
         new CreateTransportABAP(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(backendType, commandLine),
                 commandLine.getOptionValue(owner.getOpt()),
                 commandLine.getOptionValue(description.getOpt())).execute();
     }
@@ -81,7 +74,7 @@ class CreateTransportABAP extends Command {
 
         CMODataAbapClient client = AbapClientFactory.getInstance().newClient(host, user, password);
 
-        logger.debug(format("Creating transport request for changeId '%s'.", changeId));
+        logger.debug("Creating transport request.");
 
         String o = isBlank(owner) ? user : owner;
 
@@ -94,8 +87,8 @@ class CreateTransportABAP extends Command {
 
         Transport transport = client.createTransport(new Transport("", o, description, "A5T", date, time, "", "X", Status.D, Type.W));
 
-        logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
-            transport.getTransportID(), changeId, transport.isModifiable(), transport.getOwner(), transport.getDescription()));
+        logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+            transport.getTransportID(), transport.isModifiable(), transport.getOwner(), transport.getDescription()));
 
         System.out.println(transport.getTransportID());
         System.out.flush();

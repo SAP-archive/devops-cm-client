@@ -2,7 +2,6 @@ package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getBackendType;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -28,13 +27,13 @@ import sap.prd.cmintegration.cli.TransportRelated.Opts;
  * Command for uploading a file into a transport.
  */
 @CommandDescriptor(name="upload-file-to-transport", type = BackendType.SOLMAN)
-class UploadFileToTransport extends Command {
+class UploadFileToTransportSOLMAN extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
     private final String changeId, transportId, applicationId;
     private final File upload;
 
-    UploadFileToTransport(String host, String user, String password,
+    UploadFileToTransportSOLMAN(String host, String user, String password,
             String changeId, String transportId, String applicationId, String filePath) {
         super(host, user, password);
         this.changeId = changeId;
@@ -44,46 +43,36 @@ class UploadFileToTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
+        logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
         options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransport.class)),
+            handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransportSOLMAN.class)),
                     "Uploads the file specified by <filePath> to transport <transportId> [for change <changeId>]. ChangeId must not be provided for ABAP backends. "
                     + "<applicationId> specifies how the file needs to be handled on server side. In case of an ABAP backend the URL of the uploaded file is echoed to stdout.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 
-        BackendType backendType = getBackendType(commandLine);
-
-        new UploadFileToTransport(
+        new UploadFileToTransportSOLMAN(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(backendType, commandLine),
+                getChangeId(commandLine),
                 TransportRelatedSOLMAN.getTransportId(commandLine),
-                getApplicationId(backendType, commandLine),
-                getFilePath(backendType, commandLine)).execute();
+                getApplicationId(commandLine),
+                getFilePath(commandLine)).execute();
     }
 
-    static String getApplicationId(BackendType type, CommandLine commandLine) {
-        return (type == BackendType.ABAP) ? null : getArg(commandLine, 1, "applicationId");
+    static String getApplicationId(CommandLine commandLine) {
+        return getArg(commandLine, 1, "applicationId");
     }
 
-    static String getFilePath(BackendType type, CommandLine commandLine) {
-        int index;
-        if(type == BackendType.ABAP) {
-            index = 1;
-        } else if (type == BackendType.SOLMAN) {
-            index = 2;
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid backend type: '%s'.", type));
-        }
-        return getArg(commandLine, index, "filePath");
+    static String getFilePath(CommandLine commandLine) {
+        return getArg(commandLine, 2, "filePath");
     }
 
     @Override
