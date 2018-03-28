@@ -41,7 +41,7 @@ public class CreateTransportTest extends CMTestBase {
 
         setMock(setupStraightForwardMock());
 
-        CreateTransport.main(new String[] {
+        CreateTransportSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -62,7 +62,7 @@ public class CreateTransportTest extends CMTestBase {
 
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
-        CreateTransport.main(new String[] {
+        CreateTransportSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -85,7 +85,7 @@ public class CreateTransportTest extends CMTestBase {
 
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
-        CreateTransport.main(new String[] {
+        CreateTransportSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -107,7 +107,7 @@ public class CreateTransportTest extends CMTestBase {
 
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
-        CreateTransport.main(new String[] {
+        CreateTransportSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,

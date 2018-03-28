@@ -26,12 +26,12 @@ import sap.prd.cmintegration.cli.BackendType;
  * Command for creating a transport for a change in SAP Solution Manager.
  */
 @CommandDescriptor(name = "create-transport", type = BackendType.SOLMAN)
-class CreateTransport extends Command {
+class CreateTransportSOLMAN extends Command {
 
-    final static private Logger logger = LoggerFactory.getLogger(CreateTransport.class);
+    final static private Logger logger = LoggerFactory.getLogger(CreateTransportSOLMAN.class);
     private final String changeId, owner, description;
 
-    public CreateTransport(BackendType backendType, String host, String user, String password, String changeId,
+    public CreateTransportSOLMAN(BackendType backendType, String host, String user, String password, String changeId,
             String owner, String description) {
         super(backendType, host, user, password);
         this.changeId = changeId;
@@ -41,7 +41,7 @@ class CreateTransport extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        logger.debug(format("%s called with arguments: '%s'.", CreateTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
+        logger.debug(format("%s called with arguments: '%s'.", CreateTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
@@ -52,7 +52,7 @@ class CreateTransport extends Command {
         options.addOption(owner).addOption(description);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [--owner <owner>][--description <description>] -cID <changeId>", getCommandName(CreateTransport.class)),
+            handleHelpOption(format("%s [--owner <owner>][--description <description>] -cID <changeId>", getCommandName(CreateTransportSOLMAN.class)),
             "Creates a new transport entity. " +
             "Returns the ID of the transport entity. " +
             "If there is already an open transport, the ID of the already existing open transport might be returned.",
@@ -63,7 +63,7 @@ class CreateTransport extends Command {
 
         BackendType backendType = getBackendType(commandLine);
 
-        new CreateTransport(
+        new CreateTransportSOLMAN(
                 backendType,
                 getHost(commandLine),
                 getUser(commandLine),

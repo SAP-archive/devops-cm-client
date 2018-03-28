@@ -209,7 +209,8 @@ class Commands {
         commands.add(GetTransportDescriptionSOLMAN.class);
         commands.add(GetTransportDescriptionABAP.class);
         commands.add(UploadFileToTransport.class);
-        commands.add(CreateTransport.class);
+        commands.add(CreateTransportSOLMAN.class);
+        commands.add(CreateTransportABAP.class);
         commands.add(ReleaseTransport.class);
 
         if(commands.stream()
