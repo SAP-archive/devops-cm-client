@@ -13,7 +13,7 @@ public class GetChangeTransportOwnerTest extends CMTransportTestBase {
     public void getChangeTransportOwnerStraightForward() throws Exception {
 
         setMock(setupMock("L21K900026", "xOwner", "xDesc", false));
-        GetTransportOwner.main(new String[] {
+        GetTransportOwnerSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,

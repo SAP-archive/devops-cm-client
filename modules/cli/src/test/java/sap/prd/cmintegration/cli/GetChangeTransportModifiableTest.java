@@ -14,7 +14,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
     public void getChangeTransportModifiableStraighForwardForNotModifiableTransport() throws Exception {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
-        GetTransportModifiable.main(new String[] {
+        GetTransportModifiableSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -32,7 +32,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
     public void getChangeTransportModifiableStraighForwardForModifiableTransport() throws Exception {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", true));
-        GetTransportModifiable.main(new String[] {
+        GetTransportModifiableSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -53,7 +53,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expectMessage("Transport 'DOES_NOT_EXIST' not found for change '8000038673'.");
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
-        GetTransportModifiable.main(new String[] {
+        GetTransportModifiableSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -72,7 +72,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         setMock(setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
 
         try {
-            GetTransportModifiable.main(new String[] {
+            GetTransportModifiableSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
@@ -91,7 +91,7 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("No transportId specified.");
 
-        GetTransportModifiable.main(new String[] {
+        GetTransportModifiableSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,

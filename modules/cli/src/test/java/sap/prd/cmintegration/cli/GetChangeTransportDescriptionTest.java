@@ -13,7 +13,7 @@ public class GetChangeTransportDescriptionTest extends CMTransportTestBase {
     public void getChangeTransportDesciptionStraightForward() throws Exception {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
-        GetTransportDescription.main(new String[] {
+        GetTransportDescriptionSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,

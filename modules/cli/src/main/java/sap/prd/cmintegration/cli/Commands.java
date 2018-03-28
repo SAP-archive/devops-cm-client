@@ -202,9 +202,12 @@ class Commands {
     static {
         commands.add(GetChangeStatus.class);
         commands.add(GetChangeTransports.class);
-        commands.add(GetTransportModifiable.class);
-        commands.add(GetTransportOwner.class);
-        commands.add(GetTransportDescription.class);
+        commands.add(GetTransportModifiableSOLMAN.class);
+        commands.add(GetTransportModifiableABAP.class);
+        commands.add(GetTransportOwnerSOLMAN.class);
+        commands.add(GetTransportOwnerABAP.class);
+        commands.add(GetTransportDescriptionSOLMAN.class);
+        commands.add(GetTransportDescriptionABAP.class);
         commands.add(UploadFileToTransport.class);
         commands.add(CreateTransport.class);
         commands.add(ReleaseTransport.class);
