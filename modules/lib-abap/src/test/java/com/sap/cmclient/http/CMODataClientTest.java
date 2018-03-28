@@ -102,7 +102,7 @@ public class CMODataClientTest extends RecordableTest {
     @Test
     public void createTransportTest() throws UnexpectedHttpResponseException, IOException, URISyntaxException, ODataException {
         
-        Map<String, Object> transport = Transport.createNewTransport("ODATA", "my transport", "A5T", "", Type.W);
+        Map<String, Object> transport = Transport.getTransportCreationRequestMap("ODATA", "my transport", "A5T", "", Type.W);
         Transport created = examinee.createTransport(transport);
         assertThat(created.getId().trim(), is(not("")));
         assertThat(created.getOwner(), is(equalTo("ODATA")));

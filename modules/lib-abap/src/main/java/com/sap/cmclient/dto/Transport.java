@@ -76,6 +76,7 @@ public class Transport {
     
     public Transport(ODataEntry entry)
     {
+      if(entry.getProperties().get(ID) == null) throw new IllegalArgumentException("Key Id must not be null.");
       values =  new HashMap<String, Object>(entry.getProperties());
     }
      
@@ -84,7 +85,7 @@ public class Transport {
       values = null;
     }
     
-    public static Map<String, Object> createNewTransport( String owner, 
+    public static Map<String, Object> getTransportCreationRequestMap( String owner, 
                            String description, 
                            String targetSystem,
                            String requestRef,
@@ -98,8 +99,8 @@ public class Transport {
       m.put(TARGETSYSTEM, targetSystem);
       m.put(REQUESTREF, requestRef);
       m.put(TYPE, type.toString());
-      m.put(ID, " ");
-      m.put(STATUS, " ");
+      m.put(ID, "");
+      m.put(STATUS, "");
       m.put(DATE, cal);
       m.put(TIME, time);
       m.put(CLOUD, "X");
