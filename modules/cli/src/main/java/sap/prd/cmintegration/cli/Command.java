@@ -1,17 +1,13 @@
 package sap.prd.cmintegration.cli;
 
-import sap.prd.cmintegration.cli.BackendType;
-
 /**
  * Root class for all commands.
  */
 abstract class Command {
 
-    protected final BackendType type;
     protected final String host, user, password;
 
-    protected Command(BackendType type, String host, String user, String password) {
-        this.type = type;
+    protected Command(String host, String user, String password) {
         this.host = host;
         this.user = user;
         this.password = password;

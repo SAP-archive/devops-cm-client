@@ -29,8 +29,8 @@ class GetChangeStatus extends Command {
     final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
     private String changeId;
 
-    GetChangeStatus(BackendType backendType, String host, String user, String password, String changeId) {
-        super(backendType, host, user, password);
+    GetChangeStatus(String host, String user, String password, String changeId) {
+        super(host, user, password);
         this.changeId = changeId;
     }
 
@@ -63,7 +63,6 @@ class GetChangeStatus extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         new GetChangeStatus(
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

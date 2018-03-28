@@ -41,9 +41,9 @@ class GetChangeTransports extends Command {
     private final boolean modifiableOnly;
 
     
-    GetChangeTransports(BackendType backendTye, String host, String user, String password, String changeId,
+    GetChangeTransports(String host, String user, String password, String changeId,
             boolean modifiableOnly) {
-        super(backendTye, host, user, password);
+        super(host, user, password);
         this.changeId = changeId;
         this.modifiableOnly = modifiableOnly;
     }
@@ -68,7 +68,6 @@ class GetChangeTransports extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         new GetChangeTransports(
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

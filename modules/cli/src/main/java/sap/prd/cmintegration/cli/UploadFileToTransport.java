@@ -34,9 +34,9 @@ class UploadFileToTransport extends Command {
     private final String changeId, transportId, applicationId;
     private final File upload;
 
-    UploadFileToTransport(BackendType backendType, String host, String user, String password,
+    UploadFileToTransport(String host, String user, String password,
             String changeId, String transportId, String applicationId, String filePath) {
-        super(backendType, host, user, password);
+        super(host, user, password);
         this.changeId = changeId;
         this.transportId = transportId;
         this.applicationId = applicationId;
@@ -61,7 +61,6 @@ class UploadFileToTransport extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         new UploadFileToTransport(
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
@@ -94,6 +93,7 @@ class UploadFileToTransport extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
+        BackendType type = BackendType.SOLMAN;
         if(type == BackendType.SOLMAN) {
             try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
 

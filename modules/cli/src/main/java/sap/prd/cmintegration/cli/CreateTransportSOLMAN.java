@@ -33,7 +33,7 @@ class CreateTransportSOLMAN extends Command {
 
     public CreateTransportSOLMAN(String host, String user, String password, String changeId,
             String owner, String description) {
-        super(null, host, user, password);
+        super(host, user, password);
         this.changeId = changeId;
         this.owner = owner;
         this.description = description;

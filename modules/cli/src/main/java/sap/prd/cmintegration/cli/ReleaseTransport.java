@@ -28,10 +28,10 @@ class ReleaseTransport extends Command {
     final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);
     private final String changeId, transportId;
 
-    ReleaseTransport(BackendType backendType, String host, String user, String password,
+    ReleaseTransport(String host, String user, String password,
             String changeId, String transportId) {
 
-        super(backendType, host, user, password);
+        super(host, user, password);
         this.changeId = changeId;
         this.transportId = transportId;
     }
@@ -54,7 +54,6 @@ class ReleaseTransport extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         new ReleaseTransport(
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),

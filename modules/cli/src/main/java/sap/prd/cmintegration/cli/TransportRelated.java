@@ -72,7 +72,7 @@ public abstract class TransportRelated extends Command {
     protected final String changeId, transportId;
 
     protected TransportRelated(String host, String user, String password, String changeId, String transportId) {
-        super(null, host, user, password);
+        super(host, user, password);
         this.changeId = changeId;
         this.transportId = transportId;
     }
