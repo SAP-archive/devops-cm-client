@@ -31,12 +31,13 @@ import com.sap.cmclient.http.CMODataAbapClient;
 class CreateTransportABAP extends Command {
 
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
-    private final String owner, description;
+    private final String owner, description, targetSystem;
 
-    public CreateTransportABAP(String host, String user, String password, String owner, String description) {
+    public CreateTransportABAP(String host, String user, String password, String owner, String description, String targetSystem) {
         super(host, user, password);
         this.owner = owner;
         this.description = description;
+        this.targetSystem = targetSystem;
     }
 
     public final static void main(String[] args) throws Exception {
@@ -47,7 +48,8 @@ class CreateTransportABAP extends Command {
         options.addOption(Commands.CMOptions.CHANGE_ID);
 
         Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
-               description = new Option("d", "description", true, "The description of the transport request.");
+               description = new Option("d", "description", true, "The description of the transport request."),
+               targetSystem = new Option("-ts", "target-system", true, "The target of the transport");
 
         options.addOption(owner).addOption(description);
 
@@ -56,7 +58,7 @@ class CreateTransportABAP extends Command {
             "Creates a new transport entity. " +
             "Returns the ID of the transport entity. " +
             "If there is already an open transport, the ID of the already existing open transport might be returned.",
-            new Options().addOption(owner).addOption(description)); return;
+            new Options().addOption(owner).addOption(description).addOption(targetSystem)); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -66,7 +68,8 @@ class CreateTransportABAP extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 commandLine.getOptionValue(owner.getOpt()),
-                commandLine.getOptionValue(description.getOpt())).execute();
+                commandLine.getOptionValue(description.getOpt()),
+                commandLine.getOptionValue(targetSystem.getOpt())).execute();
     }
 
     @Override
@@ -85,7 +88,7 @@ class CreateTransportABAP extends Command {
         GregorianCalendar date = new GregorianCalendar();
         GregorianCalendar time = new GregorianCalendar(0, 0, 0, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
 
-        Transport transport = client.createTransport(new Transport("", o, description, "A5T", date, time, "", "X", Status.D, Type.W));
+        Transport transport = client.createTransport(new Transport("", o, description, targetSystem, date, time, "", "X", Status.D, Type.W));
 
         logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
             transport.getTransportID(), transport.isModifiable(), transport.getOwner(), transport.getDescription()));
