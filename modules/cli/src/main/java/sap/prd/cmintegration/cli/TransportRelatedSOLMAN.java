@@ -8,7 +8,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 abstract class TransportRelatedSOLMAN extends TransportRelated {
 
-    protected TransportRelatedSOLMAN(BackendType type, String host, String user, String password,
+    protected TransportRelatedSOLMAN(String host, String user, String password,
             String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
     }

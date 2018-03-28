@@ -6,17 +6,13 @@ import java.util.Optional;
 
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 abstract class TransportRelatedABAP extends TransportRelated {
 
-    final static private Logger logger = LoggerFactory.getLogger(TransportRelatedABAP.class);
-
-    protected TransportRelatedABAP(BackendType type, String host, String user, String password,
+    protected TransportRelatedABAP(String host, String user, String password,
             String changeId, String transportId) {
         super(host, user, password, changeId, transportId);
     }

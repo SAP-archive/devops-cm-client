@@ -18,8 +18,8 @@ class GetTransportModifiableSOLMAN extends TransportRelatedSOLMAN {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiableSOLMAN.class);
 
-    GetTransportModifiableSOLMAN(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
-        super(backendType, host, user, password, changeId, transportId);
+    GetTransportModifiableSOLMAN(String host, String user, String password, String changeId, String transportId) {
+        super(host, user, password, changeId, transportId);
     }
 
     protected Predicate<Transport> getOutputPredicate() {

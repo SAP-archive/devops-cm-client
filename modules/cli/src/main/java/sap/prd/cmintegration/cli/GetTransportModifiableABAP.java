@@ -18,8 +18,8 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiableABAP.class);
 
-    GetTransportModifiableABAP(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
-        super(backendType, host, user, password, changeId, transportId);
+    GetTransportModifiableABAP(String host, String user, String password, String changeId, String transportId) {
+        super(host, user, password, changeId, transportId);
     }
 
     protected Predicate<Transport> getOutputPredicate() {

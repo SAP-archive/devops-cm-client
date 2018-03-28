@@ -18,8 +18,8 @@ class GetTransportDescriptionSOLMAN extends TransportRelatedSOLMAN {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportDescriptionSOLMAN.class);
 
-    GetTransportDescriptionSOLMAN(BackendType backendType, String host, String user, String password, String changeId, String transportId) {
-        super(backendType, host, user, password, changeId, transportId);
+    GetTransportDescriptionSOLMAN(String host, String user, String password, String changeId, String transportId) {
+        super(host, user, password, changeId, transportId);
     }
 
     @Override

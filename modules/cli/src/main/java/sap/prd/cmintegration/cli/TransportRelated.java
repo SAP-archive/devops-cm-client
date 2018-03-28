@@ -126,7 +126,6 @@ public abstract class TransportRelated extends Command {
         BackendType backendType = getBackendType(commandLine);
 
         newInstance(clazz,
-                backendType,
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
@@ -134,10 +133,10 @@ public abstract class TransportRelated extends Command {
                 getTransportId(commandLine)).execute();
     }
 
-    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, BackendType backendType, String host, String user, String password, String changeId, String transportId) {
+    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String changeId, String transportId) {
         try {
-            return clazz.getDeclaredConstructor(new Class[] {BackendType.class, String.class, String.class, String.class, String.class, String.class})
-            .newInstance(new Object[] {backendType, host, user, password, changeId, transportId});
+            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, String.class})
+            .newInstance(new Object[] {host, user, password, changeId, transportId});
         } catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
