@@ -240,7 +240,17 @@ class Commands {
             return;
         }
 
-        final String commandName = getCommandName(commandLine, args);
+        final String commandName;
+        try {
+            commandName = getCommandName(commandLine, args);
+        } catch(CMCommandLineException e) {
+            if(commandLine.hasOption(CMOptions.HELP.getOpt())) {
+                printHelp();
+                return;
+            } else {
+                throw e;
+            }
+        }
         final BackendType type = getBackendType(commandLine, args);
  
         try {
