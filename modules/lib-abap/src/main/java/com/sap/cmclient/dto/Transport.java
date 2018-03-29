@@ -3,9 +3,7 @@ package com.sap.cmclient.dto;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
 
@@ -80,11 +78,6 @@ public class Transport implements com.sap.cmclient.Transport {
       values =  new HashMap<String, Object>(entry.getProperties());
     }
 
-    private Transport()
-    {
-      values = null;
-    }
-    
     public static Map<String, Object> getTransportCreationRequestMap( String owner, 
                            String description, 
                            String targetSystem,
