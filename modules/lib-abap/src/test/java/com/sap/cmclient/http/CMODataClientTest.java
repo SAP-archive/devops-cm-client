@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
 import org.apache.olingo.odata2.api.exception.ODataException;
@@ -100,13 +101,11 @@ public class CMODataClientTest extends RecordableTest {
 
     @Test
     public void createTransportTest() throws UnexpectedHttpResponseException, IOException, URISyntaxException, ODataException {
-        GregorianCalendar date = new GregorianCalendar();
-        GregorianCalendar time = new GregorianCalendar(0, 0, 0, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
-
-        Transport transport = new Transport("", "ODATA", "my transport", "A5T", date, time, "", "", Status.D, Type.W);
+        
+        Map<String, Object> transport = Transport.getTransportCreationRequestMap("ODATA", "my transport", "A5T", "", Type.W);
         Transport created = examinee.createTransport(transport);
         assertThat(created.getId().trim(), is(not("")));
-        assertThat(created.getOwner(), is(equalTo(transport.getOwner())));
+        assertThat(created.getOwner(), is(equalTo("ODATA")));
         assertThat(created.getTargetSystem(), is(equalTo("A5T")));
         assertThat(created.getDescription(), is(equalTo("my transport")));
         assertThat(created.getStatus(), is(equalTo(Status.D)));
