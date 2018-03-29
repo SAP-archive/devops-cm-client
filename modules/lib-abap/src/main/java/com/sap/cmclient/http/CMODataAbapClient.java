@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -50,7 +51,6 @@ import org.apache.olingo.odata2.api.processor.ODataResponse;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.sap.cmclient.dto.Transport;
-import com.sap.cmclient.dto.TransportMarshaller;
 
 public class CMODataAbapClient {
 
@@ -88,7 +88,7 @@ public class CMODataAbapClient {
               checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
               if (Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
                   try(InputStream content = response.getEntity().getContent()) {
-                  return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
+                  return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
                                                  getEntityDataModel().getDefaultEntityContainer()
                                                      .getEntitySet(TransportRequestBuilder.getEntityKey()),
                                                  content,
@@ -114,7 +114,7 @@ public class CMODataAbapClient {
       EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
       ODataResponse response = null;
       try {
-          response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
+          response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet,transport.getValueMap(), properties);
           put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
           try (CloseableHttpResponse httpResponse = client.execute(put)) {
               checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
@@ -124,7 +124,7 @@ public class CMODataAbapClient {
       }
     }
   }
-  public Transport createTransport(Transport transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
+  public Transport createTransport(Map<String, Object> transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
   {
     Edm edm = getEntityDataModel();
     try (CloseableHttpClient client = clientFactory.createClient()) {
@@ -137,14 +137,14 @@ public class CMODataAbapClient {
       ODataResponse response = null;
 
       try {
-        response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, TransportMarshaller.put(transport), properties);
+        response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, transport, properties);
         post.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
 
         try(CloseableHttpResponse httpResponse = client.execute(post)) {
           Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
           checkStatusCode(httpResponse, SC_CREATED);
           if (Arrays.asList(SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
-            return TransportMarshaller.get(EntityProvider.readEntry(contentType[0].getValue(),
+            return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
                        edm.getDefaultEntityContainer()
                       .getEntitySet(TransportRequestBuilder.getEntityKey()),
                         httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));

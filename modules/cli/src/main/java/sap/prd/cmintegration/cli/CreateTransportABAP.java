@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.dto.Transport;
-import com.sap.cmclient.dto.Transport.Status;
 import com.sap.cmclient.dto.Transport.Type;
 import com.sap.cmclient.http.CMODataAbapClient;
 
@@ -49,7 +48,7 @@ class CreateTransportABAP extends Command {
 
         Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
                description = new Option("d", "description", true, "The description of the transport request."),
-               targetSystem = new Option("-ts", "target-system", true, "The target of the transport");
+               targetSystem = new Option("ts", "target-system", true, "The target of the transport");
 
         options.addOption(owner).addOption(description);
 
@@ -88,7 +87,7 @@ class CreateTransportABAP extends Command {
         GregorianCalendar date = new GregorianCalendar();
         GregorianCalendar time = new GregorianCalendar(0, 0, 0, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
 
-        Transport transport = client.createTransport(new Transport("", o, description, targetSystem, date, time, "", "X", Status.D, Type.W));
+        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", Type.W));
 
         logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
             transport.getTransportID(), transport.isModifiable(), transport.getOwner(), transport.getDescription()));
