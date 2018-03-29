@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
+import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.prd.cmintegration.cli.BackendType;
@@ -258,21 +259,27 @@ class Commands {
 
         } catch (InvocationTargetException e) {
             logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
-            if(e.getTargetException() instanceof ODataClientErrorException) {
-                 StatusLine statusLine = ((ODataClientErrorException) e.getTargetException()).getStatusLine();
-                 if(statusLine.getStatusCode() == 401) { // unauthorized
-                     throw new ExitException(e.getTargetException(), 2);
-                 } else {
-                     throw (ODataClientErrorException)e.getTargetException();
-                 }
-            } else if(e.getTargetException() instanceof Exception)
-              throw (Exception)e.getTargetException();
-            else
-              throw e;
+            throw handle(e.getTargetException());
         } catch(Exception e) {
             logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
             throw e;
         }
+    }
+
+    private static Exception handle(Throwable thr) {
+        if(thr == null) throw new RuntimeException("No exception (?)");
+        StatusLine statusLine = null;
+        if(thr instanceof ODataClientErrorException) {
+            statusLine = ((ODataClientErrorException) thr).getStatusLine();
+       } else if(thr instanceof UnexpectedHttpResponseException) {
+             statusLine = ((UnexpectedHttpResponseException)thr).getStatus();
+       }
+
+       if(statusLine != null && statusLine.getStatusCode() == 401) { // unauthorized
+               return new ExitException(thr, 2);
+       }
+
+       return new RuntimeException(thr);
     }
 
     private static BackendType getBackendType(CommandLine commandLine, String[] args) {
