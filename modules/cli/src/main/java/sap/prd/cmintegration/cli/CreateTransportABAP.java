@@ -9,9 +9,6 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
@@ -83,9 +80,6 @@ class CreateTransportABAP extends Command {
         if(isBlank(description)) {
             throw new CMCommandLineException("No description provided. Cannot create transports without description.");
         }
-
-        GregorianCalendar date = new GregorianCalendar();
-        GregorianCalendar time = new GregorianCalendar(0, 0, 0, date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE), date.get(Calendar.SECOND));
 
         Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", Type.W));
 
