@@ -182,13 +182,15 @@ public class Transport {
     
     @Override
     public boolean equals(Object o) {
-      if(this != o) return false;
-      if (o instanceof Transport) {
-      Transport t = (Transport) o;
-      return this.values.equals(t.values);
+      if(this != o) { 
+        if (o instanceof Transport) {
+        Transport t = (Transport) o;
+        return this.values.get(ID).equals(((Transport) o).values.get(ID));
+        }
+        else {
+          return false;
+        }
       }
-      else {
-        return false;
-      }
+      else return true;
     }
 }
