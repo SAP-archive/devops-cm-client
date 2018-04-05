@@ -268,10 +268,10 @@ class Commands {
             }
 
         } catch (InvocationTargetException e) {
-            logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
+            logger.error(format("Exception caught while executing command '%s': '%s'.", commandName, e.getMessage()),e);
             throw handle(e);
         } catch(Exception e) {
-            logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
+            logger.error(format("Exception caught while executing command '%s': '%s'.", commandName, e.getMessage()),e);
             throw e;
         }
     }
