@@ -55,7 +55,11 @@ public class TransportRequestBuilder
   }
 
   public HttpGet exportTransport(String transportId) {
-      return new HttpGet(endpoint + "/ExportTransport?id=" + transportId);
+      return new HttpGet(endpoint + "/ExportTransport?id=%27" + transportId + "%27");
+  }
+
+  public HttpGet importTransport(String systemId, String transportId) {
+      return new HttpGet(endpoint + "/ImportTransport?id=%27" + transportId + "%27&system=%27" + systemId + "%27");
   }
 
   private String createTransportUri(String id, String expand)
