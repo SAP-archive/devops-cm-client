@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
@@ -124,6 +122,11 @@ public class CMODataClientTest extends RecordableTest {
         // actually 404 would be more appropriate, but 500 is returned from server...
         thrown.expect(new ResponseCodeMatcher(SC_INTERNAL_SERVER_ERROR));
         examinee.deleteTransport("A5DK900044");
+    }
+
+    @Test
+    public void releaseTransportTest() throws UnexpectedHttpResponseException, IOException {
+        examinee.releaseTransport("A5DK900026");
     }
 
     private static class ResponseCodeMatcher extends BaseMatcher<UnexpectedHttpResponseException> {
