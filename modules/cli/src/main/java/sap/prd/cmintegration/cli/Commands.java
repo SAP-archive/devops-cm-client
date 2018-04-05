@@ -269,27 +269,27 @@ class Commands {
 
         } catch (InvocationTargetException e) {
             logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
-            throw handle(e.getTargetException());
+            throw handle(e);
         } catch(Exception e) {
             logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
             throw e;
         }
     }
 
-    private static Exception handle(Throwable thr) {
-        if(thr == null) throw new RuntimeException("No exception (?)");
+    private static Exception handle(InvocationTargetException e) {
+        if(e == null || e.getTargetException() == null) throw new RuntimeException("No exception (?)");
         StatusLine statusLine = null;
-        if(thr instanceof ODataClientErrorException) {
-            statusLine = ((ODataClientErrorException) thr).getStatusLine();
-       } else if(thr instanceof UnexpectedHttpResponseException) {
-             statusLine = ((UnexpectedHttpResponseException)thr).getStatus();
+        if(e.getTargetException() instanceof ODataClientErrorException) {
+           statusLine = ((ODataClientErrorException) e.getTargetException()).getStatusLine();
+       } else if(e.getTargetException() instanceof UnexpectedHttpResponseException) {
+           statusLine = ((UnexpectedHttpResponseException)e.getTargetException()).getStatus();
        }
 
        if(statusLine != null && statusLine.getStatusCode() == 401) { // unauthorized
-               return new ExitException(thr, 2);
+           return new ExitException(e.getTargetException(), 2);
        }
 
-       return new RuntimeException(thr);
+       return new RuntimeException(e.getTargetException());
     }
 
     private static BackendType getBackendType(CommandLine commandLine, String[] args) {
