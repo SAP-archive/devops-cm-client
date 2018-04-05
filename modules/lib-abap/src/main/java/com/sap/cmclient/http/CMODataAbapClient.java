@@ -216,6 +216,17 @@ public class CMODataAbapClient {
         }
     }
 
+    public void importTransport(String systemId, String transportId) throws IOException, UnexpectedHttpResponseException {
+        try(CloseableHttpClient client = clientFactory.createClient()) {
+            HttpGet request = requestBuilder.importTransport(systemId, transportId);
+            request.addHeader("accept", "application/xml");
+            request.addHeader("x-csrf-token", getCSRFToken());
+            try(CloseableHttpResponse response = client.execute(request)) {
+                checkStatusCode(response, HttpStatus.SC_OK);
+            }
+        }
+    }
+
     private Edm getEntityDataModel() throws IOException, EntityProviderException, UnexpectedHttpResponseException {
 
         if(dataModel == null) {
