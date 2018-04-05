@@ -14,6 +14,7 @@ public class TransportRequestBuilder
   private final URI endpoint;
   private static final String SEPARATOR = "/";
   private static final String TRANSPORTS = "Transports";
+  private static final String SINGLE_QUOTE_URL_ESCAPED = "%27";
 
   public TransportRequestBuilder(URI endpoint)
   {
@@ -55,11 +56,12 @@ public class TransportRequestBuilder
   }
 
   public HttpGet exportTransport(String transportId) {
-      return new HttpGet(endpoint + "/ExportTransport?id=%27" + transportId + "%27");
+      return new HttpGet(endpoint + "/ExportTransport?id=" + SINGLE_QUOTE_URL_ESCAPED + transportId + SINGLE_QUOTE_URL_ESCAPED);
   }
 
   public HttpGet importTransport(String systemId, String transportId) {
-      return new HttpGet(endpoint + "/ImportTransport?id=%27" + transportId + "%27&system=%27" + systemId + "%27");
+      return new HttpGet(endpoint + "/ImportTransport?id=" + SINGLE_QUOTE_URL_ESCAPED + transportId + SINGLE_QUOTE_URL_ESCAPED +
+                                                    "&system=" + SINGLE_QUOTE_URL_ESCAPED + systemId + SINGLE_QUOTE_URL_ESCAPED);
   }
 
   private String createTransportUri(String id, String expand)
