@@ -205,6 +205,17 @@ public class CMODataAbapClient {
         }
     }
 
+    public void releaseTransport(String transportId) throws IOException, UnexpectedHttpResponseException {
+        try(CloseableHttpClient client = clientFactory.createClient()) {
+            HttpGet request = requestBuilder.exportTransport(transportId);
+            request.addHeader("accept", "application/xml");
+            request.addHeader("x-csrf-token", getCSRFToken());
+            try (CloseableHttpResponse response = client.execute(request)) {
+                checkStatusCode(response, HttpStatus.SC_OK);
+            }
+        }
+    }
+
     private Edm getEntityDataModel() throws IOException, EntityProviderException, UnexpectedHttpResponseException {
 
         if(dataModel == null) {
@@ -237,7 +248,7 @@ public class CMODataAbapClient {
         return this.csrfToken;
     }
 
-    private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException, UnsupportedOperationException, IOException {
+    private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException, IOException {
 
         if( ! asList(expected).contains(response.getStatusLine().getStatusCode())) {
 

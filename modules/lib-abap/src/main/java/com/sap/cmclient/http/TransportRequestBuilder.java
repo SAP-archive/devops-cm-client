@@ -54,6 +54,10 @@ public class TransportRequestBuilder
       return new HttpPost(endpoint + "/" + getEntityKey() + "('" + transportId + "')/File");
   }
 
+  public HttpGet exportTransport(String transportId) {
+      return new HttpGet(endpoint + "/ExportTransport?id=" + transportId);
+  }
+
   private String createTransportUri(String id, String expand)
   {
     final StringBuilder absolutUri = new StringBuilder(endpoint.toASCIIString()).append(SEPARATOR)
