@@ -3,7 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
@@ -25,21 +25,20 @@ class GetTransportStatusABAP extends TransportRelatedABAP {
     }
 
     @Override
-    protected Predicate<Transport> getOutputPredicate() {
-        return new Predicate<Transport>() {
+    protected Function<Transport, String> getAction() {
+        return new Function<Transport, String>() {
 
             @Override
-            public boolean test(Transport t) {
+            public String apply(Transport t) {
 
                 // ... ugly downcast
                 String status = ((com.sap.cmclient.dto.Transport)t).getStatus();
                 if(StringUtils.isBlank(status)) {
                     logger.debug(String.format("Status attribute for transport '%s' is blank. Nothing will be emitted.", t.getTransportID()));
-                    return false;
+                    return null;
                 } else {
-                    System.out.println(status); 
                     logger.debug(String.format("Status '%s' has been emitted for transport '%s'.", status, t.getTransportID()));
-                    return true;}
+                    return status;}
                 };
         };
     }

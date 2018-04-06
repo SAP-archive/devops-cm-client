@@ -3,7 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
         super(host, user, password, transportId);
     }
 
-    protected Predicate<Transport> getOutputPredicate() {
+    protected Function<Transport, String> getAction() {
         return isModifiable;
     }
 

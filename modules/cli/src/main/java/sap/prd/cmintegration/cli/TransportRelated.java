@@ -3,7 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -20,43 +20,41 @@ public abstract class TransportRelated extends Command {
         static {TRANSPORT_ID.setArgName("transportID");}
     }
 
-    protected final static Predicate<Transport> description = new Predicate<Transport>() {
+    protected final static Function<Transport, String> description = new Function<Transport, String>() {
 
         @Override
-        public boolean test(Transport t) {
+        public String apply(Transport t) {
             String description = t.getDescription();
             if(StringUtils.isBlank(description)) {
                 logger.debug(format("Description of transport '%s' is blank. Nothing will be emitted.", t.getTransportID()));
-                return false;
+                return null;
             } else {
                 logger.debug(format("Description of transport '%s' is not blank. Description '%s' will be emitted.", t.getTransportID(), t.getDescription()));
-                System.out.println(description); 
-                return true;}
-            };
+                return description; 
+            }
+        };
         };
 
-    protected final static Predicate<Transport> isModifiable = new Predicate<Transport>() {
+    protected final static Function<Transport, String> isModifiable = new Function<Transport, String>() {
 
         @Override
-        public boolean test(Transport t) {
-            System.out.println(t.isModifiable());
-            return true;
+        public String apply(Transport t) {
+            return String.valueOf(t.isModifiable());
         }
     };
 
-    protected final static Predicate<Transport> getOwner = new Predicate<Transport>() {
+    protected final static Function<Transport, String> getOwner = new Function<Transport, String>() {
 
         @Override
-        public boolean test(Transport t) {
+        public String apply(Transport t) {
 
             String owner = t.getOwner();
             if(StringUtils.isBlank(owner)) {
                 logger.debug(String.format("Owner attribute for transport '%s' is blank. Nothing will be emitted.", t.getTransportID()));
-                return false;
+                return null;
             } else {
-                System.out.println(owner); 
                 logger.debug(String.format("Owner '%s' has been emitted for transport '%s'.", t.getOwner(), t.getTransportID()));
-                return true;}
+                return owner;}
             };
     };
 
@@ -72,7 +70,7 @@ public abstract class TransportRelated extends Command {
 
     protected abstract Optional<Transport> getTransport();
 
-    protected abstract Predicate<Transport> getOutputPredicate();
+    protected abstract Function<Transport, String> getAction();
 
     @Override
     void execute() throws Exception {
@@ -92,7 +90,10 @@ public abstract class TransportRelated extends Command {
                     transportId,
                     t.isModifiable(), t.getOwner(), t.getDescription()));
  
-            getOutputPredicate().test(t);
+            String output = getAction().apply(t);
+            if(output != null) {
+                System.out.println(output);
+            }
         }  else {
             throw new TransportNotFoundException(transportId, format("Transport '%s' not found.", transportId));
         }

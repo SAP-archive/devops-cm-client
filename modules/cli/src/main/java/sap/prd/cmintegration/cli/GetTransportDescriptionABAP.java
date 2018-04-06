@@ -3,6 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.apache.commons.cli.Options;
@@ -24,7 +25,7 @@ class GetTransportDescriptionABAP extends TransportRelatedABAP {
     }
 
     @Override
-    protected Predicate<Transport> getOutputPredicate() {
+    protected Function<Transport, String> getAction() {
         return description;
     }
 
