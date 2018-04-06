@@ -5,6 +5,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Predicate;
 
+import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,8 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiableABAP.class);
 
-    GetTransportModifiableABAP(String host, String user, String password, String changeId, String transportId) {
-        super(host, user, password, changeId, transportId);
+    GetTransportModifiableABAP(String host, String user, String password, String transportId) {
+        super(host, user, password, transportId);
     }
 
     protected Predicate<Transport> getOutputPredicate() {
@@ -28,7 +29,10 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportModifiableABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        TransportRelatedSOLMAN.main(GetTransportModifiableABAP.class, args,
+
+        Options options = new Options();
+
+        TransportRelatedSOLMAN.main(GetTransportModifiableABAP.class, options, args,
             format("%s [-cID <changeId>,] -tID <transportId>", getCommandName(GetTransportModifiableABAP.class)),
             "ChangeId must not be provided for ABAP backends. .Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }

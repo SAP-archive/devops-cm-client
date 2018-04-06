@@ -5,6 +5,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Predicate;
 
+import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +19,8 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
 
     final static private Logger logger = LoggerFactory.getLogger(GetTransportOwnerABAP.class);
 
-    GetTransportOwnerABAP(String host, String user, String password, String changeId, String transportId) {
-        super(host, user, password, changeId, transportId);
+    GetTransportOwnerABAP(String host, String user, String password, String transportId) {
+        super(host, user, password, transportId);
     }
 
     @Override
@@ -29,7 +30,10 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportOwnerABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        TransportRelatedSOLMAN.main(GetTransportOwnerABAP.class, args,
+
+        Options options = new Options();
+
+        TransportRelatedABAP.main(GetTransportOwnerABAP.class, options, args,
                 format("%s -%s <%s>", getCommandName(GetTransportOwnerABAP.class),
                 Opts.TRANSPORT_ID.getOpt(), Opts.TRANSPORT_ID.getArgName()),
                 format("Returns the owner of the transport represented by <%s>.", Opts.TRANSPORT_ID.getArgName()));
