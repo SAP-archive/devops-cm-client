@@ -166,8 +166,6 @@ public class CMODataAbapClient {
         hasStatusOrFail(response, HttpStatus.SC_NO_CONTENT);
       }
     }
-
-
   }
 
     public String upload(String transportId, File content) throws IOException, CMODataClientException, UnexpectedHttpResponseException {
