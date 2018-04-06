@@ -41,7 +41,6 @@ class CreateTransportABAP extends Command {
         logger.debug(format("%s called with arguments: '%s'.", CreateTransportABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
 
         Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
                description = new Option("d", "description", true, "The description of the transport request."),
