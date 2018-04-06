@@ -26,6 +26,7 @@ public abstract class TransportRelated extends Command {
 
     protected static class Opts {
         protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
+        static {TRANSPORT_ID.setArgName("transportID");}
     }
 
     protected final static Predicate<Transport> description = new Predicate<Transport>() {

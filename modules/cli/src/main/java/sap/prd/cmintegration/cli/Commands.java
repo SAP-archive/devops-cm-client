@@ -213,6 +213,8 @@ class Commands {
         commands.add(CreateTransportSOLMAN.class);
         commands.add(CreateTransportABAP.class);
         commands.add(ReleaseTransport.class);
+        commands.add(ImportTransport.class);
+        commands.add(ExportTransport.class);
 
         if(commands.stream()
                 .filter(it -> it.getAnnotation(CommandDescriptor.class) == null)

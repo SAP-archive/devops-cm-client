@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -11,6 +12,7 @@ import java.net.URISyntaxException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -20,6 +22,12 @@ import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 @CommandDescriptor(name="import-transport", type = BackendType.ABAP)
 public class ImportTransport extends Command {
+
+    private final static Option targetSystem = new Option("ts", "target-system", true, "The target system");
+
+    static {
+        targetSystem.setArgName("targetSystem");
+    }
 
     private final String systemId, transportId;
 
@@ -37,11 +45,16 @@ public class ImportTransport extends Command {
     public final static void main(String[] args) throws IOException, ParseException, UnexpectedHttpResponseException, URISyntaxException {
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
         options.addOption(Opts.TRANSPORT_ID);
+        options.addOption(targetSystem);
 
         if(helpRequested(args)) {
-            handleHelpOption("TODO", "TODO", new Options()); return;
+            handleHelpOption(format("%s -%s <%s> -%s <%s>", ImportTransport.class.getAnnotation(CommandDescriptor.class).name(),
+                                                            targetSystem.getOpt(),
+                                                            targetSystem.getArgName(),
+                                                            Opts.TRANSPORT_ID.getOpt(),
+                                                            Opts.TRANSPORT_ID.getArgName()),
+                    "Imports a transport into a system", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -55,6 +68,6 @@ public class ImportTransport extends Command {
     }
 
     private static String getSystemId(CommandLine commandLine) {
-        return "A5T"; // TODO: implement
+        return commandLine.getOptionValue(targetSystem.getOpt());
     }
 }

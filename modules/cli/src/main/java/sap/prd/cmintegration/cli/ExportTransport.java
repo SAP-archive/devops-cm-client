@@ -40,7 +40,10 @@ public class ExportTransport extends Command {
         options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption("TODO", "TODO", new Options()); return;
+            handleHelpOption(String.format("%s -%s %s", ExportTransport.class.getAnnotation(CommandDescriptor.class).name(),
+                             Opts.TRANSPORT_ID.getOpt(),
+                             Opts.TRANSPORT_ID.getArgName()),
+                             "Exports a transport.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
