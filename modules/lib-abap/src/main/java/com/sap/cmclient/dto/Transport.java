@@ -157,8 +157,7 @@ public class Transport implements com.sap.cmclient.Transport {
     public boolean equals(Object o) {
       if(this != o) { 
         if (o instanceof Transport) {
-        Transport t = (Transport) o;
-        return this.values.get(ID).equals(((Transport) o).values.get(ID));
+          return this.values.get(ID).equals(((Transport) o).values.get(ID));
         }
         else {
           return false;
