@@ -30,7 +30,8 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportOwnerABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         TransportRelatedSOLMAN.main(GetTransportOwnerABAP.class, args,
-                format("%s -tID <transportId>", getCommandName(GetTransportOwnerABAP.class)),
-                "Returns the owner of the transport represented by [<changeId>,] <transportId>. ChangeId must not be provided for ABAP backends.");
+                format("%s -%s <%s>", getCommandName(GetTransportOwnerABAP.class),
+                Opts.TRANSPORT_ID.getOpt(), Opts.TRANSPORT_ID.getArgName()),
+                format("Returns the owner of the transport represented by <%s>.", Opts.TRANSPORT_ID.getArgName()));
     }
 }
