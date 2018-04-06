@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -84,21 +85,26 @@ public class CMODataAbapClient {
       try (CloseableHttpClient client = clientFactory.createClient()) {
           HttpUriRequest get = requestBuilder.getTransport(transportId);
           try(CloseableHttpResponse response = client.execute(get)) {
-              checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
+              checkStatusCodeAndFail(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.a
               return getTransport(response);
           }
       }
   }
 
   private Transport getTransport(CloseableHttpResponse response) throws UnsupportedOperationException, IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
+
+      if(! checkStatusCode(response, HttpStatus.SC_OK)) {
+          return null;
+      }
+
       Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
-          try(InputStream content = response.getEntity().getContent()) {
+      try(InputStream content = response.getEntity().getContent()) {
           return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
                                          getEntityDataModel().getDefaultEntityContainer()
                                              .getEntitySet(TransportRequestBuilder.getEntityKey()),
                                          content,
                                          EntityProviderReadProperties.init().build()));
-          }
+      }
   }
 
   public void updateTransport(Transport transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
@@ -117,7 +123,7 @@ public class CMODataAbapClient {
           response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet,transport.getValueMap(), properties);
           put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
           try (CloseableHttpResponse httpResponse = client.execute(put)) {
-              checkStatusCode(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
+              checkStatusCodeAndFail(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
           }
       }  finally {
           if(response != null) response.close();
@@ -142,7 +148,7 @@ public class CMODataAbapClient {
 
         try(CloseableHttpResponse httpResponse = client.execute(post)) {
           Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
-          checkStatusCode(httpResponse, SC_CREATED);
+          checkStatusCodeAndFail(httpResponse, SC_CREATED);
           if (Arrays.asList(SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
             return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
                        edm.getDefaultEntityContainer()
@@ -164,7 +170,7 @@ public class CMODataAbapClient {
       HttpDelete delete = requestBuilder.deleteTransport(id);
       delete.setHeader("x-csrf-token", getCSRFToken());
       try(CloseableHttpResponse response = client.execute(delete)) {
-        checkStatusCode(response, HttpStatus.SC_NO_CONTENT);
+        checkStatusCodeAndFail(response, HttpStatus.SC_NO_CONTENT);
       }
     }
 
@@ -199,7 +205,7 @@ public class CMODataAbapClient {
             request.setEntity(new InputStreamEntity(content));
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
-                checkStatusCode(response, HttpStatus.SC_CREATED);
+                checkStatusCodeAndFail(response, HttpStatus.SC_CREATED);
                 return response.getHeaders("location")[0].getValue();
             }
         }
@@ -211,7 +217,7 @@ public class CMODataAbapClient {
             request.addHeader("accept", "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
-                checkStatusCode(response, HttpStatus.SC_OK);
+                checkStatusCodeAndFail(response, HttpStatus.SC_OK);
                 return getTransport(response);
             }
         }
@@ -223,7 +229,7 @@ public class CMODataAbapClient {
             request.addHeader("accept", "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try(CloseableHttpResponse response = client.execute(request)) {
-                checkStatusCode(response, HttpStatus.SC_OK);
+                checkStatusCodeAndFail(response, HttpStatus.SC_OK);
             }
         }
     }
@@ -233,7 +239,7 @@ public class CMODataAbapClient {
         if(dataModel == null) {
             try (CloseableHttpClient edmClient = clientFactory.createClient()) {
                 try (CloseableHttpResponse response = edmClient.execute(new HttpGet(endpoint.toASCIIString() + "/" + "$metadata"))) {
-                    checkStatusCode(response, SC_OK);
+                    checkStatusCodeAndFail(response, SC_OK);
                     dataModel = EntityProvider.readMetadata(response.getEntity().getContent(), false);
                 }
             }
@@ -260,17 +266,25 @@ public class CMODataAbapClient {
         return this.csrfToken;
     }
 
-    private static void checkStatusCode(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException, IOException {
+    private static void checkStatusCodeAndFail(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException {
 
-        if( ! asList(expected).contains(response.getStatusLine().getStatusCode())) {
+        if(! checkStatusCode(response, expected)) {
 
-            try(InputStream content = response.getEntity().getContent()) {
+            String reason;
 
+            try(Reader content = new InputStreamReader(response.getEntity().getContent(), Charsets.UTF_8)) {
                 // TODO hard coded char set is a best guess. Should be retrieved from response.
-                String reason = CharStreams.toString(new InputStreamReader(content, Charsets.UTF_8));
-                throw new UnexpectedHttpResponseException(format("Unexpected response code '%d'. Reason: %s", response.getStatusLine().getStatusCode(), reason),
-                                                response.getStatusLine());
+                reason = CharStreams.toString(content);
+            } catch(IOException e) {
+                reason = String.format("Cannot provide a reason string. %s caught while retrieving the reason. Message of that excepetion was: %s", e.getClass().getName(), e.getMessage());
             }
+
+            throw new UnexpectedHttpResponseException(format("Unexpected response code '%d'. Reason: %s", response.getStatusLine().getStatusCode(), reason),
+                    response.getStatusLine());
         }
+    }
+
+    private static boolean checkStatusCode(HttpResponse response, int...  expected) {
+        return asList(expected).contains(response.getStatusLine().getStatusCode());
     }
 }
