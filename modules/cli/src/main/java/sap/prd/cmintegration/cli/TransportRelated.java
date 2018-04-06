@@ -39,7 +39,7 @@ public abstract class TransportRelated extends Command {
                 return description; 
             }
         };
-        };
+    };
 
     protected final static Function<Transport, String> isModifiable = new Function<Transport, String>() {
 
@@ -82,31 +82,31 @@ public abstract class TransportRelated extends Command {
     void execute() throws Exception {
 
         Optional<Transport> transport = getTransport();
-        if(transport.isPresent()) {
-            Transport t = transport.get();
- 
-            if(!t.getTransportID().trim().equals(transportId.trim())) {
-                throw new CMCommandLineException(
-                    format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
-                            t.getTransportID(),
-                            transportId));
-            }
- 
-            logger.debug(format("Transport '%s' has been found. isModifiable: '%b', Owner: '%s', Description: '%s'.",
-                    transportId,
-                    t.isModifiable(), t.getOwner(), t.getDescription()));
- 
-            getAction().andThen(new Function<String, Void>() {
-
-                @Override
-                public Void apply(String output) {
-                    if(output != null) System.out.println(output);
-                    return null;
-                }
-            }).apply(t);
-        }  else {
+        if(! transport.isPresent()) {
             throw new TransportNotFoundException(transportId, format("Transport '%s' not found.", transportId));
         }
+
+        Transport t = transport.get();
+
+        if(!t.getTransportID().trim().equals(transportId.trim())) {
+            throw new CMCommandLineException(
+                format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
+                        t.getTransportID(),
+                        transportId));
+        }
+
+        logger.debug(format("Transport '%s' has been found. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+                transportId,
+                t.isModifiable(), t.getOwner(), t.getDescription()));
+
+        getAction().andThen(new Function<String, Void>() {
+
+            @Override
+            public Void apply(String output) {
+                if(output != null) System.out.println(output);
+                return null;
+            }
+        }).apply(t);
     }
 
     static String getTransportId(CommandLine commandLine) {
