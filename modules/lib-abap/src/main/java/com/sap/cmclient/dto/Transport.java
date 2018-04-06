@@ -123,7 +123,7 @@ public class Transport implements com.sap.cmclient.Transport {
     }
 
     public Boolean isModifiable() {
-        return false; // TODO: how can we decide about that for abap transports? Most likely the type or the status.
+        return "D".equals(getStatus());
     }
 
     @Override
