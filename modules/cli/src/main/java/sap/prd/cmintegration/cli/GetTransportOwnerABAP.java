@@ -31,9 +31,7 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportOwnerABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Options options = new Options();
-
-        TransportRelatedABAP.main(GetTransportOwnerABAP.class, options, args,
+        TransportRelatedABAP.main(GetTransportOwnerABAP.class, new Options(), args,
                 format("%s -%s <%s>", getCommandName(GetTransportOwnerABAP.class),
                 Opts.TRANSPORT_ID.getOpt(), Opts.TRANSPORT_ID.getArgName()),
                 format("Returns the owner of the transport represented by <%s>.", Opts.TRANSPORT_ID.getArgName()));

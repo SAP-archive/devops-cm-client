@@ -31,10 +31,7 @@ class GetTransportDescriptionSOLMAN extends TransportRelatedSOLMAN {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportDescriptionSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Options options = new Options();
-        options.addOption(Commands.CMOptions.CHANGE_ID);
-
-        TransportRelatedSOLMAN.main(GetTransportDescriptionSOLMAN.class, options, args,
+        TransportRelatedSOLMAN.main(GetTransportDescriptionSOLMAN.class, new Options(), args,
                 format("%s [-cID <changeId>]  -tID <transportId>", getCommandName(GetTransportDescriptionSOLMAN.class)),
                 "Returns the description for the transport represented by <changeId>, <transportId>. ChangeId must not be provided for ABAP backends.");
     }

@@ -46,9 +46,7 @@ class GetTransportStatusABAP extends TransportRelatedABAP {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportStatusABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Options options = new Options();
-
-        TransportRelatedABAP.main(GetTransportStatusABAP.class, options, args,
+        TransportRelatedABAP.main(GetTransportStatusABAP.class, new Options(), args,
                 format("%s -%s <%s>", getCommandName(GetTransportStatusABAP.class),
                 Opts.TRANSPORT_ID.getOpt(), Opts.TRANSPORT_ID.getArgName()),
                 format("Returns the status of the transport represented by <%s>.", Opts.TRANSPORT_ID.getArgName()));

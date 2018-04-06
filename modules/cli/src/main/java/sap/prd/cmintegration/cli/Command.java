@@ -1,5 +1,7 @@
 package sap.prd.cmintegration.cli;
 
+import org.apache.commons.cli.Options;
+
 /**
  * Root class for all commands.
  */
@@ -20,4 +22,8 @@ abstract class Command {
      * @throws Exception In case of trouble.
      */
     abstract void execute() throws Exception;
+
+    protected static void addOpts(Options options) throws Exception {
+        Commands.Helpers.addStandardParameters(options);
+    }
 }

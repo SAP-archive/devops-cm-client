@@ -28,9 +28,8 @@ class GetTransportModifiableSOLMAN extends TransportRelatedSOLMAN {
     }
 
     public final static void main(String[] args) throws Exception {
-        Options opts = new Options();
         logger.debug(format("%s called with arguments: '%s'.", GetTransportModifiableSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        TransportRelatedSOLMAN.main(GetTransportModifiableSOLMAN.class, opts, args,
+        TransportRelatedSOLMAN.main(GetTransportModifiableSOLMAN.class, new Options(), args,
             format("%s [-cID <changeId>,] -tID <transportId>", getCommandName(GetTransportModifiableSOLMAN.class)),
             "ChangeId must not be provided for ABAP backends. .Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }

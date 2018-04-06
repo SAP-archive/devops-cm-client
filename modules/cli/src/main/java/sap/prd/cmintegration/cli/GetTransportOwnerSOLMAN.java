@@ -31,9 +31,7 @@ class GetTransportOwnerSOLMAN extends TransportRelatedSOLMAN {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", GetTransportOwnerSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Options options = new Options();
-
-        TransportRelatedSOLMAN.main(GetTransportOwnerSOLMAN.class, options, args,
+        TransportRelatedSOLMAN.main(GetTransportOwnerSOLMAN.class, new Options(), args,
                 format("%s [-cID <changeId>] -tID <transportId>", getCommandName(GetTransportOwnerSOLMAN.class)),
                 "Returns the owner of the transport represented by [<changeId>,] <transportId>. ChangeId must not be provided for ABAP backends.");
     }

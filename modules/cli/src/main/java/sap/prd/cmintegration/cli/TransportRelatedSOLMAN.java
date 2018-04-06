@@ -22,9 +22,12 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 abstract class TransportRelatedSOLMAN extends TransportRelated {
 
     protected final String changeId;
+
     protected TransportRelatedSOLMAN(String host, String user, String password,
             String changeId, String transportId) {
+
         super(host, user, password, transportId);
+
         this.changeId = changeId;
     }
 
@@ -32,9 +35,9 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Commands.Helpers.addStandardParameters(options);
+        TransportRelated.addOpts(options);
+
         options.addOption(Commands.CMOptions.CHANGE_ID);
-        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
             handleHelpOption(usage, helpText, new Options()); return;

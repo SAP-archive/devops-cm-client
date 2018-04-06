@@ -35,9 +35,9 @@ public class ExportTransport extends Command {
         AbapClientFactory.getInstance().newClient(host, user, password).releaseTransport(transportId);
     }
 
-    public final static void main(String[] args) throws IOException, ParseException, UnexpectedHttpResponseException, URISyntaxException, EntityProviderException, EdmException {
+    public final static void main(String[] args) throws Exception {
         Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
+        Command.addOpts(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
         options.addOption(Opts.TRANSPORT_ID);
 

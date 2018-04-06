@@ -38,7 +38,7 @@ class ReleaseTransport extends Command {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", ReleaseTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
+        Command.addOpts(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
         options.addOption(Opts.TRANSPORT_ID);
 

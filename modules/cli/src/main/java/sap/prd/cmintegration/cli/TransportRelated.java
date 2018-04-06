@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,11 @@ public abstract class TransportRelated extends Command {
     protected static class Opts {
         protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
         static {TRANSPORT_ID.setArgName("transportID");}
+    }
+
+    protected static void addOpts(Options options) throws Exception {
+        Command.addOpts(options);
+        options.addOption(TransportRelated.Opts.TRANSPORT_ID);
     }
 
     protected final static Function<Transport, String> description = new Function<Transport, String>() {

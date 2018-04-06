@@ -42,9 +42,9 @@ public class ImportTransport extends Command {
         AbapClientFactory.getInstance().newClient(host, user, password).importTransport(systemId, transportId);
     }
 
-    public final static void main(String[] args) throws IOException, ParseException, UnexpectedHttpResponseException, URISyntaxException {
+    public final static void main(String[] args) throws Exception {
         Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
+        Command.addOpts(options);
         options.addOption(Opts.TRANSPORT_ID);
         options.addOption(targetSystem);
 

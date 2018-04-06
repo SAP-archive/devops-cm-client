@@ -50,7 +50,7 @@ class GetChangeTransports extends Command {
 
         logger.debug(format("%s called with arguments: '%s'.", GetChangeTransports.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
+        Command.addOpts(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
 
         options.addOption(modifiableOnlyOption);
