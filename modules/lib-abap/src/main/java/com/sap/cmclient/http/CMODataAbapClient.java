@@ -84,8 +84,8 @@ public class CMODataAbapClient {
       try (CloseableHttpClient client = clientFactory.createClient()) {
           HttpUriRequest get = requestBuilder.getTransport(transportId);
           try(CloseableHttpResponse response = client.execute(get)) {
-              checkStatusCodeAndFail(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.a
-              if(! checkStatusCode(response, SC_OK))
+              hasStatusOrFail(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.a
+              if(! hasStatus(response, SC_OK))
                   return null;
 
               return getTransport(response);
@@ -125,7 +125,7 @@ public class CMODataAbapClient {
           response = EntityProvider.writeEntry(put.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet,transport.getValueMap(), properties);
           put.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
           try (CloseableHttpResponse httpResponse = client.execute(put)) {
-              checkStatusCodeAndFail(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
+              hasStatusOrFail(httpResponse, SC_OK, HttpStatus.SC_NO_CONTENT);
           }
       }  finally {
           if(response != null) response.close();
@@ -148,7 +148,7 @@ public class CMODataAbapClient {
         post.setEntity(EntityBuilder.create().setStream(marshaller.getEntityAsStream()).build());
 
         try(CloseableHttpResponse httpResponse = client.execute(post)) {
-          checkStatusCodeAndFail(httpResponse, SC_CREATED);
+          hasStatusOrFail(httpResponse, SC_CREATED);
           return getTransport(httpResponse);
         }
       } finally {
@@ -163,7 +163,7 @@ public class CMODataAbapClient {
       HttpDelete delete = requestBuilder.deleteTransport(id);
       delete.setHeader("x-csrf-token", getCSRFToken());
       try(CloseableHttpResponse response = client.execute(delete)) {
-        checkStatusCodeAndFail(response, HttpStatus.SC_NO_CONTENT);
+        hasStatusOrFail(response, HttpStatus.SC_NO_CONTENT);
       }
     }
 
@@ -198,7 +198,7 @@ public class CMODataAbapClient {
             request.setEntity(new InputStreamEntity(content));
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
-                checkStatusCodeAndFail(response, HttpStatus.SC_CREATED);
+                hasStatusOrFail(response, HttpStatus.SC_CREATED);
                 return response.getHeaders("location")[0].getValue();
             }
         }
@@ -210,7 +210,7 @@ public class CMODataAbapClient {
             request.addHeader(HttpHeaders.ACCEPT, "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
-                checkStatusCodeAndFail(response, HttpStatus.SC_OK);
+                hasStatusOrFail(response, HttpStatus.SC_OK);
                 return getTransport(response);
             }
         }
@@ -222,7 +222,7 @@ public class CMODataAbapClient {
             request.addHeader(HttpHeaders.ACCEPT, "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try(CloseableHttpResponse response = client.execute(request)) {
-                checkStatusCodeAndFail(response, HttpStatus.SC_OK);
+                hasStatusOrFail(response, HttpStatus.SC_OK);
             }
         }
     }
@@ -232,7 +232,7 @@ public class CMODataAbapClient {
         if(dataModel == null) {
             try (CloseableHttpClient edmClient = clientFactory.createClient()) {
                 try (CloseableHttpResponse response = edmClient.execute(new HttpGet(endpoint.toASCIIString() + "/" + "$metadata"))) {
-                    checkStatusCodeAndFail(response, SC_OK);
+                    hasStatusOrFail(response, SC_OK);
                     dataModel = EntityProvider.readMetadata(response.getEntity().getContent(), false);
                 }
             }
@@ -259,9 +259,9 @@ public class CMODataAbapClient {
         return this.csrfToken;
     }
 
-    private static void checkStatusCodeAndFail(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException {
+    private static void hasStatusOrFail(HttpResponse response, int...  expected) throws UnexpectedHttpResponseException {
 
-        if(! checkStatusCode(response, expected)) {
+        if(! hasStatus(response, expected)) {
 
             String reason;
 
@@ -277,7 +277,7 @@ public class CMODataAbapClient {
         }
     }
 
-    private static boolean checkStatusCode(HttpResponse response, int...  expected) {
+    private static boolean hasStatus(HttpResponse response, int...  expected) {
         return asList(expected).contains(response.getStatusLine().getStatusCode());
     }
 }
