@@ -216,6 +216,7 @@ class Commands {
         commands.add(ImportTransport.class);
         commands.add(ExportTransport.class);
         commands.add(GetTransportStatusABAP.class);
+        commands.add(GetTransportTargetSystemABAP.class);
 
         if(commands.stream()
                 .filter(it -> it.getAnnotation(CommandDescriptor.class) == null)

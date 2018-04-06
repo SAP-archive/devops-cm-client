@@ -96,10 +96,14 @@ public abstract class TransportRelated extends Command {
                     transportId,
                     t.isModifiable(), t.getOwner(), t.getDescription()));
  
-            String output = getAction().apply(t);
-            if(output != null) {
-                System.out.println(output);
-            }
+            getAction().andThen(new Function<String, Void>() {
+
+                @Override
+                public Void apply(String output) {
+                    if(output != null) System.out.println(output);
+                    return null;
+                }
+            }).apply(t);
         }  else {
             throw new TransportNotFoundException(transportId, format("Transport '%s' not found.", transportId));
         }
