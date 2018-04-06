@@ -1,5 +1,7 @@
 package com.sap.cmclient.dto;
 
+import static java.lang.String.format;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public class Transport implements com.sap.cmclient.Transport {
 
     public Transport(ODataEntry entry)
     {
-      if(entry.getProperties().get(ID) == null) throw new IllegalArgumentException("Key Id must not be null.");
+      if(entry.getProperties().get(ID) == null) throw new IllegalArgumentException(format("Key '%s' must not be null.", ID));
       values =  new HashMap<String, Object>(entry.getProperties());
     }
 
