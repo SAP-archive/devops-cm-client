@@ -22,12 +22,12 @@ import org.apache.olingo.odata2.api.exception.ODataException;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.sap.cmclient.dto.Transport;
-import com.sap.cmclient.dto.Transport.Type;
 
 // In order to run it with wire logging use:
 // -Dorg.slf4j.simpleLogger.defaultLogLevel=trace
@@ -58,7 +58,7 @@ public class CMODataClientTest extends RecordableTest {
         assertThat(transport.getOwner(), is(equalTo("ODATA")));
         assertThat(transport.getTargetSystem(), is(equalTo("A5T")));
         assertThat(transport.getStatus(), is(equalTo("D")));
-        assertThat(transport.getType(), is(Transport.Type.W));
+        assertThat(transport.getType(), is(equalTo("W")));
     }
 
     @Test
@@ -100,14 +100,14 @@ public class CMODataClientTest extends RecordableTest {
     @Test
     public void createTransportTest() throws UnexpectedHttpResponseException, IOException, URISyntaxException, ODataException {
         
-        Map<String, Object> transport = Transport.getTransportCreationRequestMap("ODATA", "my transport", "A5T", "", Type.W);
+        Map<String, Object> transport = Transport.getTransportCreationRequestMap("ODATA", "my transport", "A5T", "", "W");
         Transport created = examinee.createTransport(transport);
         assertThat(created.getTransportID().trim(), is(not("")));
         assertThat(created.getOwner(), is(equalTo("ODATA")));
         assertThat(created.getTargetSystem(), is(equalTo("A5T")));
         assertThat(created.getDescription(), is(equalTo("my transport")));
         assertThat(created.getStatus(), is(equalTo("D")));
-        assertThat(created.getType(), is(equalTo(Type.W)));
+        assertThat(created.getType(), is(equalTo("W")));
         assertThat(created.getCloud(), is(equalTo("X")));
     }
 
@@ -124,12 +124,14 @@ public class CMODataClientTest extends RecordableTest {
         examinee.deleteTransport("A5DK900044");
     }
 
+    @Ignore("No test captured yet")
     @Test
     public void releaseTransportTest() throws UnexpectedHttpResponseException, IOException, EntityProviderException, EdmException {
         Transport transport = examinee.releaseTransport("A5DK900082");
         System.out.println(transport);
     }
 
+    @Ignore("No test captured yet")
     @Test
     public void importTransportTest() throws UnexpectedHttpResponseException, IOException {
         examinee.importTransport("A5D", "A5DK900057");

@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.dto.Transport;
-import com.sap.cmclient.dto.Transport.Type;
 import com.sap.cmclient.http.CMODataAbapClient;
 
 /**
@@ -80,7 +79,7 @@ class CreateTransportABAP extends Command {
             throw new CMCommandLineException("No description provided. Cannot create transports without description.");
         }
 
-        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", Type.W));
+        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", "W"));
 
         logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
             transport.getTransportID(), transport.isModifiable(), transport.getOwner(), transport.getDescription()));

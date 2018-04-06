@@ -19,34 +19,7 @@ public class Transport implements com.sap.cmclient.Transport {
   private static final String CLOUD = "Cloud";
   private static final String STATUS = "Status";
   private static final String TYPE = "Type";
-  
-  
 
-    public enum Type {
-        W ("???"), // TODO clarify semantic
-        K ("???"),
-        UNKNOWN("unknown"); // in order to simplify null handling.
-
-        String description;
-
-        Type(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public static Type get(String name) {
-            for(Type value : values()) {
-                if(value.name().equals(name))
-                    return value;
-            }
-            return Type.UNKNOWN;
-        }
-     }
-
-    
     private final Map<String, Object> values;
     
     public Transport(ODataEntry entry)
@@ -59,7 +32,7 @@ public class Transport implements com.sap.cmclient.Transport {
                            String description, 
                            String targetSystem,
                            String requestRef,
-                           Type type )
+                           String type )
     {
       Map<String, Object> m = new HashMap<String, Object>();
       GregorianCalendar cal = new GregorianCalendar();
@@ -68,7 +41,7 @@ public class Transport implements com.sap.cmclient.Transport {
       m.put(DESCRIPTION, description);
       m.put(TARGETSYSTEM, targetSystem);
       m.put(REQUESTREF, requestRef);
-      m.put(TYPE, type.toString());
+      m.put(TYPE, type);
       m.put(ID, "");
       m.put(STATUS, "");
       m.put(DATE, cal);
@@ -110,8 +83,8 @@ public class Transport implements com.sap.cmclient.Transport {
         values.put(STATUS, status);
     }
     
-    public Type getType() {
-        return Type.get((String) values.get(TYPE));
+    public String getType() {
+        return (String) values.get(TYPE);
     }
      
     public GregorianCalendar getDate()
