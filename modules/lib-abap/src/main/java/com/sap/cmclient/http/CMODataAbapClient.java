@@ -84,21 +84,21 @@ public class CMODataAbapClient {
       try (CloseableHttpClient client = clientFactory.createClient()) {
           HttpUriRequest get = requestBuilder.getTransport(transportId);
           try(CloseableHttpResponse response = client.execute(get)) {
-              Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
               checkStatusCode(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.
-              if (Arrays.asList(SC_OK).contains(response.getStatusLine().getStatusCode())) {
-                  try(InputStream content = response.getEntity().getContent()) {
-                  return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
-                                                 getEntityDataModel().getDefaultEntityContainer()
-                                                     .getEntitySet(TransportRequestBuilder.getEntityKey()),
-                                                 content,
-                                                 EntityProviderReadProperties.init().build()));
-                  }
-              }
+              return getTransport(response);
           }
+      }
+  }
 
-          return null;
-    }
+  private Transport getTransport(CloseableHttpResponse response) throws UnsupportedOperationException, IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
+      Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
+          try(InputStream content = response.getEntity().getContent()) {
+          return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
+                                         getEntityDataModel().getDefaultEntityContainer()
+                                             .getEntitySet(TransportRequestBuilder.getEntityKey()),
+                                         content,
+                                         EntityProviderReadProperties.init().build()));
+          }
   }
 
   public void updateTransport(Transport transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
@@ -205,13 +205,14 @@ public class CMODataAbapClient {
         }
     }
 
-    public void releaseTransport(String transportId) throws IOException, UnexpectedHttpResponseException {
+    public Transport releaseTransport(String transportId) throws IOException, UnexpectedHttpResponseException, EntityProviderException, EdmException {
         try(CloseableHttpClient client = clientFactory.createClient()) {
             HttpGet request = requestBuilder.exportTransport(transportId);
             request.addHeader("accept", "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
                 checkStatusCode(response, HttpStatus.SC_OK);
+                return getTransport(response);
             }
         }
     }
