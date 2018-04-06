@@ -102,6 +102,8 @@ public class CMODataClientTest extends RecordableTest {
         
         Map<String, Object> transport = Transport.getTransportCreationRequestMap("ODATA", "my transport", "A5T", "", "W");
         Transport created = examinee.createTransport(transport);
+        assertThat(created, is(not(nullValue())));
+        assertThat(created.getTransportID(), is(not(nullValue())));
         assertThat(created.getTransportID().trim(), is(not("")));
         assertThat(created.getOwner(), is(equalTo("ODATA")));
         assertThat(created.getTargetSystem(), is(equalTo("A5T")));

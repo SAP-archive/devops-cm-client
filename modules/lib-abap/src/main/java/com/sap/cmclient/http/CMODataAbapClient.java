@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.primitives.Ints.asList;
 import static java.lang.String.format;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
@@ -84,16 +85,19 @@ public class CMODataAbapClient {
           HttpUriRequest get = requestBuilder.getTransport(transportId);
           try(CloseableHttpResponse response = client.execute(get)) {
               checkStatusCodeAndFail(response, SC_OK, SC_NOT_FOUND, 500); // 500 is currently returned in case the transport cannot be found.a
+              if(! checkStatusCode(response, SC_OK))
+                  return null;
+
               return getTransport(response);
           }
       }
   }
 
+  /*
+   * Response content must represent a transport. In order to ensure this a check for SC_OK or SC_CREATED should be
+   * performed prior to calling this method.
+   */
   private Transport getTransport(CloseableHttpResponse response) throws UnsupportedOperationException, IOException, EntityProviderException, EdmException, UnexpectedHttpResponseException {
-
-      if(! checkStatusCode(response, HttpStatus.SC_OK)) {
-          return null;
-      }
 
       Header[] contentType = response.getHeaders(HttpHeaders.CONTENT_TYPE);
       try(InputStream content = response.getEntity().getContent()) {
@@ -144,6 +148,7 @@ public class CMODataAbapClient {
         post.setEntity(EntityBuilder.create().setStream(marshaller.getEntityAsStream()).build());
 
         try(CloseableHttpResponse httpResponse = client.execute(post)) {
+          checkStatusCodeAndFail(httpResponse, SC_CREATED);
           return getTransport(httpResponse);
         }
       } finally {
