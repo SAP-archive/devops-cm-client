@@ -21,7 +21,7 @@ public class Transport implements com.sap.cmclient.Transport {
   private static final String TYPE = "Type";
 
     private final Map<String, Object> values;
-    
+
     public Transport(ODataEntry entry)
     {
       if(entry.getProperties().get(ID) == null) throw new IllegalArgumentException("Key Id must not be null.");
@@ -48,17 +48,17 @@ public class Transport implements com.sap.cmclient.Transport {
       m.put(TIME, time);
       m.put(CLOUD, "X");
       return m;
-      
+
     }
-    
+
     public String getTransportID() {
         return (String) values.get(ID);
     }
-     
+
     public String getOwner() {
         return (String) values.get(OWNER);
     }
-    
+
     public void setOwner(String owner) {
         values.put(OWNER, owner);
     }
@@ -66,7 +66,7 @@ public class Transport implements com.sap.cmclient.Transport {
     public String getDescription() {
         return (String) values.get(DESCRIPTION);
     }
-    
+
     public void setDescription(String description) {
         values.put(DESCRIPTION, description);   
     }
@@ -78,15 +78,15 @@ public class Transport implements com.sap.cmclient.Transport {
     public String getStatus() {
         return  (String)values.get(STATUS);
     }
-    
+
     public void setStatus(String status) {
         values.put(STATUS, status);
     }
-    
+
     public String getType() {
         return (String) values.get(TYPE);
     }
-     
+
     public GregorianCalendar getDate()
     {
       return (GregorianCalendar) values.get(DATE);
@@ -106,17 +106,17 @@ public class Transport implements com.sap.cmclient.Transport {
     {
       return (String) values.get(CLOUD);
     }
-    
+
     public Map<String, Object> getValueMap(){
       return new HashMap<String, Object>(values);
     }
-    
+
     @Override
     public String toString() {
         return "Transport [id=" + getTransportID() + ", owner=" + getOwner() + ", description=" + getDescription() + ", targetSystem="
                 + getTargetSystem() + ", date= " + getDate() +", time= " + getTime() + ", requestRef= "+ getRequestRef() + ", cloud= " + getCloud() +", status=" + getStatus() + ", type=" + getType() + "]";
     }
-    
+
     @Override
     public int hashCode() {
       return values.get(ID).hashCode();
