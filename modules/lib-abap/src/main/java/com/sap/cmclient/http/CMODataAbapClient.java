@@ -214,7 +214,7 @@ public class CMODataAbapClient {
     public Transport releaseTransport(String transportId) throws IOException, UnexpectedHttpResponseException, EntityProviderException, EdmException {
         try(CloseableHttpClient client = clientFactory.createClient()) {
             HttpGet request = requestBuilder.exportTransport(transportId);
-            request.addHeader("accept", "application/xml");
+            request.addHeader(HttpHeaders.ACCEPT, "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try (CloseableHttpResponse response = client.execute(request)) {
                 checkStatusCodeAndFail(response, HttpStatus.SC_OK);
@@ -226,7 +226,7 @@ public class CMODataAbapClient {
     public void importTransport(String systemId, String transportId) throws IOException, UnexpectedHttpResponseException {
         try(CloseableHttpClient client = clientFactory.createClient()) {
             HttpGet request = requestBuilder.importTransport(systemId, transportId);
-            request.addHeader("accept", "application/xml");
+            request.addHeader(HttpHeaders.ACCEPT, "application/xml");
             request.addHeader("x-csrf-token", getCSRFToken());
             try(CloseableHttpResponse response = client.execute(request)) {
                 checkStatusCodeAndFail(response, HttpStatus.SC_OK);
@@ -253,7 +253,7 @@ public class CMODataAbapClient {
         if(this.csrfToken == null) {
             HttpGet httpGet = new HttpGet(this.endpoint);
             httpGet.addHeader("X-CSRF-Token", "Fetch");
-            httpGet.addHeader("Accept", "application/xml");
+            httpGet.addHeader(HttpHeaders.ACCEPT, "application/xml");
             try(CloseableHttpClient client = clientFactory.createClient()) {
                 try(CloseableHttpResponse response = client.execute(httpGet)) {
                     Header[] csrfHeaders = response.getHeaders("x-csrf-token");
