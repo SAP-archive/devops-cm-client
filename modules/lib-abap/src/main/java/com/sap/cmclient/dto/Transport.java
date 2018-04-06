@@ -21,29 +21,6 @@ public class Transport implements com.sap.cmclient.Transport {
   private static final String TYPE = "Type";
   
   
-  public enum Status {
-                          D ("development"),
-                          R ("release"),
-                          UNKNOWN("unknown"); // in order to simplify null handling.
-
-                          String description;
-
-                          Status(String description) {
-                              this.description = description;
-                          }
-
-                          public String getDescription() {
-                              return description;
-                          }
-
-                          public static Status get(String name) {
-                              for(Status value : values()) {
-                                  if(value.name().equals(name))
-                                      return value;
-                              }
-                              return Status.UNKNOWN;
-                          }
-                       }
 
     public enum Type {
         W ("???"), // TODO clarify semantic
@@ -125,12 +102,12 @@ public class Transport implements com.sap.cmclient.Transport {
         return (String) values.get(TARGETSYSTEM);
     }
 
-    public Status getStatus() {
-        return Status.get((String) values.get(STATUS));
+    public String getStatus() {
+        return  (String)values.get(STATUS);
     }
     
-    public void setStatus(Status status) {
-        values.put(STATUS, status.toString());
+    public void setStatus(String status) {
+        values.put(STATUS, status);
     }
     
     public Type getType() {
