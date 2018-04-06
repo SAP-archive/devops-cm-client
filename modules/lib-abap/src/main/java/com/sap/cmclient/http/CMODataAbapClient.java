@@ -234,7 +234,7 @@ public class CMODataAbapClient {
         }
     }
 
-    private Edm getEntityDataModel() throws IOException, EntityProviderException, UnexpectedHttpResponseException {
+    private synchronized Edm getEntityDataModel() throws IOException, EntityProviderException, UnexpectedHttpResponseException {
 
         if(dataModel == null) {
             try (CloseableHttpClient edmClient = clientFactory.createClient()) {
@@ -248,7 +248,7 @@ public class CMODataAbapClient {
         return dataModel;
     }
 
-    private String getCSRFToken() throws ClientProtocolException, IOException {
+    private synchronized String getCSRFToken() throws ClientProtocolException, IOException {
 
         if(this.csrfToken == null) {
             HttpGet httpGet = new HttpGet(this.endpoint);
