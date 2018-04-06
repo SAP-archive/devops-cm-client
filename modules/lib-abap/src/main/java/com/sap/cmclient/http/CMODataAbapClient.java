@@ -140,27 +140,18 @@ public class CMODataAbapClient {
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
       URI rootUri = new URI(endpoint.toASCIIString() + "/");
       EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
-      ODataResponse response = null;
+      ODataResponse marshaller = null;
 
       try {
-        response = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, transport, properties);
-        post.setEntity(EntityBuilder.create().setStream(response.getEntityAsStream()).build());
+        marshaller = EntityProvider.writeEntry(post.getHeaders(HttpHeaders.CONTENT_TYPE)[0].getValue(), entitySet, transport, properties);
+        post.setEntity(EntityBuilder.create().setStream(marshaller.getEntityAsStream()).build());
 
         try(CloseableHttpResponse httpResponse = client.execute(post)) {
-          Header[] contentType = httpResponse.getHeaders(HttpHeaders.CONTENT_TYPE);
-          checkStatusCodeAndFail(httpResponse, SC_CREATED);
-          if (Arrays.asList(SC_CREATED).contains(httpResponse.getStatusLine().getStatusCode())) {
-            return new Transport(EntityProvider.readEntry(contentType[0].getValue(),
-                       edm.getDefaultEntityContainer()
-                      .getEntitySet(TransportRequestBuilder.getEntityKey()),
-                        httpResponse.getEntity().getContent(), EntityProviderReadProperties.init().build()));
-          }
+          return getTransport(httpResponse);
         }
       } finally {
-          if(response != null) response.close();
+          if(marshaller != null) marshaller.close();
       }
-
-      return null;
     }
   }
 
