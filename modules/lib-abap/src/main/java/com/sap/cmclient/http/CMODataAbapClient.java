@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.primitives.Ints.asList;
 import static java.lang.String.format;
-import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
 
@@ -16,7 +15,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.http.Header;
@@ -132,11 +130,10 @@ public class CMODataAbapClient {
   }
   public Transport createTransport(Map<String, Object> transport) throws IOException, URISyntaxException, ODataException, UnexpectedHttpResponseException
   {
-    Edm edm = getEntityDataModel();
     try (CloseableHttpClient client = clientFactory.createClient()) {
       HttpPost post = requestBuilder.createTransport();
       post.setHeader("x-csrf-token", getCSRFToken());
-      EdmEntityContainer entityContainer = edm.getDefaultEntityContainer();
+      EdmEntityContainer entityContainer = getEntityDataModel().getDefaultEntityContainer();
       EdmEntitySet entitySet = entityContainer.getEntitySet(TransportRequestBuilder.getEntityKey());
       URI rootUri = new URI(endpoint.toASCIIString() + "/");
       EntityProviderWriteProperties properties = EntityProviderWriteProperties.serviceRoot(rootUri).build();
