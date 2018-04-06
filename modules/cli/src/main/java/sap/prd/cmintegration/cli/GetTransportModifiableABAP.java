@@ -6,8 +6,6 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import java.util.function.Function;
 
 import org.apache.commons.cli.Options;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
@@ -16,8 +14,6 @@ import com.sap.cmclient.Transport;
  */
 @CommandDescriptor(name="is-transport-modifiable", type = BackendType.ABAP)
 class GetTransportModifiableABAP extends TransportRelatedABAP {
-
-    final static private Logger logger = LoggerFactory.getLogger(GetTransportModifiableABAP.class);
 
     GetTransportModifiableABAP(String host, String user, String password, String transportId) {
         super(host, user, password, transportId);
@@ -28,8 +24,6 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(format("%s called with arguments: '%s'.", GetTransportModifiableABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-
         TransportRelatedSOLMAN.main(GetTransportModifiableABAP.class, new Options(), args,
             format("%s [-cID <changeId>,] -tID <transportId>", getCommandName(GetTransportModifiableABAP.class)),
             "ChangeId must not be provided for ABAP backends. .Returns 'true' if the transport is modifiable. Otherwise 'false'.");

@@ -39,7 +39,6 @@ class CreateTransportSOLMAN extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        logger.debug(format("%s called with arguments: '%s'.", CreateTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Command.addOpts(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);

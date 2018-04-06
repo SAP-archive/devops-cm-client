@@ -4,11 +4,8 @@ import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.commons.cli.Options;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
@@ -17,8 +14,6 @@ import com.sap.cmclient.Transport;
  */
 @CommandDescriptor(name="get-transport-description", type = BackendType.ABAP)
 class GetTransportDescriptionABAP extends TransportRelatedABAP {
-
-    final static private Logger logger = LoggerFactory.getLogger(GetTransportDescriptionABAP.class);
 
     GetTransportDescriptionABAP(String host, String user, String password, String transportId) {
         super(host, user, password, transportId);
@@ -30,8 +25,6 @@ class GetTransportDescriptionABAP extends TransportRelatedABAP {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(format("%s called with arguments: '%s'.", GetTransportDescriptionABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-
         TransportRelatedABAP.main(GetTransportDescriptionABAP.class, new Options(), args,
                 format("%s [-cID <changeId>]  -tID <transportId>", getCommandName(GetTransportDescriptionABAP.class)),
                 "Returns the description for the transport represented by <changeId>, <transportId>. ChangeId must not be provided for ABAP backends.");

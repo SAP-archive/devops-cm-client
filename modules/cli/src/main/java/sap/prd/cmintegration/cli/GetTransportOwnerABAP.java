@@ -6,8 +6,6 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import java.util.function.Function;
 
 import org.apache.commons.cli.Options;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
@@ -16,8 +14,6 @@ import com.sap.cmclient.Transport;
  */
 @CommandDescriptor(name="get-transport-owner", type = BackendType.ABAP)
 class GetTransportOwnerABAP extends TransportRelatedABAP {
-
-    final static private Logger logger = LoggerFactory.getLogger(GetTransportOwnerABAP.class);
 
     GetTransportOwnerABAP(String host, String user, String password, String transportId) {
         super(host, user, password, transportId);
@@ -29,8 +25,6 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(format("%s called with arguments: '%s'.", GetTransportOwnerABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-
         TransportRelatedABAP.main(GetTransportOwnerABAP.class, new Options(), args,
                 format("%s -%s <%s>", getCommandName(GetTransportOwnerABAP.class),
                 Opts.TRANSPORT_ID.getOpt(), Opts.TRANSPORT_ID.getArgName()),

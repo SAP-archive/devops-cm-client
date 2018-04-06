@@ -12,8 +12,6 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.prd.cmintegration.cli.TransportRelated.Opts;
@@ -24,7 +22,6 @@ import sap.prd.cmintegration.cli.TransportRelated.Opts;
 @CommandDescriptor(name="release-transport", type = BackendType.SOLMAN)
 class ReleaseTransport extends Command {
 
-    final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);
     private final String changeId, transportId;
 
     ReleaseTransport(String host, String user, String password,
@@ -36,7 +33,6 @@ class ReleaseTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(format("%s called with arguments: '%s'.", ReleaseTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Command.addOpts(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
@@ -63,7 +59,6 @@ class ReleaseTransport extends Command {
         try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host,  user,  password)) {
             client.releaseDevelopmentTransport(changeId, transportId);
         } catch(Exception e) {
-            logger.error(format("Exception caught while releasing transport '%s' for change document '%s': '%s'.", transportId, changeId, e.getMessage()), e);
             throw e;
         }
     }
