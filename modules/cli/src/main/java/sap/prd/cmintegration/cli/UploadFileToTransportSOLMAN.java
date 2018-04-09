@@ -60,9 +60,9 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
         options.addOption(Commands.CMOptions.CHANGE_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransportSOLMAN.class)),
-                    "Uploads the file specified by <filePath> to transport <transportId> [for change <changeId>]. ChangeId must not be provided for ABAP backends. "
-                    + "<applicationId> specifies how the file needs to be handled on server side. In case of an ABAP backend the URL of the uploaded file is echoed to stdout.", new Options()); return;
+            handleHelpOption(format("%s [SPECIFIC OPTIONS] <applicationId> <filePath>", getCommandName(UploadFileToTransportSOLMAN.class)),
+                    "Uploads the file specified by <filePath> into the given transport. "
+                    + "<applicationId> specifies how the file needs to be handled on server side.", new Options()); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
