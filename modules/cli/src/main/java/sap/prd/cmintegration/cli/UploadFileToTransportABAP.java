@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -32,15 +34,20 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
 
     UploadFileToTransportABAP(String host, String user, String password,
             String transportId, String filePath) {
+
         super(host, user, password, transportId);
+
+        checkArgument(! isBlank(filePath), "Upload file not provided.");
         this.upload = new File(filePath);
+
+        checkArgument(this.upload.canRead(), format("Cannot read upload file '%s'.", this.upload));
     }
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
-        options.addOption(Opts.TRANSPORT_ID);
+        TransportRelated.Opts.addOpts(options);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransportABAP.class)),
@@ -58,22 +65,8 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
                 getFilePath(commandLine)).execute();
     }
 
-    static String getApplicationId(BackendType type, CommandLine commandLine) {
-        return (type == BackendType.ABAP) ? null : getArg(commandLine, 1, "applicationId");
-    }
-
     static String getFilePath(CommandLine commandLine) {
         return getArg(commandLine, 1, "filePath");
-    }
-
-    @Override
-    void execute() throws Exception {
-
-        if(!this.upload.canRead()) {
-            throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
-        }
-
-        super.execute();
     }
 
     @Override
