@@ -28,16 +28,19 @@ class CreateTransportABAP extends Command {
     private static class Opts {
         static Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
                       description = new Option("d", "description", true, "The description of the transport request."),
-                      targetSystem = new Option("ts", "target-system", true, "The target of the transport");
+                      targetSystem = new Option("ts", "target-system", true, "The target of the transport"),
+                      transportType = new Option("tt", "transport-type", true, "The type of the transport, e.g. workbench, customizing.");
     }
-    final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
-    private final String owner, description, targetSystem;
 
-    public CreateTransportABAP(String host, String user, String password, String owner, String description, String targetSystem) {
+    final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
+    private final String owner, description, targetSystem, transportType;
+
+    public CreateTransportABAP(String host, String user, String password, String owner, String description, String targetSystem, String transportType) {
         super(host, user, password);
         this.owner = owner;
         this.description = description;
         this.targetSystem = targetSystem;
+        this.transportType = transportType;
     }
 
     public final static void main(String[] args) throws Exception {
@@ -47,7 +50,8 @@ class CreateTransportABAP extends Command {
 
         options.addOption(Opts.owner)
                .addOption(Opts.description)
-               .addOption(Opts.targetSystem);
+               .addOption(Opts.targetSystem)
+               .addOption(Opts.transportType);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [--owner <owner>][--description <description>]", getCommandName(CreateTransportABAP.class)),
@@ -65,7 +69,8 @@ class CreateTransportABAP extends Command {
                 getPassword(commandLine),
                 commandLine.getOptionValue(Opts.owner.getOpt()),
                 commandLine.getOptionValue(Opts.description.getOpt()),
-                commandLine.getOptionValue(Opts.targetSystem.getOpt())).execute();
+                commandLine.getOptionValue(Opts.targetSystem.getOpt()),
+                commandLine.getOptionValue(Opts.transportType.getOpt())).execute();
     }
 
     @Override
@@ -85,7 +90,11 @@ class CreateTransportABAP extends Command {
             throw new CMCommandLineException("No target system provided. Cannot create transport without target system.");
         }
 
-        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", "W"));
+        if(isBlank(transportType)) {
+            throw new CMCommandLineException("No transport type provided. Cannot create transport without transport type");
+        }
+
+        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", transportType));
 
         logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
             transport.getTransportID(), transport.isModifiable(), transport.getOwner(), transport.getDescription()));
