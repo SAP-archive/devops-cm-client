@@ -33,11 +33,11 @@ class CreateTransportABAP extends Command {
     private static class Opts {
         private static Set<Option> options = new HashSet<>();
 
-        static Option owner = register(newOption("o", "owner", "The transport owner. If ommited the login user us used.", "owner", true)),
+        static Option owner = register(newOption("o", "owner", "The transport owner. If ommited the login user us used.", "owner", false)),
                       description = register(newOption("d", "description", "The description of the transport request.", "desc", true)),
                       targetSystem = register(newOption("ts", "target-system", "The target of the transport", "target", true)),
                       transportType = register(newOption("tt", "transport-type", "The type of the transport, e.g. workbench, customizing.", "type", true)),
-                      requestRef = register(newOption("rr", "request-ref", "The request reference.", "ref", true));
+                      requestRef = register(newOption("rr", "request-ref", "The request reference.", "ref", false));
 
         private static Option register(Option o) {
             options.add(o);
