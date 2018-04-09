@@ -10,6 +10,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.io.File;
+import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -17,24 +18,21 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.cmclient.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
-
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 /**
  * Command for uploading a file into a transport.
  */
 @CommandDescriptor(name="upload-file-to-transport", type = BackendType.ABAP)
-class UploadFileToTransportABAP extends Command {
+class UploadFileToTransportABAP extends TransportRelatedABAP {
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
-    private final String transportId;
     private final File upload;
 
     UploadFileToTransportABAP(String host, String user, String password,
             String transportId, String filePath) {
-        super(host, user, password);
-        this.transportId = transportId;
+        super(host, user, password, transportId);
         this.upload = new File(filePath);
     }
 
@@ -75,22 +73,33 @@ class UploadFileToTransportABAP extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
-        try {
+        super.execute();
+    }
 
-            logger.debug(format("Uploading file '%s' to transport '%s'.",
-                    upload.getAbsolutePath(), transportId));
+    @Override
+    protected Function<Transport, String> getAction() {
 
-            String location = new CMODataAbapClient(host, user, password).upload(transportId, upload);
-            location += "/$value";
+        return new Function<Transport, String>() {
 
-            System.out.println(location);
+            @Override
+            public String apply(Transport t) {
+                try {
+                    logger.debug(format("Uploading file '%s' to transport '%s'.",
+                            upload.getAbsolutePath(), transportId));
 
-            logger.debug(format("File '%s' uploaded to transport '%s'. The file can be accessed via '%s'.",
-                        upload.getAbsolutePath(), transportId, location));
-        } catch(Exception e) {
-            logger.error(format("Exception caught while uploading file '%s' to transport '%s'",
-                    upload.getAbsolutePath(), transportId));
-            throw new ExitException(e, 1);
-        }
+                    String location = new CMODataAbapClient(host, user, password).upload(transportId, upload);
+                    location += "/$value";
+
+                    logger.debug(format("File '%s' uploaded to transport '%s'. The file can be accessed via '%s'.",
+                                upload.getAbsolutePath(), transportId, location));
+
+                    return location;
+                } catch(Exception e) {
+                    logger.error(format("Exception caught while uploading file '%s' to transport '%s'",
+                            upload.getAbsolutePath(), transportId));
+                    throw new ExitException(e, 1);
+                }
+            }
+        };
     }
 }
