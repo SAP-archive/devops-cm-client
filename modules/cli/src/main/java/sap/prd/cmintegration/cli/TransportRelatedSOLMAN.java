@@ -3,10 +3,10 @@ package sap.prd.cmintegration.cli;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
@@ -16,9 +16,7 @@ import java.util.Optional;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.base.Preconditions;
 import com.sap.cmclient.Transport;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
@@ -26,6 +24,13 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 abstract class TransportRelatedSOLMAN extends TransportRelated {
 
     protected final String changeId;
+
+    static class Opts {
+        static Options addOptions(Options opts) {
+            opts.addOption(Commands.CMOptions.CHANGE_ID);
+            return opts;
+        }
+    }
 
     protected TransportRelatedSOLMAN(String host, String user, String password,
             String changeId, String transportId) {
@@ -40,12 +45,14 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        addOpts(options);
+        Command.addOpts(options);
         TransportRelated.Opts.addOpts(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
+        TransportRelatedSOLMAN.Opts.addOptions(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, new Options()); return;
+            handleHelpOption(usage, helpText, TransportRelatedSOLMAN.Opts.addOptions(
+                                              TransportRelated.Opts.addOpts(new Options())));
+            return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
