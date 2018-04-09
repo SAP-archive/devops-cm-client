@@ -34,9 +34,22 @@ class CreateTransportABAP extends Command {
     }
 
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
-    private final String owner, description, targetSystem, transportType, requestRef;
 
-    public CreateTransportABAP(String host, String user, String password, String owner, String description, String targetSystem, String transportType, String requestRef) {
+    private final String owner,
+                         description,
+                         targetSystem,
+                         transportType,
+                         requestRef;
+
+    public CreateTransportABAP(String host,
+                               String user,
+                               String password,
+                               String owner,
+                               String description,
+                               String targetSystem,
+                               String transportType,
+                               String requestRef) {
+
         super(host, user, password);
         this.owner = owner;
         this.description = description;
