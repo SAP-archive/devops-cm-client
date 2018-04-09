@@ -78,6 +78,10 @@ class CreateTransportABAP extends Command {
             throw new CMCommandLineException("No description provided. Cannot create transports without description.");
         }
 
+        if(isBlank(targetSystem)) {
+            throw new CMCommandLineException("No target system provided. Cannot create transport without target system.");
+        }
+
         Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, "", "W"));
 
         logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
