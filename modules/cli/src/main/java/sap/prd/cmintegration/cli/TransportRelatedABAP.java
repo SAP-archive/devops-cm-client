@@ -32,12 +32,12 @@ abstract class TransportRelatedABAP extends TransportRelated {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Command.addOpts(options);
-        options.addOption(Opts.TRANSPORT_ID);
-
         if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, new Options().addOption(Opts.TRANSPORT_ID)); return;
+            handleHelpOption(usage, helpText, TransportRelated.Opts.addOpts(new Options(), false));
+            return;
         }
+
+        TransportRelated.Opts.addOpts(options, true);
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
 

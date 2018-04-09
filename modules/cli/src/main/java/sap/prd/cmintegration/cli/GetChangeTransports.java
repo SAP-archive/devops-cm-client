@@ -31,14 +31,25 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 @CommandDescriptor(name="get-transports", type = BackendType.SOLMAN)
 class GetChangeTransports extends Command {
 
-    private final static Option modifiableOnlyOption = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");
+    private static class Opts {
+
+        final static Option modifiableOnlyOption = new Option("m", "modifiable-only", false, "Returns modifiable transports only.");
+
+        static Options addOptions(Options options, boolean includeStandardOptions) {
+            if(includeStandardOptions) {
+                Command.addOpts(options);
+            }
+            options.addOption(Commands.CMOptions.CHANGE_ID);
+            options.addOption(modifiableOnlyOption);
+            return options;
+        }
+    }
 
     final static private Logger logger = LoggerFactory.getLogger(GetChangeTransports.class);
     private final String changeId;
 
     private final boolean modifiableOnly;
 
-    
     GetChangeTransports(String host, String user, String password, String changeId,
             boolean modifiableOnly) {
         super(host, user, password);
@@ -48,35 +59,30 @@ class GetChangeTransports extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
-        Command.addOpts(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
-
-        options.addOption(modifiableOnlyOption);
-
         if(helpRequested(args)) {
             handleHelpOption(format("%s [SUBCOMMAND_OPTIONS] -cID <changeId>", getCommandName(GetChangeTransports.class)),
                     "Returns the ids of the transports for the change represented by <changeId>.",
-                      new Options().addOption(modifiableOnlyOption)); return;
+                    Opts.addOptions(new Options(), false));
+            return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
         new GetChangeTransports(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                commandLine.hasOption(modifiableOnlyOption.getOpt())).execute();
+                commandLine.hasOption(Opts.modifiableOnlyOption.getOpt())).execute();
     }
 
     @Override
     public void execute() throws Exception {
 
         if(modifiableOnly) {
-            logger.debug(format("Flag '-%s' has been set. Only modifiable transports will be returned.", modifiableOnlyOption.getOpt()));
+            logger.debug(format("Flag '-%s' has been set. Only modifiable transports will be returned.", Opts.modifiableOnlyOption.getOpt()));
         } else {
-            logger.debug(format("Flag '-%s' has not beem set. All transports will be returned.", modifiableOnlyOption.getOpt()));
+            logger.debug(format("Flag '-%s' has not beem set. All transports will be returned.", Opts.modifiableOnlyOption.getOpt()));
         }
 
         Predicate<Transport> log =

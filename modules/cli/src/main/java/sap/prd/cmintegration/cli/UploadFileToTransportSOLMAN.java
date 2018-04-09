@@ -55,8 +55,6 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
 
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Options options = TransportRelated.Opts.addOpts(new Options(), true).addOption(Commands.CMOptions.CHANGE_ID);
-
         if(helpRequested(args)) {
             handleHelpOption(format("%s [SPECIFIC OPTIONS] <applicationId> <filePath>", getCommandName(UploadFileToTransportSOLMAN.class)),
                     "Uploads the file specified by <filePath> into the given transport. "
@@ -65,7 +63,8 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
             return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(
+                TransportRelated.Opts.addOpts(new Options(), true).addOption(Commands.CMOptions.CHANGE_ID), args);
 
         new UploadFileToTransportSOLMAN(
                 getHost(commandLine),

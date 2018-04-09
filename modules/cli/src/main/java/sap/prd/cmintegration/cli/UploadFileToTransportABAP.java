@@ -46,8 +46,6 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Options options = new Options();
-        TransportRelated.Opts.addOpts(options, true);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [SPECIFIC OPTIONS] <filePath>", getCommandName(UploadFileToTransportABAP.class)),
@@ -56,7 +54,7 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
             return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(TransportRelated.Opts.addOpts(new Options(), true), args);
 
         new UploadFileToTransportABAP(
                 getHost(commandLine),
