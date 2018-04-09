@@ -14,9 +14,14 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.easymock.EasyMock;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.sap.cmclient.Transport;
@@ -82,7 +87,27 @@ public class GetChangeTransportsTest extends CMTestBase {
     public void testHelp() throws Exception {
         GetChangeTransports.main(new String[] {"--help"});
         String helpText = IOUtils.toString(result.toByteArray(), "UTF-8");
-        assertThat(helpText, containsString("-m,--modifiable-only   Returns modifiable transports only."));
+
+        assertThat(helpText, new BaseMatcher<String>() {
+
+            String expected = ".*-m,--modifiable-only[\\s]*Returns modifiable transports only.*";
+            String actual;
+
+            @Override
+            public boolean matches(Object item) {
+                if(! (item instanceof String)) {
+                    return false;
+                }
+
+                actual = (String) item;
+                return Pattern.compile(expected, Pattern.MULTILINE).matcher(actual).find();
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(String.format("Expected regex '%s' not found in '%s'.", expected, actual));
+            }
+        });
     }
 
     private SolmanClientFactory setupMock() throws Exception {
