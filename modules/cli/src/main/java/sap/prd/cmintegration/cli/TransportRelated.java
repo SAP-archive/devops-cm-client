@@ -27,7 +27,7 @@ public abstract class TransportRelated extends Command {
         options.addOption(TransportRelated.Opts.TRANSPORT_ID);
     }
 
-    protected final static Function<Transport, String> description = new Function<Transport, String>() {
+    protected final static Function<Transport, String> getDescription = new Function<Transport, String>() {
 
         @Override
         public String apply(Transport t) {

@@ -21,7 +21,7 @@ class GetTransportDescriptionABAP extends TransportRelatedABAP {
 
     @Override
     protected Function<Transport, String> getAction() {
-        return description;
+        return getDescription;
     }
 
     public final static void main(String[] args) throws Exception {
