@@ -31,7 +31,7 @@ abstract class Command {
      */
     abstract void execute() throws Exception;
 
-    protected static void addOpts(Options options) throws Exception {
+    protected static void addOpts(Options options) {
         Commands.Helpers.addStandardParameters(options);
     }
 }

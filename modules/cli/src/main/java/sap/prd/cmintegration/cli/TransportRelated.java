@@ -22,7 +22,7 @@ public abstract class TransportRelated extends Command {
         protected final static Option TRANSPORT_ID = CMOptions.newOption("tID", "transport-id", "transportID", "transportId", true);
     }
 
-    protected static void addOpts(Options options) throws Exception {
+    protected static void addOpts(Options options) {
         Command.addOpts(options);
         options.addOption(TransportRelated.Opts.TRANSPORT_ID);
     }
