@@ -25,6 +25,11 @@ import com.sap.cmclient.http.CMODataAbapClient;
 @CommandDescriptor(name = "create-transport", type = BackendType.ABAP)
 class CreateTransportABAP extends Command {
 
+    private static class Opts {
+        static Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
+                      description = new Option("d", "description", true, "The description of the transport request."),
+                      targetSystem = new Option("ts", "target-system", true, "The target of the transport");
+    }
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
     private final String owner, description, targetSystem;
 
@@ -40,18 +45,17 @@ class CreateTransportABAP extends Command {
         Options options = new Options();
         Command.addOpts(options);
 
-        Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
-               description = new Option("d", "description", true, "The description of the transport request."),
-               targetSystem = new Option("ts", "target-system", true, "The target of the transport");
 
-        options.addOption(owner).addOption(description);
+        options.addOption(Opts.owner)
+               .addOption(Opts.description)
+               .addOption(Opts.targetSystem);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [--owner <owner>][--description <description>] -cID <changeId>", getCommandName(CreateTransportABAP.class)),
             "Creates a new transport entity. " +
             "Returns the ID of the transport entity. " +
             "If there is already an open transport, the ID of the already existing open transport might be returned.",
-            new Options().addOption(owner).addOption(description).addOption(targetSystem)); return;
+            new Options().addOption(Opts.owner).addOption(Opts.description).addOption(Opts.targetSystem)); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -60,9 +64,9 @@ class CreateTransportABAP extends Command {
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                commandLine.getOptionValue(owner.getOpt()),
-                commandLine.getOptionValue(description.getOpt()),
-                commandLine.getOptionValue(targetSystem.getOpt())).execute();
+                commandLine.getOptionValue(Opts.owner.getOpt()),
+                commandLine.getOptionValue(Opts.description.getOpt()),
+                commandLine.getOptionValue(Opts.targetSystem.getOpt())).execute();
     }
 
     @Override
