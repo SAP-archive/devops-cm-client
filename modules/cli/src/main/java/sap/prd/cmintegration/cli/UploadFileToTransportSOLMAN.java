@@ -18,8 +18,6 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.cmclient.http.CMODataAbapClient;
-
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
@@ -82,44 +80,19 @@ class UploadFileToTransportSOLMAN extends Command {
             throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
         }
 
-        BackendType type = BackendType.SOLMAN;
-        if(type == BackendType.SOLMAN) {
-            try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
 
-                logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
-                        upload.getAbsolutePath(), transportId, changeId, applicationId));
+            logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
 
-                client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+            client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
 
-                logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
-                        upload.getAbsolutePath(), transportId, changeId, applicationId));
-            } catch(Exception e) {
-                logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
-                        upload.getAbsolutePath(), transportId, changeId, applicationId));
-                throw new ExitException(e, 1);
-            }
-
-        } else if(type == BackendType.ABAP) {
-
-            try {
-
-                logger.debug(format("Uploading file '%s' to transport '%s'.",
-                        upload.getAbsolutePath(), transportId));
-
-                String location = new CMODataAbapClient(host, user, password).upload(transportId, upload);
-                location += "/$value";
-
-                System.out.println(location);
-
-                logger.debug(format("File '%s' uploaded to transport '%s'. The file can be accessed via '%s'.",
-                        upload.getAbsolutePath(), transportId, location));
-            } catch(Exception e) {
-                logger.error(format("Exception caught while uploading file '%s' to transport '%s'",
-                        upload.getAbsolutePath(), transportId));
-                throw new ExitException(e, 1);
-            }
-        } else {
-            throw new IllegalArgumentException(format("Invalid backend type: '%s'.", type));
+            logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
+        } catch(Exception e) {
+            logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
+                    upload.getAbsolutePath(), transportId, changeId, applicationId));
+            throw new ExitException(e, 1);
         }
     }
 }
