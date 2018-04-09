@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -16,9 +17,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.sap.cmclient.Transport;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
@@ -52,7 +55,11 @@ class GetChangeTransports extends Command {
 
     GetChangeTransports(String host, String user, String password, String changeId,
             boolean modifiableOnly) {
+
         super(host, user, password);
+
+        Preconditions.checkArgument(! isBlank(changeId), "No changeId provided.");
+
         this.changeId = changeId;
         this.modifiableOnly = modifiableOnly;
     }
