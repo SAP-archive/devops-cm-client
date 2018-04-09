@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
+import static sap.prd.cmintegration.cli.Commands.CMOptions.newOption;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -14,12 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
-import sap.prd.cmintegration.cli.Commands.CMOptions;
-
 public abstract class TransportRelated extends Command {
 
     protected static class Opts {
-        protected final static Option TRANSPORT_ID = CMOptions.newOption("tID", "transport-id", "transportID", "transportId", true);
+        protected final static Option TRANSPORT_ID = newOption("tID", "transport-id", "transportID", "transportId", true);
     }
 
     protected static void addOpts(Options options) {
