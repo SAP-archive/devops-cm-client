@@ -45,14 +45,16 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
+
         Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
+        Command.addOpts(options);
         TransportRelated.Opts.addOpts(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransportABAP.class)),
-                    "Uploads the file specified by <filePath> to transport <transportId> [for change <changeId>]. ChangeId must not be provided for ABAP backends. "
-                    + "<applicationId> specifies how the file needs to be handled on server side. In case of an ABAP backend the URL of the uploaded file is echoed to stdout.", new Options()); return;
+            handleHelpOption(format("%s [SPECIFIC OPTIONS] <filePath>", getCommandName(UploadFileToTransportABAP.class)),
+                    "Uploads the file specified by <filePath> to the given transport. "
+                    + "The URL of the uploaded file is echoed to stdout.", TransportRelated.Opts.addOpts(new Options()));
+            return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -61,7 +63,7 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                TransportRelatedSOLMAN.getTransportId(commandLine),
+                getTransportId(commandLine),
                 getFilePath(commandLine)).execute();
     }
 

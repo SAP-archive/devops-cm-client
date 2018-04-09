@@ -20,9 +20,9 @@ public abstract class TransportRelated extends Command {
     protected static class Opts {
         protected final static Option TRANSPORT_ID = newOption("tID", "transport-id", "transportID", "transportId", true);
 
-        protected static void addOpts(Options options) {
-            Command.addOpts(options);
+        protected static Options addOpts(Options options) {
             options.addOption(TransportRelated.Opts.TRANSPORT_ID);
+            return options;
         }
     }
 
