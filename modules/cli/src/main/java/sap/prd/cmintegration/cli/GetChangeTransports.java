@@ -9,7 +9,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.cli.CommandLine;
@@ -101,7 +101,7 @@ class GetChangeTransports extends Command {
               return it.isModifiable();};
 
         try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
-            ArrayList<Transport> transports = client.getChangeTransports(changeId);
+            List<Transport> transports = client.getChangeTransports(changeId);
 
             if(transports.isEmpty())  {
                 logger.debug(format("No transports retrieved for change document id '%s' from host '%s'.", changeId, host));

@@ -11,6 +11,7 @@ import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 public class UploadFileToTransportTest extends CMTestBase {
 
@@ -94,15 +96,17 @@ public class UploadFileToTransportTest extends CMTestBase {
     private SolmanClientFactory setupMock() throws Exception {
 
         CMODataSolmanClient clientMock = EasyMock.createMock(CMODataSolmanClient.class);
+
+        expect(clientMock.getChangeTransports(EasyMock.anyString())).andReturn(Arrays.asList(new CMODataTransport("L21K90002J", true, "desc", "me")));
         clientMock.uploadFileToTransport(capture(changeId), capture(transportId),
             capture(filePath), capture(applicationId)); expectLastCall();
-        clientMock.close(); expectLastCall();
+        clientMock.close(); expectLastCall().anyTimes();
 
         SolmanClientFactory factoryMock = EasyMock.createMock(SolmanClientFactory.class);
             expect(factoryMock
                    .newClient(capture(host),
                            capture(user),
-                           capture(password))).andReturn(clientMock);
+                           capture(password))).andReturn(clientMock).anyTimes();
 
         EasyMock.replay(clientMock, factoryMock);
 

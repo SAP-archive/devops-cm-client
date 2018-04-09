@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -118,7 +119,7 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @throws ODataClientErrorException with status code 400 in case no matching 
      *   <code>changeId</code> does exist.
      */
-    public ArrayList<Transport> getChangeTransports(String changeID) {
+    public List<Transport> getChangeTransports(String changeID) {
 
         logger.trace(format("Entering 'getChangeTransports'. changeID: '%s'.", changeID));
 

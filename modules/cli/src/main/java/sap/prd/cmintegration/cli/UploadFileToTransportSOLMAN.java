@@ -13,6 +13,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 
 import java.io.File;
+import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -20,32 +21,30 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sap.cmclient.Transport;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 /**
  * Command for uploading a file into a transport.
  */
 @CommandDescriptor(name="upload-file-to-transport", type = BackendType.SOLMAN)
-class UploadFileToTransportSOLMAN extends Command {
+class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
-    private final String changeId, transportId, applicationId;
+
+    private final String applicationId;
+
     private final File upload;
 
     UploadFileToTransportSOLMAN(String host, String user, String password,
             String changeId, String transportId, String applicationId, String filePath) {
 
-        super(host, user, password);
+        super(host, user, password, changeId, transportId);
 
-        checkArgument(! isBlank(changeId), "changeId was null or empty.");
-        checkArgument(! isBlank(transportId), "transportId was null or empty.");
         checkArgument(! isBlank(applicationId), "applicationId was null or empty.");
-
         checkArgument(! isBlank(filePath), "filePath was null or empty.");
 
-        this.changeId = changeId;
-        this.transportId = transportId;
         this.applicationId = applicationId;
         this.upload = new File(filePath);
 
@@ -53,11 +52,13 @@ class UploadFileToTransportSOLMAN extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
+
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
+
         Options options = new Options();
         Commands.Helpers.addStandardParameters(options);
+        TransportRelated.Opts.addOpts(options);
         options.addOption(Commands.CMOptions.CHANGE_ID);
-        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [-cID <changeId>] -tID <transportId> <applicationId> <filePath>", getCommandName(UploadFileToTransportSOLMAN.class)),
@@ -72,7 +73,7 @@ class UploadFileToTransportSOLMAN extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                TransportRelatedSOLMAN.getTransportId(commandLine),
+                getTransportId(commandLine),
                 getApplicationId(commandLine),
                 getFilePath(commandLine)).execute();
     }
@@ -86,21 +87,29 @@ class UploadFileToTransportSOLMAN extends Command {
     }
 
     @Override
-    void execute() throws Exception {
+    protected Function<Transport, String> getAction() {
 
-        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
+        return new Function<Transport, String>() {
 
-            logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
-                    upload.getAbsolutePath(), transportId, changeId, applicationId));
+            @Override
+            public String apply(Transport t) {
+                try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
 
-            client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+                    logger.debug(format("Uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'.",
+                            upload.getAbsolutePath(), transportId, changeId, applicationId));
 
-            logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
-                    upload.getAbsolutePath(), transportId, changeId, applicationId));
-        } catch(Exception e) {
-            logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
-                    upload.getAbsolutePath(), transportId, changeId, applicationId));
-            throw new ExitException(e, 1);
-        }
+                    client.uploadFileToTransport(changeId, transportId, upload.getAbsolutePath(), applicationId);
+
+                    logger.debug(format("File '%s' uploaded to transport '%s' for change document '%s' with applicationId '%s'.",
+                            upload.getAbsolutePath(), transportId, changeId, applicationId));
+
+                    return null;
+                } catch(Exception e) {
+                    logger.error(format("Exception caught while uploading file '%s' to transport '%s' for change document '%s' with applicationId '%s'",
+                            upload.getAbsolutePath(), transportId, changeId, applicationId));
+                    throw new ExitException(e, 1);
+                }
+            }
+        };
     }
 }

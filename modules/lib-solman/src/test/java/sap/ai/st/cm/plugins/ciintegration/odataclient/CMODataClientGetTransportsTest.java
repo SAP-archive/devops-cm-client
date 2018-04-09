@@ -16,8 +16,8 @@ import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesSta
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -58,7 +58,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
     public void testGetTransportsStraightForward() throws Exception {
 
         setMock(examinee, setupMock());
-        ArrayList<Transport> changeTransports = examinee.getChangeTransports("8000042445");
+        List<Transport> changeTransports = examinee.getChangeTransports("8000042445");
 
         assertThat(join(getTransportIds(changeTransports), " "), allOf(
                 containsString("L21K90002J"),
