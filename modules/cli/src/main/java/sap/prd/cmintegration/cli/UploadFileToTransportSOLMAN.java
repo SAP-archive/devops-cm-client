@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArg;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
@@ -33,11 +35,21 @@ class UploadFileToTransportSOLMAN extends Command {
 
     UploadFileToTransportSOLMAN(String host, String user, String password,
             String changeId, String transportId, String applicationId, String filePath) {
+
         super(host, user, password);
+
+        checkArgument(! isBlank(changeId), "changeId was null or empty.");
+        checkArgument(! isBlank(transportId), "transportId was null or empty.");
+        checkArgument(! isBlank(applicationId), "applicationId was null or empty.");
+
+        checkArgument(! isBlank(filePath), "filePath was null or empty.");
+
         this.changeId = changeId;
         this.transportId = transportId;
         this.applicationId = applicationId;
         this.upload = new File(filePath);
+
+        checkArgument(this.upload.canRead(), format("Cannot read upload file '%s'.", this.upload));
     }
 
     public final static void main(String[] args) throws Exception {
@@ -75,10 +87,6 @@ class UploadFileToTransportSOLMAN extends Command {
 
     @Override
     void execute() throws Exception {
-
-        if(!this.upload.canRead()) {
-            throw new CMCommandLineException(String.format("Cannot read file '%s'.", upload));
-        }
 
         try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
 

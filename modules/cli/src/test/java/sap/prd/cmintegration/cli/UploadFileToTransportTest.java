@@ -16,8 +16,6 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -77,20 +75,8 @@ public class UploadFileToTransportTest extends CMTestBase {
          * thrown is set here after assert above. Otherwise a failed assert would end up
          * in an error message about an unexpected exception. This would be hard to understand.
          */
-        thrown.expect(CMCommandLineException.class);
-        thrown.expectMessage(new BaseMatcher<String>() {
-
-            private String expected = "Cannot read file .*" + fileName + ".*";
-
-            @Override
-            public boolean matches(Object item) {
-                return ((String)item).matches(expected);
-            }
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(format("Expected text not found in exception message: \"%s\".", expected));
-            }
-        });
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Cannot read upload file");
 
         setMock(setupMock());
 

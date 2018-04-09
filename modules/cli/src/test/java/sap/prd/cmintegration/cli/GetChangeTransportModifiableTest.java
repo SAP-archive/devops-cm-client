@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.junit.Test;
@@ -88,8 +89,8 @@ public class GetChangeTransportModifiableTest extends CMTransportTestBase {
     @Test
     public void getChangeTransportModifiableWithoutProvidingTransportId() throws Exception {
 
-        thrown.expect(CMCommandLineException.class);
-        thrown.expectMessage("No transportId specified.");
+        thrown.expect(MissingOptionException.class);
+        thrown.expectMessage("tID");
 
         GetTransportModifiableSOLMAN.main(new String[] {
                 "-u", SERVICE_USER,
