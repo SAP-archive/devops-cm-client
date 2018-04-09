@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
@@ -8,6 +9,10 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
+import static sap.prd.cmintegration.cli.Commands.CMOptions.newOption;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -26,11 +31,22 @@ import com.sap.cmclient.http.CMODataAbapClient;
 class CreateTransportABAP extends Command {
 
     private static class Opts {
-        static Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
-                      description = new Option("d", "description", true, "The description of the transport request."),
-                      targetSystem = new Option("ts", "target-system", true, "The target of the transport"),
-                      transportType = new Option("tt", "transport-type", true, "The type of the transport, e.g. workbench, customizing."),
-                      requestRef = new Option("rr", "request-ref", true, "The request reference.");
+        private static Set<Option> options = new HashSet<>();
+
+        static Option owner = register(newOption("o", "owner", "The transport owner. If ommited the login user us used.", "owner", true)),
+                      description = register(newOption("d", "description", "The description of the transport request.", "desc", true)),
+                      targetSystem = register(newOption("ts", "target-system", "The target of the transport", "target", true)),
+                      transportType = register(newOption("tt", "transport-type", "The type of the transport, e.g. workbench, customizing.", "type", true)),
+                      requestRef = register(newOption("rr", "request-ref", "The request reference.", "ref", true));
+
+        private static Option register(Option o) {
+            options.add(o);
+            return o;
+        }
+        static Options addOpts(Options opts) {
+            options.stream().forEach( o -> opts.addOption(o));
+            return opts;
+        }
     }
 
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportABAP.class);
@@ -51,30 +67,32 @@ class CreateTransportABAP extends Command {
                                String requestRef) {
 
         super(host, user, password);
-        this.owner = owner;
-        this.description = description;
-        this.targetSystem = targetSystem;
-        this.transportType = transportType;
-        this.requestRef = requestRef == null ? "" : requestRef;
+
+        checkArgument(! isBlank(description), "No description provided. Cannot create transports without description.");
+        checkArgument(! isBlank(targetSystem), "No target system provided. Cannot create transport without target system.");
+        checkArgument(! isBlank(transportType), "No transport type provided. Cannot create transport without transport type");
+
+        this.description = description.trim();
+        this.targetSystem = targetSystem.trim();
+        this.transportType = transportType.trim();
+
+        this.owner = isBlank(owner) ? user.trim() : owner.trim();
+        this.requestRef = requestRef == null ? "" : requestRef.trim();
     }
 
     public final static void main(String[] args) throws Exception {
 
         Options options = new Options();
-        Command.addOpts(options);
 
-        options.addOption(Opts.owner)
-               .addOption(Opts.description)
-               .addOption(Opts.targetSystem)
-               .addOption(Opts.transportType)
-               .addOption(Opts.requestRef);
+        Command.addOpts(options);
+        Opts.addOpts(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [--owner <owner>][--description <description>]", getCommandName(CreateTransportABAP.class)),
+            handleHelpOption(format("%s [SPECIFIC OPTIONS]", getCommandName(CreateTransportABAP.class)),
             "Creates a new transport entity. " +
-            "Returns the ID of the transport entity. " +
-            "If there is already an open transport, the ID of the already existing open transport might be returned.",
-            new Options().addOption(Opts.owner).addOption(Opts.description).addOption(Opts.targetSystem)); return;
+            "Returns the ID of the new transport entity. ",
+            Opts.addOpts(new Options()));
+            return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -97,21 +115,7 @@ class CreateTransportABAP extends Command {
 
         logger.debug("Creating transport request.");
 
-        String o = isBlank(owner) ? user : owner;
-
-        if(isBlank(description)) {
-            throw new CMCommandLineException("No description provided. Cannot create transports without description.");
-        }
-
-        if(isBlank(targetSystem)) {
-            throw new CMCommandLineException("No target system provided. Cannot create transport without target system.");
-        }
-
-        if(isBlank(transportType)) {
-            throw new CMCommandLineException("No transport type provided. Cannot create transport without transport type");
-        }
-
-        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(o, description, targetSystem, requestRef, transportType));
+        Transport transport = client.createTransport(Transport.getTransportCreationRequestMap(owner, description, targetSystem, requestRef, transportType));
 
         logger.debug(format("Transport '%s' created. isModifiable: '%b', Owner: '%s', Description: '%s'.",
             transport.getTransportID(), transport.isModifiable(), transport.getOwner(), transport.getDescription()));

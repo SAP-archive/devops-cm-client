@@ -45,23 +45,21 @@ class Commands {
      */
     static class CMOptions {
 
-        static Option USER = new Option("u", "user", true, "Service user."),
-                      PASSWORD = new Option("p", "password", true, "Service password, if '-' is provided, password will be read from stdin."),
-                      BACKEND_TYPE = new Option("t", "backend-type", true, format("Backend Type, one of %s", asList(BackendType.values()))),
-                      HOST = new Option("e", "endpoint", true, "Service endpoint"),
-                      HELP = new Option("h", "help", false, "Prints this help."),
-                      VERSION = new Option("v", "version", false, "Prints the version."),
+        static Option USER = newOption("u", "user", "Service user.", "user", true),
+                      PASSWORD = newOption("p", "password", "Service password, if '-' is provided, password will be read from stdin.", "pwd", true),
+                      BACKEND_TYPE = newOption("t", "backend-type", format("Backend Type, one of %s", asList(BackendType.values())), "type", true),
+                      HOST = newOption("e", "endpoint", "Service endpoint", "url", true),
+                      HELP = newOption("h", "help", "Prints this help.", null, false),
+                      VERSION = newOption("v", "version", "Prints the version.", null, false),
 
-                      CHANGE_ID = new Option("cID", "change-id", true, "changeID"),
-                      TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
+                      CHANGE_ID = newOption("cID", "change-id", "The changeID", "changeID", false),
+                      TRANSPORT_ID = newOption("tID", "transport-id", "transportID", "transportID", false);
 
-        static {
-            USER.setRequired(true);
-            PASSWORD.setRequired(true);
-            BACKEND_TYPE.setRequired(true);
-            HOST.setRequired(true);
-            HELP.setRequired(false);
-            VERSION.setRequired(false);
+        static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
+            Option o = new Option(shortKey, longKey, argName != null, desc);
+            o.setArgName(argName);
+            o.setRequired(required);
+            return o;
         }
     }
 
