@@ -56,8 +56,7 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
         Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
-        TransportRelated.Opts.addOpts(options);
+        TransportRelated.Opts.addOpts(options, true);
         options.addOption(Commands.CMOptions.CHANGE_ID);
 
         if(helpRequested(args)) {

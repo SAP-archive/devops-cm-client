@@ -26,7 +26,8 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
     protected final String changeId;
 
     static class Opts {
-        static Options addOptions(Options opts) {
+        static Options addOptions(Options opts, boolean includeStandardOpts) {
+            TransportRelated.Opts.addOpts(opts, includeStandardOpts);
             opts.addOption(Commands.CMOptions.CHANGE_ID);
             return opts;
         }
@@ -45,13 +46,10 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        Command.addOpts(options);
-        TransportRelated.Opts.addOpts(options);
-        TransportRelatedSOLMAN.Opts.addOptions(options);
+        TransportRelatedSOLMAN.Opts.addOptions(options, true);
 
         if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, TransportRelatedSOLMAN.Opts.addOptions(
-                                              TransportRelated.Opts.addOpts(new Options())));
+            handleHelpOption(usage, helpText, TransportRelatedSOLMAN.Opts.addOptions(new Options(), false));
             return;
         }
 

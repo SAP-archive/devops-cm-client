@@ -47,13 +47,12 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportABAP.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
         Options options = new Options();
-        Command.addOpts(options);
-        TransportRelated.Opts.addOpts(options);
+        TransportRelated.Opts.addOpts(options, true);
 
         if(helpRequested(args)) {
             handleHelpOption(format("%s [SPECIFIC OPTIONS] <filePath>", getCommandName(UploadFileToTransportABAP.class)),
                     "Uploads the file specified by <filePath> to the given transport. "
-                    + "The URL of the uploaded file is echoed to stdout.", TransportRelated.Opts.addOpts(new Options()));
+                    + "The URL of the uploaded file is echoed to stdout.", TransportRelated.Opts.addOpts(new Options(), false));
             return;
         }
 
