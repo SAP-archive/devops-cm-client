@@ -35,7 +35,7 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
-        TransportRelated.addOpts(options);
+        TransportRelated.Opts.addOpts(options);
 
         options.addOption(Commands.CMOptions.CHANGE_ID);
 
