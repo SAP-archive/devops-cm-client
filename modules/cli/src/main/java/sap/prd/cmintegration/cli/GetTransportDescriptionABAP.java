@@ -26,8 +26,8 @@ class GetTransportDescriptionABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportDescriptionABAP.class, new Options(), args,
-                format("%s [-cID <changeId>]  -tID <transportId>", getCommandName(GetTransportDescriptionABAP.class)),
-                "Returns the description for the transport represented by <changeId>, <transportId>. ChangeId must not be provided for ABAP backends.");
+                format("%s [SPECIFIC OPTIONS]", getCommandName(GetTransportDescriptionABAP.class)),
+                "Returns the description for the given transport.");
     }
 
 }

@@ -25,7 +25,7 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportModifiableABAP.class, new Options(), args,
-            format("%s [-cID <changeId>,] -tID <transportId>", getCommandName(GetTransportModifiableABAP.class)),
-            "ChangeId must not be provided for ABAP backends. .Returns 'true' if the transport is modifiable. Otherwise 'false'.");
+            format("%s [SPECIFIC OPTIONS>", getCommandName(GetTransportModifiableABAP.class)),
+            ".Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }
 }

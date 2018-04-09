@@ -36,7 +36,7 @@ abstract class TransportRelatedABAP extends TransportRelated {
         options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, new Options()); return;
+            handleHelpOption(usage, helpText, new Options().addOption(Opts.TRANSPORT_ID)); return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(options, args);
@@ -47,7 +47,6 @@ abstract class TransportRelatedABAP extends TransportRelated {
                 getPassword(commandLine),
                 getTransportId(commandLine)).execute();
     }
-
 
     private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String transportId) {
         try {

@@ -14,11 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
 
+import sap.prd.cmintegration.cli.Commands.CMOptions;
+
 public abstract class TransportRelated extends Command {
 
     protected static class Opts {
-        protected final static Option TRANSPORT_ID = new Option("tID", "transport-id", true, "transportID");
-        static {TRANSPORT_ID.setArgName("transportID");}
+        protected final static Option TRANSPORT_ID = CMOptions.newOption("tID", "transport-id", "transportID", "transportId", true);
     }
 
     protected static void addOpts(Options options) throws Exception {
@@ -72,7 +73,6 @@ public abstract class TransportRelated extends Command {
     }
 
     protected final static Logger logger = LoggerFactory.getLogger(TransportRelated.class);
-
 
     protected abstract Optional<Transport> getTransport();
 
