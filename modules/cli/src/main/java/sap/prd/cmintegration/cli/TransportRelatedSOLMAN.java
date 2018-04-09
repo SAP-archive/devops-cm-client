@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -14,7 +16,9 @@ import java.util.Optional;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.Preconditions;
 import com.sap.cmclient.Transport;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
@@ -28,6 +32,7 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
 
         super(host, user, password, transportId);
 
+        checkArgument(! isBlank(changeId), "No changeId provided.");
         this.changeId = changeId;
     }
 

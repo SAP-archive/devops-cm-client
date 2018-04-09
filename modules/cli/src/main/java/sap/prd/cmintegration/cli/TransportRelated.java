@@ -1,6 +1,8 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.CMOptions.newOption;
 
 import java.util.Optional;
@@ -68,6 +70,7 @@ public abstract class TransportRelated extends Command {
 
     protected TransportRelated(String host, String user, String password, String transportId) {
         super(host, user, password);
+        checkArgument(! isBlank(transportId), "No transportId provided.");
         this.transportId = transportId;
     }
 
