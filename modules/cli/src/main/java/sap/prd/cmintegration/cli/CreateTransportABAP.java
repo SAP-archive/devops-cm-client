@@ -45,13 +45,12 @@ class CreateTransportABAP extends Command {
         Options options = new Options();
         Command.addOpts(options);
 
-
         options.addOption(Opts.owner)
                .addOption(Opts.description)
                .addOption(Opts.targetSystem);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [--owner <owner>][--description <description>] -cID <changeId>", getCommandName(CreateTransportABAP.class)),
+            handleHelpOption(format("%s [--owner <owner>][--description <description>]", getCommandName(CreateTransportABAP.class)),
             "Creates a new transport entity. " +
             "Returns the ID of the transport entity. " +
             "If there is already an open transport, the ID of the already existing open transport might be returned.",
