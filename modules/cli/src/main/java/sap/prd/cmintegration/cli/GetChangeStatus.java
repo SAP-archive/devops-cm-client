@@ -67,7 +67,8 @@ class GetChangeStatus extends Command {
 
         if(helpRequested(args)) {
             handleHelpOption(getCommandName(GetChangeStatus.class), "",
-                    "Returns 'true' if the given change is in development. Otherwise 'false'.", Opts.addOptions(new Options(), false)); return;
+                    "Returns 'true' if the given change is in development. Otherwise 'false'.", Opts.addOptions(new Options(), false));
+            return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
