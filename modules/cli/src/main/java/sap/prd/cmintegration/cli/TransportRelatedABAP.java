@@ -28,12 +28,12 @@ abstract class TransportRelatedABAP extends TransportRelated {
         super(host, user, password, transportId);
     }
 
-    protected static void main(Class<? extends TransportRelated> clazz, Options options, String[] args, String usage, String helpText) throws Exception {
+    protected static void main(Class<? extends TransportRelated> clazz, Options options, String[] args, String usage, String argumentDocu, String helpText) throws Exception {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
         if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, TransportRelated.Opts.addOpts(new Options(), false));
+            handleHelpOption(usage, argumentDocu, helpText, TransportRelated.Opts.addOpts(new Options(), false));
             return;
         }
 

@@ -17,7 +17,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,9 +66,9 @@ class GetChangeTransports extends Command {
     public final static void main(String[] args) throws Exception {
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [SUBCOMMAND_OPTIONS] -cID <changeId>", getCommandName(GetChangeTransports.class)),
-                    "Returns the ids of the transports for the change represented by <changeId>.",
-                    Opts.addOptions(new Options(), false));
+            handleHelpOption(getCommandName(GetChangeTransports.class), "",
+                    "Returns the ids of the transports for the given change.",
+                    Opts.addOptions(Opts.addOptions(new Options(), false), false));
             return;
         }
 

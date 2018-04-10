@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
+import static sap.prd.cmintegration.cli.Commands.CMOptions.newOption;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -17,15 +18,22 @@ import org.apache.commons.cli.Options;
 
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
-
 @CommandDescriptor(name="import-transport", type = BackendType.ABAP)
 public class ImportTransport extends Command {
 
-    private final static Option targetSystem = new Option("ts", "target-system", true, "The target system");
+    static class Opts {
 
-    static {
-        targetSystem.setArgName("targetSystem");
+        final static Option targetSystem = newOption("ts", "target-system", "The target system", "targetSystem", true);
+
+        static Options addOptions(Options opts, boolean includeStandardOptions) {
+
+            if(includeStandardOptions) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(targetSystem)
+                       .addOption(TransportRelated.Opts.TRANSPORT_ID);
+        }
     }
 
     private final String systemId, transportId;
@@ -42,21 +50,13 @@ public class ImportTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        Options options = new Options();
-        Command.addOpts(options);
-        options.addOption(Opts.TRANSPORT_ID);
-        options.addOption(targetSystem);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s -%s <%s> -%s <%s>", ImportTransport.class.getAnnotation(CommandDescriptor.class).name(),
-                                                            targetSystem.getOpt(),
-                                                            targetSystem.getArgName(),
-                                                            Opts.TRANSPORT_ID.getOpt(),
-                                                            Opts.TRANSPORT_ID.getArgName()),
-                    "Imports a transport into a system", new Options()); return;
+            handleHelpOption(getCommandName(ImportTransport.class), "",
+                    "Imports a transport into a system", Opts.addOptions(new Options(), false)); return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
         new ImportTransport(
                 getHost(commandLine),
@@ -67,6 +67,6 @@ public class ImportTransport extends Command {
     }
 
     private static String getSystemId(CommandLine commandLine) {
-        return commandLine.getOptionValue(targetSystem.getOpt());
+        return commandLine.getOptionValue(Opts.targetSystem.getOpt());
     }
 }

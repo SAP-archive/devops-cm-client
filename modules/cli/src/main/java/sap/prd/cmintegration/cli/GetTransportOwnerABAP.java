@@ -1,6 +1,5 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Function;
@@ -26,7 +25,7 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportOwnerABAP.class, new Options().addOption(Opts.TRANSPORT_ID), args,
-                format("%s [SPECIFIC OPTIONS]", getCommandName(GetTransportOwnerABAP.class)),
+                getCommandName(GetTransportOwnerABAP.class), "",
                 "Returns the owner of the given transport.");
     }
 }

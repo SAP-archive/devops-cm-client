@@ -43,7 +43,12 @@ class CreateTransportABAP extends Command {
             options.add(o);
             return o;
         }
-        static Options addOpts(Options opts) {
+        static Options addOpts(Options opts, boolean addStandardoptions) {
+
+            if(addStandardoptions) {
+                Command.addOpts(opts);
+            }
+
             options.stream().forEach( o -> opts.addOption(o));
             return opts;
         }
@@ -82,20 +87,17 @@ class CreateTransportABAP extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
-
-        Command.addOpts(options);
-        Opts.addOpts(options);
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [SPECIFIC OPTIONS]", getCommandName(CreateTransportABAP.class)),
+            handleHelpOption(getCommandName(CreateTransportABAP.class), "",
             "Creates a new transport entity. " +
             "Returns the ID of the new transport entity. ",
-            Opts.addOpts(new Options()));
+            Opts.addOpts(new Options(), false));
+
             return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOpts(new Options(), true), args);
 
         new CreateTransportABAP(
                 getHost(commandLine),

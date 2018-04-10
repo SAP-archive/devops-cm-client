@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
@@ -12,17 +13,25 @@ import java.net.URISyntaxException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
 
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
-
 @CommandDescriptor(name="export-transport", type = BackendType.ABAP)
 public class ExportTransport extends Command {
 
+    static class Opts {
+
+        static Options addOptions(Options opts, boolean addStandardOpts) {
+            if(addStandardOpts) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(sap.prd.cmintegration.cli.TransportRelated.Opts.TRANSPORT_ID);
+        }
+    }
     private final String transportId;
 
     public ExportTransport(String host, String user, String password, String transportId) {
@@ -36,19 +45,14 @@ public class ExportTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        Options options = new Options();
-        Command.addOpts(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
-        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
-            handleHelpOption(String.format("%s -%s %s", ExportTransport.class.getAnnotation(CommandDescriptor.class).name(),
-                             Opts.TRANSPORT_ID.getOpt(),
-                             Opts.TRANSPORT_ID.getArgName()),
-                             "Exports a transport.", new Options()); return;
+            handleHelpOption(getCommandName(ExportTransport.class), "",
+                             "Exports a transport.", Opts.addOptions(new Options(), false));
+            return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
         new ExportTransport(
                 getHost(commandLine),

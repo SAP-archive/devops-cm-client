@@ -142,7 +142,7 @@ class Commands {
             return l.contains("--help") || l.contains("-h");
         }
 
-        static void handleHelpOption(String usage, String header, Options options) {
+        static void handleHelpOption(String commandName, String header, String args, Options options) {
 
             String footer = "Exit codes:\n"
                     + "    0  The request completed successfully.\n"
@@ -150,7 +150,7 @@ class Commands {
                     + "       no more specific return code as defined below applies.\n"
                     + "    2  Wrong credentials.";
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("<CMD> [COMMON_OPTIONS] "+ usage, header, options, footer);
+            formatter.printHelp(format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s", commandName, args != null ? args : ""), header, options, footer);
         }
 
         private static String readPassword() throws IOException {

@@ -1,6 +1,5 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Function;
@@ -26,7 +25,7 @@ class GetTransportDescriptionABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportDescriptionABAP.class, new Options(), args,
-                format("%s [SPECIFIC OPTIONS]", getCommandName(GetTransportDescriptionABAP.class)),
+                getCommandName(GetTransportDescriptionABAP.class), "",
                 "Returns the description for the given transport.");
     }
 

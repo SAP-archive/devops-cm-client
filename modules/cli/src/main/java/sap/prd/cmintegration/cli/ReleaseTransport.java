@@ -1,6 +1,5 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -14,13 +13,24 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.TransportRelated.Opts;
 
 /**
  * Command for releasing a transport.
  */
 @CommandDescriptor(name="release-transport", type = BackendType.SOLMAN)
 class ReleaseTransport extends Command {
+
+    static class Opts {
+
+        static Options addOptions(Options opts, boolean includeStandardOptions) {
+            if(includeStandardOptions) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(TransportRelated.Opts.TRANSPORT_ID);
+        }
+    }
 
     private final String changeId, transportId;
 
@@ -33,18 +43,14 @@ class ReleaseTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        Options options = new Options();
-        Command.addOpts(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
-        options.addOption(Opts.TRANSPORT_ID);
 
         if(helpRequested(args)) {
             handleHelpOption(
-                format("%s [-cID <changeId>] -tID <transportId>", getCommandName(ReleaseTransport.class)),
-                "Releases the transport specified by [<changeId>,] <transportId>. ChangeId must not be provided for ABAP backends.", new Options()); return;
+                getCommandName(ReleaseTransport.class),"",
+                "Releases the transport specified by [<changeId>,] <transportId>.", Opts.addOptions(new Options(), false)); return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
         new ReleaseTransport(
                 getHost(commandLine),

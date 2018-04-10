@@ -9,6 +9,7 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
 import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
 import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
+import static sap.prd.cmintegration.cli.Commands.CMOptions.newOption;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -26,6 +27,22 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 @CommandDescriptor(name = "create-transport", type = BackendType.SOLMAN)
 class CreateTransportSOLMAN extends Command {
 
+    static class Opts {
+
+        static Option owner = newOption("o", "owner", "The transport owner. If ommited the login user us used.", "owner", false),
+                      description = newOption("d", "description", "The description of the transport request.", "desc", false);
+
+        static Options addOptions(Options opts, boolean addStandardOptions) {
+            if(addStandardOptions) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(owner)
+                       .addOption(description);
+        }
+    }
+
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportSOLMAN.class);
     private final String changeId, owner, description;
 
@@ -39,32 +56,25 @@ class CreateTransportSOLMAN extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
-        Command.addOpts(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
-
-        Option owner = new Option("o", "owner", true, "The transport owner. If ommited the login user us used."),
-               description = new Option("d", "description", true, "The description of the transport request.");
-
-        options.addOption(owner).addOption(description);
-
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [--owner <owner>][--description <description>] -cID <changeId>", getCommandName(CreateTransportSOLMAN.class)),
+            handleHelpOption(getCommandName(CreateTransportSOLMAN.class), "",
             "Creates a new transport entity. " +
             "Returns the ID of the transport entity. " +
             "If there is already an open transport, the ID of the already existing open transport might be returned.",
-            new Options().addOption(owner).addOption(description)); return;
+            Opts.addOptions(new Options(), false));
+
+            return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
         new CreateTransportSOLMAN(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                commandLine.getOptionValue(owner.getOpt()),
-                commandLine.getOptionValue(description.getOpt())).execute();
+                commandLine.getOptionValue(Opts.owner.getOpt()),
+                commandLine.getOptionValue(Opts.description.getOpt())).execute();
     }
 
     @Override

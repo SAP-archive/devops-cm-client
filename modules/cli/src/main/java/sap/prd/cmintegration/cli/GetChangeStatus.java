@@ -24,6 +24,18 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 @CommandDescriptor(name = "is-change-in-development", type = BackendType.SOLMAN)
 class GetChangeStatus extends Command {
 
+    static class Opts {
+
+        static Options addOptions(Options opts, boolean includeStandardOptions) {
+
+            if(includeStandardOptions) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(Commands.CMOptions.CHANGE_ID);
+        }
+    }
+
     final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
     private String changeId;
 
@@ -46,16 +58,12 @@ class GetChangeStatus extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        Options options = new Options();
-        Command.addOpts(options);
-        options.addOption(Commands.CMOptions.CHANGE_ID);
-
         if(helpRequested(args)) {
-            handleHelpOption(format("%s -cID <changeId>", getCommandName(GetChangeStatus.class)),
-                    "Returns 'true' if the change specified by <changeId> is in development. Otherwise 'false'. This command is only available for SOLMAN backends.", new Options()); return;
+            handleHelpOption(getCommandName(GetChangeStatus.class), "",
+                    "Returns 'true' if the given change is in development. Otherwise 'false'.", Opts.addOptions(new Options(), false)); return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
         new GetChangeStatus(
                 getHost(commandLine),

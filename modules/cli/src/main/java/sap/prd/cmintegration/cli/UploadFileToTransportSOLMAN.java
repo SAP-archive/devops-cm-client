@@ -31,6 +31,21 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 @CommandDescriptor(name="upload-file-to-transport", type = BackendType.SOLMAN)
 class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
 
+    static class Opts {
+
+        static Options addOptions(Options options, boolean includeStandardOpts) {
+
+            if(includeStandardOpts) {
+                Command.addOpts(options);
+            }
+
+            TransportRelated.Opts.addOpts(options, false)
+                                 .addOption(Commands.CMOptions.CHANGE_ID);
+
+            return options;
+        }
+    }
+
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);
 
     private final String applicationId;
@@ -56,15 +71,15 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
         logger.debug(format("%s called with arguments: '%s'.", UploadFileToTransportSOLMAN.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
         if(helpRequested(args)) {
-            handleHelpOption(format("%s [SPECIFIC OPTIONS] <applicationId> <filePath>", getCommandName(UploadFileToTransportSOLMAN.class)),
+            handleHelpOption(getCommandName(UploadFileToTransportSOLMAN.class), "<filePath> <applicationId>",
                     "Uploads the file specified by <filePath> into the given transport. "
                     + "<applicationId> specifies how the file needs to be handled on server side.",
-                    TransportRelated.Opts.addOpts(new Options(), false).addOption(Commands.CMOptions.CHANGE_ID));
+                    Opts.addOptions(new Options(), false).addOption(Commands.CMOptions.CHANGE_ID));
             return;
         }
 
         CommandLine commandLine = new DefaultParser().parse(
-                TransportRelated.Opts.addOpts(new Options(), true).addOption(Commands.CMOptions.CHANGE_ID), args);
+                Opts.addOptions(new Options(), true).addOption(Commands.CMOptions.CHANGE_ID), args);
 
         new UploadFileToTransportSOLMAN(
                 getHost(commandLine),

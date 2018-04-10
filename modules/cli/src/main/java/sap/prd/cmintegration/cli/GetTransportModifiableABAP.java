@@ -1,6 +1,5 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Function;
@@ -25,7 +24,7 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportModifiableABAP.class, new Options(), args,
-            format("%s [SPECIFIC OPTIONS>", getCommandName(GetTransportModifiableABAP.class)),
-            ".Returns 'true' if the transport is modifiable. Otherwise 'false'.");
+            getCommandName(GetTransportModifiableABAP.class), "",
+            "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }
 }

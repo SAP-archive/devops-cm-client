@@ -1,6 +1,5 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 
 import java.util.function.Function;
@@ -26,8 +25,8 @@ class GetTransportDescriptionSOLMAN extends TransportRelatedSOLMAN {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedSOLMAN.main(GetTransportDescriptionSOLMAN.class, new Options(), args,
-                format("%s [-cID <changeId>]  -tID <transportId>", getCommandName(GetTransportDescriptionSOLMAN.class)),
-                "Returns the description for the transport represented by <changeId>, <transportId>. ChangeId must not be provided for ABAP backends.");
+                getCommandName(GetTransportDescriptionSOLMAN.class), "",
+                "Returns the description for the given transport.");
     }
 
 }
