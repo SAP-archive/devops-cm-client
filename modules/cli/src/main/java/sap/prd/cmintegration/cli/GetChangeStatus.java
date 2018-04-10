@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -14,6 +15,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
@@ -40,7 +43,11 @@ class GetChangeStatus extends Command {
     private String changeId;
 
     GetChangeStatus(String host, String user, String password, String changeId) {
+
         super(host, user, password);
+
+        Preconditions.checkArgument(! isBlank(changeId), "No changeId provided.");
+
         this.changeId = changeId;
     }
 
