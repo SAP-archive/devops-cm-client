@@ -8,8 +8,10 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getArgsLogString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +32,6 @@ import com.google.common.collect.Sets;
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
-import sap.prd.cmintegration.cli.BackendType;
 
 /**
  * Helpers for using/calling commands.
@@ -52,8 +53,7 @@ class Commands {
                       HELP = newOption("h", "help", "Prints this help.", null, false),
                       VERSION = newOption("v", "version", "Prints the version.", null, false),
 
-                      CHANGE_ID = newOption("cID", "change-id", "The changeID", "changeID", false),
-                      TRANSPORT_ID = newOption("tID", "transport-id", "transportID", "transportID", false);
+                      CHANGE_ID = newOption("cID", "change-id", "The changeID", "cID", false);
 
         static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
             Option o = new Option(shortKey, longKey, argName != null, desc);
@@ -149,8 +149,16 @@ class Commands {
                     + "    1  The request did  not complete successfully and\n"
                     + "       no more specific return code as defined below applies.\n"
                     + "    2  Wrong credentials.";
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp(format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s", commandName, args != null ? args : ""), header, options, footer);
+
+            try( StringWriter sw = new StringWriter();
+                 PrintWriter pw = new PrintWriter(sw);) {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printOptions(pw, formatter.getWidth(), Command.addOpts(new Options()), formatter.getLeftPadding(), formatter.getDescPadding());
+                formatter.printHelp(format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%nCOMMON OPTIONS:%n%s%nSUBCOMMAND OPTIONS:%n", commandName, args != null ? args : "", sw), header, options, footer);
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
         private static String readPassword() throws IOException {
@@ -253,6 +261,7 @@ class Commands {
                 throw e;
             }
         }
+
         final BackendType type = getBackendType(commandLine, args);
  
         try {
