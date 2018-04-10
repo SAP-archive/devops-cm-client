@@ -25,8 +25,8 @@ class GetTransportDescriptionABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportDescriptionABAP.class, new Options(), args,
-                getCommandName(GetTransportDescriptionABAP.class), "",
-                "Returns the description for the given transport.");
+                getCommandName(GetTransportDescriptionABAP.class),
+                "Returns the description for the given transport.", "");
     }
 
 }

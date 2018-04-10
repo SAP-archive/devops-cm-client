@@ -52,7 +52,7 @@ class Commands {
                       HELP = newOption("h", "help", "Prints this help.", null, false),
                       VERSION = newOption("v", "version", "Prints the version.", null, false),
 
-                      CHANGE_ID = newOption("cID", "change-id", "The changeID.", "cID", false);
+                      CHANGE_ID = newOption("cID", "change-id", "changeID.", "cID", false);
 
         static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
             Option o = new Option(shortKey, longKey, argName != null, desc);
@@ -143,20 +143,31 @@ class Commands {
 
         static void handleHelpOption(String commandName, String header, String args, Options options) {
 
-            String footer = "Exit codes:\n"
-                    + "    0  The request completed successfully.\n"
-                    + "    1  The request did  not complete successfully and\n"
+            String exitCodes = 
+                      "    0  The request completed successfully.\n"
+                    + "    1  The request did not complete successfully and\n"
                     + "       no more specific return code as defined below applies.\n"
                     + "    2  Wrong credentials.";
 
-            try( StringWriter sw = new StringWriter();
-                 PrintWriter pw = new PrintWriter(sw);) {
-                HelpFormatter formatter = new HelpFormatter();
+            String commonOpts;
+
+            HelpFormatter formatter = new HelpFormatter();
+
+            try( StringWriter commonOptions = new StringWriter();
+                 PrintWriter pw = new PrintWriter(commonOptions);) {
                 formatter.printOptions(pw, formatter.getWidth(), Command.addOpts(new Options()), formatter.getLeftPadding(), formatter.getDescPadding());
-                formatter.printHelp(format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%nCOMMON OPTIONS:%n%s%nSUBCOMMAND OPTIONS:%n", commandName, args != null ? args : "", sw), header, options, footer);
+                commonOpts = commonOptions.toString();
             } catch(IOException e) {
                 throw new RuntimeException(e);
             }
+
+            String footer = format("%nCOMMON OPTIONS:%n%s%nEXIT CODES%n%s", commonOpts, exitCodes);
+
+            formatter.printHelp(
+                    format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%n", 
+                            commandName,
+                            args != null ? args : ""),
+                    format("%s%n%nSUBCOMMAND OPTIONS:%n",header), options, footer);
 
         }
 

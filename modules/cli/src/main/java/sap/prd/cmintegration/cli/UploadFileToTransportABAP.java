@@ -48,9 +48,9 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
 
 
         if(helpRequested(args)) {
-            handleHelpOption(getCommandName(UploadFileToTransportABAP.class), "<filePath>",
-                    "Uploads the file specified by <filePath> to the given transport. "
-                    + "The URL of the uploaded file is echoed to stdout.", TransportRelated.Opts.addOpts(new Options(), false));
+            handleHelpOption(getCommandName(UploadFileToTransportABAP.class),
+                    "Uploads the file specified by <filePath> to the given transport. The URL of the uploaded file is echoed to stdout.", "<filePath>",
+                    TransportRelated.Opts.addOpts(new Options(), false));
             return;
         }
 

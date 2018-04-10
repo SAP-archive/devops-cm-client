@@ -25,7 +25,7 @@ class GetTransportOwnerABAP extends TransportRelatedABAP {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedABAP.main(GetTransportOwnerABAP.class, new Options().addOption(Opts.TRANSPORT_ID), args,
-                getCommandName(GetTransportOwnerABAP.class), "",
-                "Returns the owner of the given transport.");
+                getCommandName(GetTransportOwnerABAP.class),
+                "Returns the owner of the given transport.", "");
     }
 }

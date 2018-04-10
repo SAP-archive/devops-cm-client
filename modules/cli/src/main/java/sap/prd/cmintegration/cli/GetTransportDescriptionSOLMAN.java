@@ -25,8 +25,8 @@ class GetTransportDescriptionSOLMAN extends TransportRelatedSOLMAN {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedSOLMAN.main(GetTransportDescriptionSOLMAN.class, new Options(), args,
-                getCommandName(GetTransportDescriptionSOLMAN.class), "",
-                "Returns the description for the given transport.");
+                getCommandName(GetTransportDescriptionSOLMAN.class),
+                "Returns the description for the given transport.", "");
     }
 
 }

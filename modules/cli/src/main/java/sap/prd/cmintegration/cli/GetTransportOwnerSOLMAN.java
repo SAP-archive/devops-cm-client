@@ -25,7 +25,7 @@ class GetTransportOwnerSOLMAN extends TransportRelatedSOLMAN {
 
     public final static void main(String[] args) throws Exception {
         TransportRelatedSOLMAN.main(GetTransportOwnerSOLMAN.class, new Options(), args,
-                getCommandName(GetTransportOwnerSOLMAN.class), "",
-                "Returns the owner of the given transport.");
+                getCommandName(GetTransportOwnerSOLMAN.class),
+                "Returns the owner of the given transport.", "");
     }
 }
