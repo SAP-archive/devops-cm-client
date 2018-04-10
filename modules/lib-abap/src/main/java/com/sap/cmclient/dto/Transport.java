@@ -7,8 +7,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.olingo.odata2.api.ep.entry.ODataEntry;
-
 public class Transport implements com.sap.cmclient.Transport {
 
   private static final String ID = "Id";
@@ -24,10 +22,10 @@ public class Transport implements com.sap.cmclient.Transport {
 
     private final Map<String, Object> values;
 
-    public Transport(ODataEntry entry)
+    public Transport(Map<String, Object> props)
     {
-      if(entry.getProperties().get(ID) == null) throw new IllegalArgumentException(format("Key '%s' must not be null.", ID));
-      values =  new HashMap<String, Object>(entry.getProperties());
+      if(props.get(ID) == null) throw new IllegalArgumentException(format("Key '%s' must not be null.", ID));
+      values =  new HashMap<String, Object>(props);
     }
 
     public static Map<String, Object> getTransportCreationRequestMap( String owner, 

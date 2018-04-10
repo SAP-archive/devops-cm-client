@@ -176,12 +176,4 @@ public class CommandsTest extends CMTestBase {
         thrown.expectMessage("Called without arguments.");
         Commands.main(new String[] {});
     }
-
-    /*
-     * Intended for being used with a single line string.
-     */
-    private static String removeCRLF(String str) {
-        return str.replaceAll("\\r?\\n$", "");
-    }
-
 }

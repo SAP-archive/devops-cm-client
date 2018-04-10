@@ -105,7 +105,7 @@ public class CMODataAbapClient {
                                          getEntityDataModel().getDefaultEntityContainer()
                                              .getEntitySet(TransportRequestBuilder.getEntityKey()),
                                          content,
-                                         EntityProviderReadProperties.init().build()));
+                                         EntityProviderReadProperties.init().build()).getProperties());
       }
   }
 

@@ -24,7 +24,7 @@ import org.junit.rules.TemporaryFolder;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class UploadFileToTransportTest extends CMTestBase {
+public class UploadFileToTransportTest extends CMSolmanTestBase {
 
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();

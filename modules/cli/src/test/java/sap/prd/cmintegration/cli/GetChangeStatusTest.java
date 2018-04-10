@@ -21,7 +21,7 @@ import org.junit.Test;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
-public class GetChangeStatusTest extends CMTestBase {
+public class GetChangeStatusTest extends CMSolmanTestBase {
 
     private SolmanClientFactory setupMock() throws Exception {
         return setupMock(null);

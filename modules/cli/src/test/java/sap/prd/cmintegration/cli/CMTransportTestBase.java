@@ -16,7 +16,7 @@ import com.sap.cmclient.Transport;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class CMTransportTestBase extends CMTestBase {
+public class CMTransportTestBase extends CMSolmanTestBase {
 
     @Before
     public void setup() throws Exception {
