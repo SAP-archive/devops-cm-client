@@ -48,12 +48,12 @@ class Commands {
 
         static Option USER = newOption("u", "user", "Service user.", "user", true),
                       PASSWORD = newOption("p", "password", "Service password, if '-' is provided, password will be read from stdin.", "pwd", true),
-                      BACKEND_TYPE = newOption("t", "backend-type", format("Backend Type, one of %s", asList(BackendType.values())), "type", true),
-                      HOST = newOption("e", "endpoint", "Service endpoint", "url", true),
+                      BACKEND_TYPE = newOption("t", "backend-type", format("Backend Type, one of %s.", asList(BackendType.values())), "type", true),
+                      HOST = newOption("e", "endpoint", "Service endpoint.", "url", true),
                       HELP = newOption("h", "help", "Prints this help.", null, false),
                       VERSION = newOption("v", "version", "Prints the version.", null, false),
 
-                      CHANGE_ID = newOption("cID", "change-id", "The changeID", "cID", false);
+                      CHANGE_ID = newOption("cID", "change-id", "The changeID.", "cID", false);
 
         static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
             Option o = new Option(shortKey, longKey, argName != null, desc);
