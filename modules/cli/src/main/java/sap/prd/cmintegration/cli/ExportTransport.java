@@ -16,6 +16,7 @@ import org.apache.commons.cli.Options;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.ep.EntityProviderException;
 
+import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 @CommandDescriptor(name="export-transport", type = BackendType.ABAP)
@@ -40,14 +41,15 @@ public class ExportTransport extends Command {
 
     @Override
     void execute() throws UnexpectedHttpResponseException, IOException, URISyntaxException, EntityProviderException, EdmException {
-        AbapClientFactory.getInstance().newClient(host, user, password).releaseTransport(transportId);
+        Transport transport = AbapClientFactory.getInstance().newClient(host, user, password).releaseTransport(transportId);
+        System.out.println(transport.getTransportID());
     }
 
     public final static void main(String[] args) throws Exception {
 
         if(helpRequested(args)) {
             handleHelpOption(getCommandName(ExportTransport.class), "",
-                             "Exports a transport.", Opts.addOptions(new Options(), false));
+                             "Exports a transport. Returns the id of the released transport.", Opts.addOptions(new Options(), false));
             return;
         }
 
