@@ -13,14 +13,13 @@ import java.util.Map;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
 
-public class ABAPTransportTest extends CMABAPTestBase {
+public class ABAPTransportTest extends ABAPBackendTest {
 
     private AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
 
@@ -33,12 +32,6 @@ public class ABAPTransportTest extends CMABAPTestBase {
         replay(factoryMock, clientMock);
 
         return factoryMock;
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        System.setOut(oldOut);
-        setMock(null);
     }
 
     @Test
