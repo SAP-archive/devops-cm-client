@@ -4,7 +4,6 @@ import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -25,9 +24,6 @@ import com.sap.cmclient.http.CMODataAbapClient;
 public class ABAPTransportTest extends CMABAPTestBase {
 
     private Capture<Map<String, Object>> transportMap = Capture.newInstance();
-
-    private Capture<String> transportId = Capture.newInstance(),
-                            systemId = Capture.newInstance();
 
     private AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
 
@@ -54,20 +50,6 @@ public class ABAPTransportTest extends CMABAPTestBase {
 
         return factoryMock;
     }
-
-    private AbapClientFactory setupImportTransportMock(Transport t) throws Exception {
-
-        AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
-        CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
-
-        clientMock.importTransport(capture(systemId), capture(transportId)); expectLastCall();
-        expect(factoryMock.newClient(capture(host), capture(user), capture(password))).andReturn(clientMock);
-
-        replay(factoryMock, clientMock);
-
-        return factoryMock;
-    }
-
 
     @After
     public void tearDown() throws Exception {
@@ -338,59 +320,5 @@ public class ABAPTransportTest extends CMABAPTestBase {
         // The map created below does not have an id member
         new Transport(Maps.newHashMap());
     }
-
-    @Test
-    public void testImportTransportStraightForward() throws Exception {
-
-        Map<String, Object> m = Maps.newHashMap();
-        m.put("Id", "999");
-
-        Transport t = new Transport(m);
-
-        setMock(setupImportTransportMock(t));
-
-        Commands.main(new String[]
-                {       "-e", "http://example.org:8000/endpoint",
-                        "-u", "me",
-                        "-p", "openSesame",
-                        "-t", "ABAP",
-                        "import-transport",
-                        "-tID", "999",
-                        "-ts", "A5X"});
-
-        assertThat(transportId.getValue(), is(equalTo("999")));
-        assertThat(systemId.getValue(), is(equalTo("A5X")));
-    }
-
-    @Test
-    public void testImportTransportWithoutTargetSystemRaisesException() throws Exception {
-
-        thrown.expect(MissingOptionException.class);
-        thrown.expectMessage("Missing required option: ts");
-
-        Commands.main(new String[]
-                {       "-e", "http://example.org:8000/endpoint",
-                        "-u", "me",
-                        "-p", "openSesame",
-                        "-t", "ABAP",
-                        "import-transport",
-                        "-tID", "999"
-                        });
-    }
-
-    @Test
-    public void testImportTransportWithoutTransportIdRaisesException() throws Exception {
-
-        thrown.expect(MissingOptionException.class);
-        thrown.expectMessage("Missing required option: tID");
-
-        Commands.main(new String[]
-                {       "-e", "http://example.org:8000/endpoint",
-                        "-u", "me",
-                        "-p", "openSesame",
-                        "-t", "ABAP",
-                        "import-transport",
-                        "-ts", "A5X"});
-    }
-
 }
+
