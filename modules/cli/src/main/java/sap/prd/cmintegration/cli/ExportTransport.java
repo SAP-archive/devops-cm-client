@@ -28,8 +28,7 @@ public class ExportTransport extends Command {
                 Command.addOpts(opts);
             }
 
-            return opts.addOption(Commands.CMOptions.CHANGE_ID)
-                       .addOption(sap.prd.cmintegration.cli.TransportRelated.Opts.TRANSPORT_ID);
+            return opts.addOption(sap.prd.cmintegration.cli.TransportRelated.Opts.TRANSPORT_ID);
         }
     }
     private final String transportId;
