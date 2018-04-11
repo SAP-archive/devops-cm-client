@@ -24,9 +24,12 @@ import com.sap.cmclient.http.CMODataAbapClient;
 
 public class ABAPTransportTest extends CMABAPTestBase {
 
-    Capture<Map<String, Object>> transportMap = Capture.newInstance();
+    private Capture<Map<String, Object>> transportMap = Capture.newInstance();
 
-    AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
+    private Capture<String> transportId = Capture.newInstance(),
+                            systemId = Capture.newInstance();
+
+    private AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
 
         AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
         CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
@@ -39,7 +42,7 @@ public class ABAPTransportTest extends CMABAPTestBase {
         return factoryMock;
     }
 
-    AbapClientFactory setupCreateTransportMock(Transport result) throws Exception {
+    private AbapClientFactory setupCreateTransportMock(Transport result) throws Exception {
 
         AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
         CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
@@ -52,23 +55,7 @@ public class ABAPTransportTest extends CMABAPTestBase {
         return factoryMock;
     }
 
-    Capture<String> transportId = Capture.newInstance(),
-                    systemId = Capture.newInstance();
-
-    AbapClientFactory setupReleaseTransportMock(Transport t) throws Exception {
-
-        AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
-        CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
-
-        expect(clientMock.releaseTransport(capture(transportId))).andReturn(t);
-        expect(factoryMock.newClient(capture(host), capture(user), capture(password))).andReturn(clientMock);
-
-        replay(factoryMock, clientMock);
-
-        return factoryMock;
-    }
-
-    AbapClientFactory setupImportTransportMock(Transport t) throws Exception {
+    private AbapClientFactory setupImportTransportMock(Transport t) throws Exception {
 
         AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
         CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
@@ -350,43 +337,6 @@ public class ABAPTransportTest extends CMABAPTestBase {
 
         // The map created below does not have an id member
         new Transport(Maps.newHashMap());
-    }
-
-    @Test
-    public void testExportWithoutTransportIdRaisesException() throws Exception {
-
-        thrown.expect(MissingOptionException.class);
-        thrown.expectMessage("Missing required option: tID");
-
-        Commands.main(new String[]
-                {       "-e", "http://example.org:8000/endpoint",
-                        "-u", "me",
-                        "-p", "openSesame",
-                        "-t", "ABAP",
-                        "export-transport"
-                });
-    }
-
-    @Test
-    public void testExportTransportStraightForward() throws Exception {
-
-        Map<String, Object> m = Maps.newHashMap();
-        m.put("Id", "999");
-
-        Transport t = new Transport(m);
-
-        setMock(setupReleaseTransportMock(t));
-
-        Commands.main(new String[]
-                {       "-e", "http://example.org:8000/endpoint",
-                        "-u", "me",
-                        "-p", "openSesame",
-                        "-t", "ABAP",
-                        "export-transport",
-                        "-tID", "999"});
-
-        assertThat(transportId.getValue(), is(equalTo("999")));
-        assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")), is(equalTo("999")));
     }
 
     @Test
