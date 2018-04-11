@@ -310,7 +310,7 @@ class Commands {
            return new ExitException(e.getTargetException(), 2);
        }
 
-       return new RuntimeException(e.getTargetException());
+       return (e.getTargetException() instanceof Exception) ? (Exception)e.getTargetException() : new RuntimeException(e.getTargetException());
     }
 
     private static BackendType getBackendType(CommandLine commandLine, String[] args) {
