@@ -95,11 +95,12 @@ public class ABAPTransportTest extends CMABAPTestBase {
         m.put("Id", "999");
         setMock(setupGetTransportMock(new Transport(m)));
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
 
         assertThat(host.getValue(), is(equalTo("http://example.org:8000/endpoint")));
@@ -113,10 +114,11 @@ public class ABAPTransportTest extends CMABAPTestBase {
         thrown.expect(MissingOptionException.class);
         thrown.expectMessage("Missing required option: u");
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
     }
 
@@ -126,10 +128,11 @@ public class ABAPTransportTest extends CMABAPTestBase {
         thrown.expect(MissingOptionException.class);
         thrown.expectMessage("Missing required option: e");
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
     }
 
@@ -139,10 +142,11 @@ public class ABAPTransportTest extends CMABAPTestBase {
         thrown.expect(MissingOptionException.class);
         thrown.expectMessage("Missing required option: p");
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
     }
 
@@ -152,23 +156,25 @@ public class ABAPTransportTest extends CMABAPTestBase {
         thrown.expect(MissingOptionException.class);
         thrown.expectMessage("Missing required option: tID");
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP"});
+                        "-t", "ABAP",
+                        "get-transport-owner"});
     }
 
     @Test
     public void testBackendTypeNotProvided() throws Exception {
 
-        thrown.expect(MissingOptionException.class);
-        thrown.expectMessage("Missing required option: t");
+        thrown.expect(CMCommandLineException.class);
+        thrown.expectMessage("Cannot retrieve backend type.");
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
+                        "get-transport-owner",
                         "-tID", "999"});
     }
 
@@ -217,11 +223,12 @@ public class ABAPTransportTest extends CMABAPTestBase {
         m.put("Owner", "Admin");
         setMock(setupGetTransportMock(new Transport(m)));
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
 
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")), is(equalTo("Admin")));
@@ -235,11 +242,12 @@ public class ABAPTransportTest extends CMABAPTestBase {
         m.put("Description", "desc");
         setMock(setupGetTransportMock(new Transport(m)));
 
-        GetTransportDescriptionABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-description",
                         "-tID", "999"});
 
         assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")), is(equalTo("desc")));
@@ -253,11 +261,12 @@ public class ABAPTransportTest extends CMABAPTestBase {
 
         setMock(setupGetTransportMock(null));
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
     }
 
@@ -272,11 +281,12 @@ public class ABAPTransportTest extends CMABAPTestBase {
 
         setMock(setupGetTransportMock(new Transport(m)));
 
-        GetTransportOwnerABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "get-transport-owner",
                         "-tID", "999"});
     }
 
@@ -287,11 +297,12 @@ public class ABAPTransportTest extends CMABAPTestBase {
         m.put("Id", "999");
         setMock(setupCreateTransportMock(new Transport(m)));
 
-        CreateTransportABAP.main(new String[]
+        Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
                         "-t", "ABAP",
+                        "create-transport",
                         "-tt", "K",
                         "-d", "desc",
                         "-ts", "A5X"});
@@ -301,7 +312,7 @@ public class ABAPTransportTest extends CMABAPTestBase {
         Map<String, Object> tMap = transportMap.getValue();
 
         //
-        // We test if the map used for creating the tranport on the backend
+        // We test if the map used for creating the transport on the backend
         // is fine. Testing if the transport instance finally returned matches
         // is tested below.
         //
