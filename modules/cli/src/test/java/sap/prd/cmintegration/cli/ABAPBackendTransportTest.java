@@ -9,7 +9,7 @@ import static org.easymock.EasyMock.replay;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
 
-public class ABAPTransportTest extends ABAPBackendTest {
+public class ABAPBackendTransportTest extends ABAPBackendTest {
 
     protected AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
 

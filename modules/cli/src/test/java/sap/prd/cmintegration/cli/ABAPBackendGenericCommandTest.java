@@ -18,7 +18,7 @@ import com.google.common.collect.Maps;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
 
-public class ABAPGenericCommandTest extends ABAPBackendTest {
+public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
 
     private AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
 

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import org.junit.After;
 
-public class CMABAPTestBase extends CMTestBase {
+public class CMABAPBackendTestBase extends CMTestBase {
 
     @After
     public void tearDown() throws Exception {

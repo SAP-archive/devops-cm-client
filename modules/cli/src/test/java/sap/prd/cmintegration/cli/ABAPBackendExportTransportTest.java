@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
 
-public class ABAPExportTransportTest extends ABAPBackendTest {
+public class ABAPBackendExportTransportTest extends ABAPBackendTest {
 
     private Capture<String> transportId = Capture.newInstance();
 

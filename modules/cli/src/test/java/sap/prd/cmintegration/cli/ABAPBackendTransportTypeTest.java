@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.google.common.collect.Maps;
 import com.sap.cmclient.dto.Transport;
 
-public class ABAPTransportTypeTest extends ABAPTransportTest {
+public class ABAPBackendTransportTypeTest extends ABAPBackendTransportTest {
 
     @Test
     public void testGetTransportTypeStraightForward() throws Exception {

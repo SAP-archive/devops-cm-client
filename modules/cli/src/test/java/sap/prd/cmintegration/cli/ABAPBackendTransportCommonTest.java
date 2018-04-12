@@ -20,11 +20,11 @@ import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
 
 @RunWith(Parameterized.class)
-public class ABAPTransportCommonTest extends ABAPBackendTest {
+public class ABAPBackendTransportCommonTest extends ABAPBackendTest {
 
     private final String command;
 
-    public ABAPTransportCommonTest(String command) {
+    public ABAPBackendTransportCommonTest(String command) {
         this.command = command;
     }
     protected AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
