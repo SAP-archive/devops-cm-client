@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
-import com.sap.cmclient.http.CMODataAbapClient;
 
 /**
  * Command for uploading a file into a transport.
@@ -79,7 +78,7 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
                     logger.debug(format("Uploading file '%s' to transport '%s'.",
                             upload.getAbsolutePath(), transportId));
 
-                    String location = new CMODataAbapClient(host, user, password).upload(transportId, upload);
+                    String location = AbapClientFactory.getInstance().newClient(host, user, password).upload(transportId, upload);
                     location += "/$value";
 
                     logger.debug(format("File '%s' uploaded to transport '%s'. The file can be accessed via '%s'.",
