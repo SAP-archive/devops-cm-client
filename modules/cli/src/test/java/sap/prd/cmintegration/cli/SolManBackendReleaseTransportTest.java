@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
-public class ReleaseTransportTest extends CMSolmanTestBase {
+public class SolManBackendReleaseTransportTest extends CMSolmanTestBase {
 
     private Capture<String> transportId = null;
 

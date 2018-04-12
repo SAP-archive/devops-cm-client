@@ -9,7 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.junit.Test;
 
-public class GetChangeTransportModifiableTest extends CMTransportTestBase {
+public class SolManBackendGetChangeTransportModifiableTest extends SolManBackendCMTransportTestBase {
 
     @Test
     public void getChangeTransportModifiableStraighForwardForNotModifiableTransport() throws Exception {

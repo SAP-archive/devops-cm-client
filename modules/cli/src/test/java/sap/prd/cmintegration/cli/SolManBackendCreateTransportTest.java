@@ -18,7 +18,7 @@ import org.junit.Test;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class CreateTransportTest extends CMSolmanTestBase {
+public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
     private Capture<String> owner, description;
 

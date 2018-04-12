@@ -26,7 +26,7 @@ import com.sap.cmclient.Transport;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
-public class GetChangeTransportsTest extends CMTransportTestBase {
+public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTransportTestBase {
 
     @Test
     public void testStraightForward() throws Exception{
