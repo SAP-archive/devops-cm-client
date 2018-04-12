@@ -1,0 +1,20 @@
+{
+  "id" : "fd914395-eb79-4b3b-a41c-aad87ed4931b",
+  "name" : "exporttransport",
+  "request" : {
+    "url" : "/ExportTransport?id=%27A5DK99999%27",
+    "method" : "GET"
+  },
+  "response" : {
+    "status" : 400,
+    "body" : "<?xml version=\"1.0\" encoding=\"utf-8\"?><error xmlns=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><code>/IWBEP/CM_MGW_RT/022</code><message xml:lang=\"en\">An exception was raised.</message><innererror><application><component_id>BC-CTS-TMS</component_id><service_namespace>/SAP/</service_namespace><service_id>SCTS_CLOUD_API_ODATA_SRV</service_id><service_version>0001</service_version></application><transactionid>938023A3529F0080E005A996AEE7CFFE</transactionid><timestamp/><Error_Resolution><SAP_Transaction/><SAP_Note>See SAP Note 1797736 for error analysis (https://service.sap.com/sap/support/notes/1797736)</SAP_Note></Error_Resolution><errordetails><errordetail><code>CX_CTS_REQUEST_NOT_EXISTS</code><message>Request A5DK99999 is unknown</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>CX_CTS_TRANSPORT_REQUEST</code><message>Request A5DK99999 is unknown</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>CX_CTS_CLOUD_EXCEPTION</code><message>An exception was raised</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>/IWBEP/CX_MGW_TECH_EXCEPTION</code><message>An exception was raised</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>/IWBEP/CX_MGW_BUSI_EXCEPTION</code><message>An exception was raised</message><propertyref/><severity>error</severity><target/></errordetail></errordetails></innererror></error>",
+    "headers" : {
+      "content-type" : "application/xml;charset=utf-8",
+      "dataserviceversion" : "1.0",
+      "sap-processing-info" : "ODataBEP=,crp=,st=,MedCacheHub=SHM,codeployed=X,softstate="
+    }
+  },
+  "uuid" : "fd914395-eb79-4b3b-a41c-aad87ed4931b",
+  "persistent" : true,
+  "insertionIndex" : 19
+}

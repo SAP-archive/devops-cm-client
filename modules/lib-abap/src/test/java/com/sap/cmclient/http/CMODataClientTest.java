@@ -126,11 +126,24 @@ public class CMODataClientTest extends RecordableTest {
         examinee.deleteTransport("A5DK900044");
     }
 
-    @Ignore("No test captured yet")
     @Test
-    public void releaseTransportTest() throws UnexpectedHttpResponseException, IOException, EntityProviderException, EdmException {
-        Transport transport = examinee.releaseTransport("A5DK900082");
-        System.out.println(transport);
+    public void releaseTransportStraightForwardTest() throws UnexpectedHttpResponseException, IOException, EntityProviderException, EdmException {
+        Transport transport = examinee.releaseTransport("A5DK900088");
+
+        // actually this is not tested in the code under test, its the duty of the caller to
+        // check this if the caller would like to check it (of course the caller should check ...)
+        // Reason for not checking it: in the client we should not make assumtions about what the
+        // server returns. Maybe it is also valid if the server returns an other state, maybe depending
+        // on some customizing.
+        assertThat(transport.getStatus(), is(equalTo("R")));
+
+        assertThat(transport.getTransportID(), is(equalTo("A5DK900088")));
+    }
+
+    @Test
+    public void releaseTransportFailsForUnknownTransportTest() throws UnexpectedHttpResponseException, IOException, EntityProviderException, EdmException {
+        thrown.expect(new ResponseCodeMatcher(400));
+        examinee.releaseTransport("A5DK99999");
     }
 
     @Ignore("No test captured yet")
