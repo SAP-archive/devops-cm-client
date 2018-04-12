@@ -11,7 +11,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
@@ -31,25 +30,6 @@ public class ABAPTransportTest extends ABAPBackendTest {
         replay(factoryMock, clientMock);
 
         return factoryMock;
-    }
-
-    @Test
-    public void testGetTransportDescriptionStraightForward() throws Exception {
-
-        Map<String, Object> m = Maps.newHashMap();
-        m.put("Id", "999");
-        m.put("Description", "desc");
-        setMock(setupGetTransportMock(new Transport(m)));
-
-        Commands.main(new String[]
-                {       "-e", "http://example.org:8000/endpoint",
-                        "-u", "me",
-                        "-p", "openSesame",
-                        "-t", "ABAP",
-                        "get-transport-description",
-                        "-tID", "999"});
-
-        assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")), is(equalTo("desc")));
     }
 
     @Test
