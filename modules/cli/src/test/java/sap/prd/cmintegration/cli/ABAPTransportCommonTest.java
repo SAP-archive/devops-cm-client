@@ -47,7 +47,8 @@ public class ABAPTransportCommonTest extends ABAPBackendTest {
                 "get-transport-description",
                 "get-transport-status",
                 "is-transport-modifiable",
-                "get-transport-target-system"
+                "get-transport-target-system",
+                "get-transport-type"
                 );
     }
 
