@@ -240,7 +240,7 @@ public class CMODataAbapClient {
         return dataModel;
     }
 
-    private synchronized String getCSRFToken() throws ClientProtocolException, IOException {
+    private synchronized String getCSRFToken() throws ClientProtocolException, IOException, UnexpectedHttpResponseException {
 
         if(this.csrfToken == null) {
             HttpGet httpGet = new HttpGet(this.endpoint);
@@ -248,6 +248,7 @@ public class CMODataAbapClient {
             httpGet.addHeader(HttpHeaders.ACCEPT, "application/xml");
             try(CloseableHttpClient client = clientFactory.createClient()) {
                 try(CloseableHttpResponse response = client.execute(httpGet)) {
+                    hasStatusOrFail(response, 200);
                     Header[] csrfHeaders = response.getHeaders("x-csrf-token");
                     if(csrfHeaders.length != 1) throw new IllegalStateException("Multiple or no csrfHeaders received.");
                     this.csrfToken = csrfHeaders[0].getValue();
