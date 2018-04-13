@@ -15,6 +15,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.olingo.odata2.api.edm.EdmException;
+import org.apache.olingo.odata2.api.ep.EntityProviderException;
 
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
@@ -45,7 +47,7 @@ public class ImportTransport extends Command {
     }
 
     @Override
-    void execute() throws UnexpectedHttpResponseException, IOException, URISyntaxException {
+    void execute() throws UnexpectedHttpResponseException, IOException, URISyntaxException, EntityProviderException, EdmException {
         AbapClientFactory.getInstance().newClient(host, user, password).importTransport(systemId, transportId);
     }
 

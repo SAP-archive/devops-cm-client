@@ -3,7 +3,6 @@ package sap.prd.cmintegration.cli;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -29,7 +28,7 @@ public class ABAPBackendImportTransportTest extends ABAPBackendTest {
         AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
         CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
 
-        clientMock.importTransport(capture(systemId), capture(transportId)); expectLastCall();
+        expect(clientMock.importTransport(capture(systemId), capture(transportId))).andReturn(t);
         expect(factoryMock.newClient(capture(host), capture(user), capture(password))).andReturn(clientMock);
 
         replay(factoryMock, clientMock);

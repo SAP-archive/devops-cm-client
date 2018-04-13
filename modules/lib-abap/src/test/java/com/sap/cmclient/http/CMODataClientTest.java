@@ -146,10 +146,18 @@ public class CMODataClientTest extends RecordableTest {
         examinee.releaseTransport("A5DK99999");
     }
 
-    @Ignore("No test captured yet")
+    @Ignore("At the moment an empty transport, also ID is blank, is returned. "
+            + "The import 'as it' works, but we cannot deal with an empty import."
+            + "Of course there should be a reasonsable transport instance available"
+            + "after the import in order to e.g. check the transport status after the"
+            + "import.")
     @Test
-    public void importTransportTest() throws UnexpectedHttpResponseException, IOException {
-        examinee.importTransport("A5D", "A5DK900057");
+    public void importTransportTest() throws Exception {
+        Transport imported = examinee.importTransport("A5T", "A5DK900058");
+
+        assertThat(imported.getStatus(), is(equalTo("TODO"))); //TODO: which status do we expect after the import
+
+        assertThat(imported.getTransportID(), is(equalTo("A5DK900058")));
     }
 
     private static class ResponseCodeMatcher extends BaseMatcher<UnexpectedHttpResponseException> {
