@@ -36,7 +36,7 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
     protected TransportRelatedSOLMAN(String host, String user, String password,
             String changeId, String transportId) {
 
-        super(host, user, password, transportId);
+        super(host, user, password, transportId, false);
 
         checkArgument(! isBlank(changeId), "No changeId provided.");
         this.changeId = changeId;

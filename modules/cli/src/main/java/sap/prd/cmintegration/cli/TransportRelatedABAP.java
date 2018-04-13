@@ -24,8 +24,8 @@ import com.sap.cmclient.http.UnexpectedHttpResponseException;
 abstract class TransportRelatedABAP extends TransportRelated {
 
     protected TransportRelatedABAP(String host, String user, String password,
-            String transportId) {
-        super(host, user, password, transportId);
+            String transportId, boolean returnCodeMode) {
+        super(host, user, password, transportId, returnCodeMode);
     }
 
     protected static void main(Class<? extends TransportRelated> clazz, Options options, String[] args, String usage, String argumentDocu, String helpText) throws Exception {
@@ -33,7 +33,7 @@ abstract class TransportRelatedABAP extends TransportRelated {
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
         if(helpRequested(args)) {
-            handleHelpOption(usage, argumentDocu, helpText, TransportRelated.Opts.addOpts(new Options(), false));
+            handleHelpOption(usage, argumentDocu, helpText, TransportRelated.Opts.addOpts(options, false));
             return;
         }
 
@@ -45,13 +45,14 @@ abstract class TransportRelatedABAP extends TransportRelated {
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getTransportId(commandLine)).execute();
+                getTransportId(commandLine),
+                isReturnCodeMode(commandLine)).execute();
     }
 
-    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String transportId) {
+    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String transportId, boolean returnCodeMode) {
         try {
-            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class})
-            .newInstance(new Object[] {host, user, password, transportId});
+            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, Boolean.TYPE})
+            .newInstance(new Object[] {host, user, password, transportId, returnCodeMode});
         } catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException(format("Cannot instanciate class '%s'.", clazz.getName()),e);
         }
@@ -66,5 +67,9 @@ abstract class TransportRelatedABAP extends TransportRelated {
                 | URISyntaxException e) {
             throw new RuntimeException(String.format("Cannot retrieve transport for transportId '%s'.", transportId), e);
         }
+    }
+
+    protected static boolean isReturnCodeMode(CommandLine commandLine) {
+        return commandLine.hasOption(TransportRelated.Opts.RETURN_CODE.getOpt());
     }
 }

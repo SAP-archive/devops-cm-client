@@ -20,8 +20,15 @@ import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 public abstract class TransportRelated extends Command {
 
+    private final boolean returnCodeMode;
+
     protected static class Opts {
         protected final static Option TRANSPORT_ID = newOption("tID", "transport-id", "transportID.", "tId", true);
+        protected final static Option RETURN_CODE = Commands.CMOptions.newOption("rc", "return-code",
+                    "If used with this option return code is 0 " +
+                    "in case of a modifiable transport and 3 in case " +
+                    "the transport is not modifiable. In this mode nothing is " +
+                    "emitted to STDOUT.", null, false);
 
         protected static Options addOpts(Options options, boolean includeStandardOpts) {
             if(includeStandardOpts) {
@@ -30,6 +37,28 @@ public abstract class TransportRelated extends Command {
             options.addOption(TransportRelated.Opts.TRANSPORT_ID);
             return options;
         }
+    }
+
+    private static class FollowUp {
+        private final static Function<String, Void> printToStdout = new Function<String, Void>() {
+
+            @Override
+            public Void apply(String output) {
+                if(output != null) System.out.println(output);
+                return null;
+            }
+        },
+        raiseFriendlyExitException = new Function<String, Void>() {
+
+            // yes, this is some kind of miss-use of exceptions.
+
+            @Override
+            public Void apply(String output) {
+                if(output != null && ! Boolean.valueOf(output))
+                    throw new ExitException(ExitException.ExitCodes.FALSE);
+                return null;
+            }
+        };
     }
 
     protected final static Function<Transport, String> getDescription = new Function<Transport, String>() {
@@ -72,10 +101,11 @@ public abstract class TransportRelated extends Command {
 
     protected final String transportId;
 
-    protected TransportRelated(String host, String user, String password, String transportId) {
+    protected TransportRelated(String host, String user, String password, String transportId, boolean returnCodeMode) {
         super(host, user, password);
         checkArgument(! isBlank(transportId), "No transportId provided.");
         this.transportId = transportId;
+        this.returnCodeMode = returnCodeMode;
     }
 
     protected final static Logger logger = LoggerFactory.getLogger(TransportRelated.class);
@@ -105,14 +135,9 @@ public abstract class TransportRelated extends Command {
                 transportId,
                 t.isModifiable(), t.getOwner(), t.getDescription()));
 
-        getAction().andThen(new Function<String, Void>() {
-
-            @Override
-            public Void apply(String output) {
-                if(output != null) System.out.println(output);
-                return null;
-            }
-        }).apply(t);
+        getAction()
+            .andThen(returnCodeMode ? FollowUp.raiseFriendlyExitException : FollowUp.printToStdout)
+            .apply(t);
     }
 
     static String getTransportId(CommandLine commandLine) {

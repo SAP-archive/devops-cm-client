@@ -14,8 +14,8 @@ import com.sap.cmclient.Transport;
 @CommandDescriptor(name="get-transport-description", type = BackendType.ABAP)
 class GetTransportDescriptionABAP extends TransportRelatedABAP {
 
-    GetTransportDescriptionABAP(String host, String user, String password, String transportId) {
-        super(host, user, password, transportId);
+    GetTransportDescriptionABAP(String host, String user, String password, String transportId, boolean returnCodeMode) {
+        super(host, user, password, transportId, returnCodeMode);
     }
 
     @Override

@@ -14,8 +14,16 @@ import com.sap.cmclient.Transport;
 @CommandDescriptor(name="is-transport-modifiable", type = BackendType.ABAP)
 class GetTransportModifiableABAP extends TransportRelatedABAP {
 
-    GetTransportModifiableABAP(String host, String user, String password, String transportId) {
-        super(host, user, password, transportId);
+    static class Opts {
+
+        static Options addOption(Options options, boolean includeStandardOpts) {
+            TransportRelated.Opts.addOpts(options, includeStandardOpts);
+            return options.addOption(TransportRelated.Opts.RETURN_CODE);
+        }
+    }
+
+    GetTransportModifiableABAP(String host, String user, String password, String transportId, boolean returnCodeMode) {
+        super(host, user, password, transportId, returnCodeMode);
     }
 
     protected Function<Transport, String> getAction() {
@@ -23,7 +31,10 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
     }
 
     public final static void main(String[] args) throws Exception {
-        TransportRelatedABAP.main(GetTransportModifiableABAP.class, new Options(), args,
+
+        Options opts = Opts.addOption(new Options(), false); // will be added later in the parent class
+
+        TransportRelatedABAP.main(GetTransportModifiableABAP.class, opts, args,
             getCommandName(GetTransportModifiableABAP.class), "",
             "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }

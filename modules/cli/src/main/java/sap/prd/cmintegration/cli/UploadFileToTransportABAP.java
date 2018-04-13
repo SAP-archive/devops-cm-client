@@ -32,9 +32,9 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
     private final File upload;
 
     UploadFileToTransportABAP(String host, String user, String password,
-            String transportId, String filePath) {
+            String transportId, String filePath, boolean returnCodeMode) {
 
-        super(host, user, password, transportId);
+        super(host, user, password, transportId, returnCodeMode);
 
         checkArgument(! isBlank(filePath), "Upload file not provided.");
         this.upload = new File(filePath);
@@ -60,7 +60,8 @@ class UploadFileToTransportABAP extends TransportRelatedABAP {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getTransportId(commandLine),
-                getFilePath(commandLine)).execute();
+                getFilePath(commandLine),
+                false).execute();
     }
 
     static String getFilePath(CommandLine commandLine) {

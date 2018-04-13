@@ -14,8 +14,8 @@ import com.sap.cmclient.Transport;
 @CommandDescriptor(name="get-transport-owner", type = BackendType.ABAP)
 class GetTransportOwnerABAP extends TransportRelatedABAP {
 
-    GetTransportOwnerABAP(String host, String user, String password, String transportId) {
-        super(host, user, password, transportId);
+    GetTransportOwnerABAP(String host, String user, String password, String transportId, boolean returnCodeMode) {
+        super(host, user, password, transportId, returnCodeMode);
     }
 
     @Override

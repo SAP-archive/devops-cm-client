@@ -147,7 +147,10 @@ class Commands {
                       "    0  The request completed successfully.\n"
                     + "    1  The request did not complete successfully and\n"
                     + "       no more specific return code as defined below applies.\n"
-                    + "    2  Wrong credentials.";
+                    + "    2  Wrong credentials.\n"
+                    + "    3  Intentionally used by --return-code option in order to\n"
+                    + "       indicate 'false'. Only available for commands providing\n"
+                    + "       the --return-code option.";
 
             String commonOpts;
 
@@ -167,7 +170,7 @@ class Commands {
                     format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%n", 
                             commandName,
                             args != null ? args : ""),
-                    format("%s%n%nSUBCOMMAND OPTIONS:%n",header), options, footer);
+                    format("SUBCOMMAND OPTIONS:%n",header), options, footer);
 
         }
 
@@ -288,7 +291,6 @@ class Commands {
             } else {
                 throw new CMCommandLineException(String.format("Command '%s' not found for backend type '%s'.", commandName, type));
             }
-
         } catch (InvocationTargetException e) {
             logger.error(format("Exception caught while executing command '%s': '%s'.", commandName, e.getMessage()),e);
             throw handle(e);
