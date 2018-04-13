@@ -38,7 +38,7 @@ public class TransportTest {
     public void testTransportWithoutIdRaisesIllegalArgumentException() throws Exception {
 
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Key 'Id' must not be null");
+        thrown.expectMessage("Key 'Id' must not be blank");
 
         // The map created below does not have an id member
         new Transport(Maps.newHashMap());

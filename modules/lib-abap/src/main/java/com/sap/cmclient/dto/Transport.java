@@ -1,11 +1,13 @@
 package com.sap.cmclient.dto;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.String.format;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class Transport implements com.sap.cmclient.Transport {
 
@@ -24,7 +26,8 @@ public class Transport implements com.sap.cmclient.Transport {
 
     public Transport(Map<String, Object> props)
     {
-      if(props.get(ID) == null) throw new IllegalArgumentException(format("Key '%s' must not be null.", ID));
+      if(props.get(ID) != null && !(props.get(ID) instanceof String)) throw new IllegalArgumentException(format("%s property has invalid type.", ID));
+      if( isNullOrEmpty((String)props.get(ID))) throw new IllegalArgumentException(format("Key '%s' must not be blank.", ID));
       values =  new HashMap<String, Object>(props);
     }
 
