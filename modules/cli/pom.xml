@@ -53,7 +53,7 @@
         	<artifactId>hamcrest-library</artifactId>
         </dependency>
         <dependency>
-          <groupId>${parent.groupId}</groupId>
+          <groupId>${project.parent.groupId}</groupId>
           <artifactId>testutils</artifactId>
           <version>${project.version}</version>
         </dependency>
