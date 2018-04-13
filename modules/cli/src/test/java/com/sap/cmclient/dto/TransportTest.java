@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Rule;
@@ -13,10 +14,10 @@ import org.junit.rules.ExpectedException;
 import com.google.common.collect.Maps;
 
 public class TransportTest {
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    
+
     @Test
     public void testCreateTransportFromMap() {
 
@@ -42,5 +43,38 @@ public class TransportTest {
 
         // The map created below does not have an id member
         new Transport(Maps.newHashMap());
+    }
+
+    @Test
+    public void testTransportWithNullIdRaisesIllegalArgumentException() throws Exception {
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Key 'Id' must not be blank");
+
+        HashMap<String,Object> m = Maps.newHashMap();
+        m.put("Id",null);
+        new Transport(m);
+    }
+
+    @Test
+    public void testTransportWithEmptyStringIdRaisesIllegalArgumentException() throws Exception {
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Key 'Id' must not be blank");
+
+        HashMap<String,Object> m = Maps.newHashMap();
+        m.put("Id","");
+        new Transport(m);
+    }
+
+    @Test
+    public void testTransportWithInvalidTypeIdRaisesIllegalArgumentException() throws Exception {
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Property for key 'Id' has invalid type.");
+
+        HashMap<String,Object> m = Maps.newHashMap();
+        m.put("Id",new StringBuilder("a"));
+        new Transport(m);
     }
 }
