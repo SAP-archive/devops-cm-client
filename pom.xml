@@ -51,6 +51,7 @@
       <module>modules/lib-common</module>
       <module>modules/cli</module>
       <module>modules/dist.cli</module>
+      <module>modules/testutils</module>
     </modules>
     <dependencyManagement>
       <dependencies>

@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sap.cmclient.Transport;
+import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 public abstract class TransportRelated extends Command {
 
@@ -79,7 +80,7 @@ public abstract class TransportRelated extends Command {
 
     protected final static Logger logger = LoggerFactory.getLogger(TransportRelated.class);
 
-    protected abstract Optional<Transport> getTransport();
+    protected abstract Optional<Transport> getTransport() throws UnexpectedHttpResponseException;
 
     protected abstract Function<Transport, String> getAction();
 

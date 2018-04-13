@@ -57,12 +57,12 @@ abstract class TransportRelatedABAP extends TransportRelated {
         }
     }
 
-    protected Optional<Transport> getTransport() {
+    protected Optional<Transport> getTransport() throws UnexpectedHttpResponseException {
         com.sap.cmclient.dto.Transport transport;
         try {
             transport = AbapClientFactory.getInstance().newClient(host, user, password).getTransport(transportId);
             return transport != null ? Optional.of(transport) : Optional.empty();
-        } catch (EntityProviderException | EdmException | UnexpectedHttpResponseException | IOException
+        } catch (EntityProviderException | EdmException | IOException
                 | URISyntaxException e) {
             throw new RuntimeException(String.format("Cannot retrieve transport for transportId '%s'.", transportId), e);
         }

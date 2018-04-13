@@ -1,5 +1,7 @@
 package sap.prd.cmintegration.cli;
 
+import static com.sap.cmclient.Matchers.hasRootCause;
+import static com.sap.cmclient.Matchers.rootCauseMessageContains;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
@@ -15,11 +17,26 @@ import org.apache.commons.cli.MissingOptionException;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+import com.sap.cmclient.Matchers;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
+import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
 
+    private AbapClientFactory setupInvalidCredentialsMock() throws Exception {
+
+        AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
+        CMODataAbapClient clientMock = createMock(CMODataAbapClient.class);
+
+        expect(clientMock.getTransport(anyString())).andThrow(new UnexpectedHttpResponseException(StatusLines.UNAUTHORIZED));
+        expect(factoryMock.newClient(capture(host), capture(user), capture(password))).andReturn(clientMock);
+
+        replay(factoryMock, clientMock);
+
+        return factoryMock;
+
+    }
     private AbapClientFactory setupGetTransportMock(Transport t) throws Exception {
 
         AbapClientFactory factoryMock = createMock(AbapClientFactory.class);
@@ -95,6 +112,24 @@ public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
                         "-tID", "999"});
     }
 
+    @Test
+    public void testInvalidCredentialsProvided() throws Exception{
+
+        thrown.expect(ExitException.class);
+        thrown.expect(hasRootCause(UnexpectedHttpResponseException.class));
+        thrown.expect(rootCauseMessageContains("401"));
+
+        setMock(setupInvalidCredentialsMock());
+
+        Commands.main(new String[]
+                {       "-e", "http://example.org:8000/endpoint",
+                        "-u", "me",
+                        "-p", "openSesame",
+                        "-t", "ABAP",
+                        "get-transport-owner",
+                        "-tID", "999"});
+
+    }
     @Test
     public void testBackendTypeNotProvided() throws Exception {
 

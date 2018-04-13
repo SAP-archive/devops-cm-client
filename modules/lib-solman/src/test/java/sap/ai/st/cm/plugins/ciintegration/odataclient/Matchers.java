@@ -79,34 +79,7 @@ public class Matchers {
         }
     }
 
-    private static class RootCauseMatcher extends BaseMatcher<Exception> {
-
-        private final Class<? extends Exception> expectedRootCause;
-        private Throwable actualRootCause = null;
-
-        private RootCauseMatcher(Class<? extends Exception> expectedRootCause) {
-            this.expectedRootCause = expectedRootCause;
-        }
-
-        @Override
-        public boolean matches(Object o) {
-            actualRootCause = getRootCause((Exception)o);
-            return expectedRootCause.isAssignableFrom(actualRootCause.getClass());
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText(
-                format("Root cause found '%s' does not match the expected root cause '%s'.",
-                        (actualRootCause != null ? actualRootCause.getClass().getName() : "<n/a>"), expectedRootCause));
-        }
-    }
-
     private Matchers() {
-    }
-
-    static Matcher<Exception> hasRootCause(Class<? extends Exception> root) {
-        return new RootCauseMatcher(root);
     }
 
     static Matcher<HttpClientException> carriesStatusCode(int statusCode) {

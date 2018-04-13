@@ -1,5 +1,6 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import static com.sap.cmclient.Matchers.hasRootCause;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.capture;
 import static org.easymock.EasyMock.createMock;
@@ -11,7 +12,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.carriesStatusCode;
-import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasRootCause;
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerSideErrorMessage;
 
 import java.io.File;
