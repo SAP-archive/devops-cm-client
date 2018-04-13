@@ -38,12 +38,12 @@ public class SolManBackendReleaseTransportTest extends CMSolmanTestBase {
         // comment line below in order to run against real back-end
         setMock(setupMock(null));
 
-        ReleaseTransport.main(new String[] {
+        Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
-                "dummy-cmd",
+                "release-transport",
                 "-cID", "8000038673", "-tID", "L21K90002K"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -59,12 +59,12 @@ public class SolManBackendReleaseTransportTest extends CMSolmanTestBase {
         // comment line below in order to run against real back-end
         setMock(setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST)));
 
-        ReleaseTransport.main(new String[] {
+        Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
-                "dummy-cmd",
+                "release-transport",
                 "-cID", "8000038673", "-tID", "L21K900026"});
     }
 
