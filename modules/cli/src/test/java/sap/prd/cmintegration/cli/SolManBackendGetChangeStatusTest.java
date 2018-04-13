@@ -18,6 +18,8 @@ import org.apache.commons.cli.MissingOptionException;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.junit.Test;
 
+import com.sap.cmclient.Matchers;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
@@ -53,12 +55,12 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         // Comment line below in order to go against the real back-end as specified via -h
         setMock(setupMock());
 
-        GetChangeStatus.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
-        "dummy-cmd",
+        "is-change-in-development",
         "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -72,18 +74,20 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
     @Test
     public void testGetChangeStatusWithBadCredentials() throws Exception {
 
-        thrown.expect(ODataClientErrorException.class);
-        thrown.expectMessage("401");
+        thrown.expect(ExitException.class);
+        thrown.expect(Matchers.hasRootCause(ODataClientErrorException.class));
+        thrown.expect(Matchers.rootCauseMessageContains("401"));
+
         //
         // Comment line below in order to go against the real back-end as specified via -h
         setMock(setupMock(new ODataClientErrorException(StatusLines.UNAUTHORIZED)));
 
-        GetChangeStatus.main(new String[] {
+        Commands.main(new String[] {
         "-u", "DOES_NOT_EXIST",
         "-p", "********",
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
-        "dummy-cmd",
+        "is-change-in-development",
         "-cID", "8000038673"});
     }
 
@@ -97,12 +101,12 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         setMock(setupMock(new ODataClientErrorException(StatusLines.NOT_FOUND)));
 
         try {
-            GetChangeStatus.main(new String[] {
+            Commands.main(new String[] {
             "-u", SERVICE_USER,
             "-p", SERVICE_PASSWORD,
             "-e", SERVICE_ENDPOINT,
             "-t", "SOLMAN",
-            "dummy-cmd",
+            "is-change-in-development",
             "-cID", "DOES_NOT_EXIST"});
         } catch(Exception e) {
             assertThat(changeId.getValue(), is(equalTo("DOES_NOT_EXIST")));
@@ -119,11 +123,12 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         // Comment line below in order to go against the real back-end as specified via -h
         setMock(setupMock());
 
-        GetChangeStatus.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN"});
+        "-t", "SOLMAN",
+        "is-change-in-development"});
     }
 
     @Test
@@ -137,12 +142,12 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         setMock(setupMock());
 
         try {
-          GetChangeStatus.main(new String[] {
+          Commands.main(new String[] {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
           "-t", "SOLMAN",
-          "dummy-cmd",
+          "is-change-in-development",
           "-cID", "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -165,11 +170,12 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         setMock(setupMock());
 
         try {
-          GetChangeStatus.main(new String[] {
+          Commands.main(new String[] {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
           "-t", "SOLMAN",
+          "is-change-in-development", 
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -189,11 +195,12 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         setMock(setupMock());
 
         try {
-          GetChangeStatus.main(new String[] {
+          Commands.main(new String[] {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
           "-t", "SOLMAN",
+          "is-change-in-development",
           "8000038673"});
         } finally {
             System.setIn(oldIn);
@@ -210,10 +217,11 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         // Comment line below in order to go against the real back-end as specified via -h
         setMock(setupMock());
 
-        GetChangeStatus.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
+        "is-change-in-development",
         "8000038673"});
     }
 }
