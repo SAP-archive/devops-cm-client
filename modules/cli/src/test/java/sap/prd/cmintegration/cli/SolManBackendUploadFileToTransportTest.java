@@ -43,12 +43,12 @@ public class SolManBackendUploadFileToTransportTest extends CMSolmanTestBase {
         File upload = tmp.newFile(fileName);
         FileUtils.touch(upload);
 
-        UploadFileToTransportSOLMAN.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
-        "dummy-cmd",
+        "upload-file-to-transport",
         "-cID", "8000042445", "-tID", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
@@ -82,12 +82,12 @@ public class SolManBackendUploadFileToTransportTest extends CMSolmanTestBase {
 
         setMock(setupMock());
 
-        UploadFileToTransportSOLMAN.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
-        "dummy-cmd",
+        "upload-file-to-transport",
         "-cID", "8000042445", "-tID", "L21K90002J", "HCP", upload.getAbsolutePath()
         });
 
