@@ -41,12 +41,12 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
         setMock(setupStraightForwardMock());
 
-        CreateTransportSOLMAN.main(new String[] {
+        Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
-                "dummy-cmd",
+                "create-transport",
                 "-cID", "8000038673"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
@@ -62,12 +62,12 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
-        CreateTransportSOLMAN.main(new String[] {
+        Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
-                "dummy-cmd",
+                "create-transport",
                 "--owner", "me",
                 "--description", "lorem ipsum",
                 "-cID", "8000038673"});
@@ -85,12 +85,12 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
-        CreateTransportSOLMAN.main(new String[] {
+        Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
-                "dummy-cmd",
+                "create-transport",
                 "--owner", "me",
                 "-cID", "8000038673"});
 
@@ -107,12 +107,12 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
         setMock(setupStraightForwardMock("me", "lorem ipsum"));
 
-        CreateTransportSOLMAN.main(new String[] {
+        Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
-                "dummy-cmd",
+                "create-transport",
                 "--description", "lorem ipsum",
                 "-cID", "8000038673"});
 
