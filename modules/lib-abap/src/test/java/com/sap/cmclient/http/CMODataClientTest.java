@@ -130,9 +130,9 @@ public class CMODataClientTest extends RecordableTest {
     public void releaseTransportStraightForwardTest() throws UnexpectedHttpResponseException, IOException, EntityProviderException, EdmException {
         Transport transport = examinee.releaseTransport("A5DK900088");
 
-        // actually this is not tested in the code under test, its the duty of the caller to
+        // actually this is not checked in the code under test, its the duty of the caller to
         // check this if the caller would like to check it (of course the caller should check ...)
-        // Reason for not checking it: in the client we should not make assumtions about what the
+        // Reason for not checking it: in the client we should not make assumptions about what the
         // server returns. Maybe it is also valid if the server returns an other state, maybe depending
         // on some customizing.
         assertThat(transport.getStatus(), is(equalTo("R")));
