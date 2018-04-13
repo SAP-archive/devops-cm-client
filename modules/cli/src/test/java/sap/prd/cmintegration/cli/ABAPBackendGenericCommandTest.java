@@ -17,7 +17,6 @@ import org.apache.commons.cli.MissingOptionException;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
-import com.sap.cmclient.Matchers;
 import com.sap.cmclient.dto.Transport;
 import com.sap.cmclient.http.CMODataAbapClient;
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
