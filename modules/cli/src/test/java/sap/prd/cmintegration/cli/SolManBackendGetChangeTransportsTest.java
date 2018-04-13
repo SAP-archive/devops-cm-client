@@ -35,12 +35,12 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
         // Comment line below in order to go against the real back-end as specified via -h
         setMock(setupMock());
 
-        GetChangeTransports.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
-        "dummy-cmd",
+        "get-transports",
         "-cID", "8000038673"});
 
         Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));
@@ -65,12 +65,12 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
         // Comment line below in order to go against the real back-end as specified via -h
         setMock(setupMock());
 
-        GetChangeTransports.main(new String[] {
+        Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
         "-t", "SOLMAN",
-        "dummy-cmd", "-m",
+        "get-transports", "-m",
         "-cID", "8000038673"});
 
         Collection<String> transportIds = asList(IOUtils.toString(result.toByteArray(), "UTF-8").split("\\r?\\n"));
@@ -82,7 +82,10 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
 
     @Test
     public void testHelp() throws Exception {
-        GetChangeTransports.main(new String[] {"--help"});
+        Commands.main(new String[] {
+                "-t", "SOLMAN",
+                "get-transports",
+                "--help"});
         String helpText = IOUtils.toString(result.toByteArray(), "UTF-8");
 
         assertThat(helpText, new BaseMatcher<String>() {
