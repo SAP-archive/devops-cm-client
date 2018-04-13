@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.io.IOUtils;
 import org.easymock.Capture;
 import org.junit.Test;
@@ -68,6 +69,54 @@ public class ABAPBackendCreateTransportTest extends ABAPBackendTest {
         assertThat(tMap.get("Description"), is(equalTo("desc")));
         assertThat(tMap.get("TarSystem"), is(equalTo("A5X")));
         assertThat(tMap.get("Type"), is(equalTo("K")));
+    }
+
+    @Test
+    public void testCreateTransportWithoutTransportTypeRaisesException() throws Exception {
+
+        thrown.expect(MissingOptionException.class);
+        thrown.expectMessage("Missing required option: tt");
+
+        Commands.main(new String[]
+                {       "-e", "http://example.org:8000/endpoint",
+                        "-u", "me",
+                        "-p", "openSesame",
+                        "-t", "ABAP",
+                        "create-transport",
+                        "-d", "desc",
+                        "-ts", "A5X"});
+    }
+
+    @Test
+    public void testCreateTransportWithoutDescriptionRaisesException() throws Exception {
+
+        thrown.expect(MissingOptionException.class);
+        thrown.expectMessage("Missing required option: d");
+
+        Commands.main(new String[]
+                {       "-e", "http://example.org:8000/endpoint",
+                        "-u", "me",
+                        "-p", "openSesame",
+                        "-t", "ABAP",
+                        "create-transport",
+                        "-tt", "K",
+                        "-ts", "A5X"});
+    }
+
+    @Test
+    public void testCreateTransportWithoutTargetSystemRaisesException() throws Exception {
+
+        thrown.expect(MissingOptionException.class);
+        thrown.expectMessage("Missing required option: ts");
+
+        Commands.main(new String[]
+                {       "-e", "http://example.org:8000/endpoint",
+                        "-u", "me",
+                        "-p", "openSesame",
+                        "-t", "ABAP",
+                        "create-transport",
+                        "-tt", "K",
+                        "-d", "desc"});
     }
 }
 
