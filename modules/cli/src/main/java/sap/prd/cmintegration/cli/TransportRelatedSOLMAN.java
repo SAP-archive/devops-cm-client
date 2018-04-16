@@ -34,15 +34,15 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
     }
 
     protected TransportRelatedSOLMAN(String host, String user, String password,
-            String changeId, String transportId) {
+            String changeId, String transportId, boolean returnCodeMode) {
 
-        super(host, user, password, transportId, false);
+        super(host, user, password, transportId, returnCodeMode);
 
         checkArgument(! isBlank(changeId), "No changeId provided.");
         this.changeId = changeId;
     }
 
-    protected static void main(Class<? extends TransportRelated> clazz, Options options, String[] args, String subCommandName, String argumentDocu, String helpText) throws Exception {
+    protected static void main(Class<? extends TransportRelatedSOLMAN> clazz, Options options, String[] args, String subCommandName, String argumentDocu, String helpText) throws Exception {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
@@ -59,7 +59,8 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                getTransportId(commandLine)).execute();
+                getTransportId(commandLine),
+                isReturnCodeMode(commandLine)).execute();
     }
 
     protected void execute() throws Exception {
@@ -70,10 +71,10 @@ abstract class TransportRelatedSOLMAN extends TransportRelated {
         }
     }
 
-    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String changeId, String transportId) {
+    private static TransportRelated newInstance(Class<? extends TransportRelatedSOLMAN> clazz, String host, String user, String password, String changeId, String transportId, boolean returnCodeMode) {
         try {
-            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, String.class})
-            .newInstance(new Object[] {host, user, password, changeId, transportId});
+            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, String.class, Boolean.TYPE})
+            .newInstance(new Object[] {host, user, password, changeId, transportId, returnCodeMode});
         } catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException(format("Cannot instanciate class '%s'.", clazz.getName()),e);
         }

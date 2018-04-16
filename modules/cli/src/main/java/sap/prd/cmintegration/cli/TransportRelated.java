@@ -147,4 +147,9 @@ public abstract class TransportRelated extends Command {
         }
         return transportID;
     }
+
+    protected static boolean isReturnCodeMode(CommandLine commandLine) {
+        return commandLine.hasOption(TransportRelated.Opts.RETURN_CODE.getOpt());
+    }
+
 }

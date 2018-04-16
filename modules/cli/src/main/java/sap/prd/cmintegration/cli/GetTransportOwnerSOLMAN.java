@@ -14,8 +14,8 @@ import com.sap.cmclient.Transport;
 @CommandDescriptor(name="get-transport-owner", type = BackendType.SOLMAN)
 class GetTransportOwnerSOLMAN extends TransportRelatedSOLMAN {
 
-    GetTransportOwnerSOLMAN(String host, String user, String password, String changeId, String transportId) {
-        super(host, user, password, changeId, transportId);
+    GetTransportOwnerSOLMAN(String host, String user, String password, String changeId, String transportId, boolean returnCodeMode) {
+        super(host, user, password, changeId, transportId, returnCodeMode);
     }
 
     @Override

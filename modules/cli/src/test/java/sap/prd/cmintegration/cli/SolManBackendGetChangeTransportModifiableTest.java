@@ -30,6 +30,23 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
     }
 
     @Test
+    public void getChangeTransportModifiableReturnCodeStraighForwardForNotModifiableTransport() throws Exception {
+
+        thrown.expect(ExitException.class);
+        thrown.expect(Matchers.exitCode(ExitException.ExitCodes.FALSE));
+
+        setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
+        Commands.main(new String[] {
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
+                "is-transport-modifiable",
+                "--return-code",
+                "-cID", "8000038673", "-tID", "L21K900026"});
+    }
+
+    @Test
     public void getChangeTransportModifiableStraighForwardForModifiableTransport() throws Exception {
 
         setMock(setupMock("L21K900026", "xOwner", "xDescription", true));
@@ -43,6 +60,27 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
 
         assertThat(Boolean.valueOf(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8"))),
                 is(equalTo(true)));
+
+        assertThat(changeId.getValue(), is(equalTo("8000038673")));
+    }
+
+    @Test
+    public void getChangeTransportModifiableStraighForwardReturnCodeForModifiableTransport() throws Exception {
+
+        // the absence of an ExitException means return code zero
+        setMock(setupMock("L21K900026", "xOwner", "xDescription", true));
+
+        Commands.main(new String[] {
+                "-u", SERVICE_USER,
+                "-p", SERVICE_PASSWORD,
+                "-e", SERVICE_ENDPOINT,
+                "-t", "SOLMAN",
+                "is-transport-modifiable",
+                "--return-code",
+                "-cID", "8000038673", "-tID", "L21K900026"});
+
+        assertThat(removeCRLF(IOUtils.toString(result.toByteArray(), "UTF-8")),
+                is(equalTo("")));
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
     }

@@ -1,15 +1,13 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static sap.prd.cmintegration.cli.Matchers.exitCode;
 
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
@@ -92,24 +90,7 @@ public class ABAPBackendIsTransportModifiableTest extends ABAPBackendTransportTe
     public void testGetTransportIsModifiableForReleasedTransportReturnsNonZeroReturnCode() throws Exception {
 
         thrown.expect(ExitException.class);
-        thrown.expect(new BaseMatcher<Exception>() {
-
-            private int exitCode = -1;
-
-            @Override
-            public boolean matches(Object item) {
-                if(! (item instanceof ExitException)) {
-                    return false;
-                }
-                exitCode = ((ExitException)item).getExitCode();
-                return exitCode == ExitException.ExitCodes.FALSE;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText(format("Unexpected exit code received: %d", exitCode));
-            }
-        });
+        thrown.expect(exitCode(ExitException.ExitCodes.FALSE));
 
         setMock(setupGetTransportMock(releasedTransport));
 

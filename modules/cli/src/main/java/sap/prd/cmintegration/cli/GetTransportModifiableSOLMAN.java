@@ -14,8 +14,14 @@ import com.sap.cmclient.Transport;
 @CommandDescriptor(name="is-transport-modifiable", type = BackendType.SOLMAN)
 class GetTransportModifiableSOLMAN extends TransportRelatedSOLMAN {
 
-    GetTransportModifiableSOLMAN(String host, String user, String password, String changeId, String transportId) {
-        super(host, user, password, changeId, transportId);
+    private static class Opts {
+        static Options addOptions(Options opts, boolean includeStandardOpts) {
+            TransportRelatedSOLMAN.Opts.addOptions(opts, includeStandardOpts);
+            return opts.addOption(TransportRelated.Opts.RETURN_CODE);
+        }
+    }
+    GetTransportModifiableSOLMAN(String host, String user, String password, String changeId, String transportId, boolean returnCodeMode) {
+        super(host, user, password, changeId, transportId, returnCodeMode);
     }
 
     protected Function<Transport, String> getAction() {
@@ -23,7 +29,7 @@ class GetTransportModifiableSOLMAN extends TransportRelatedSOLMAN {
     }
 
     public final static void main(String[] args) throws Exception {
-        TransportRelatedSOLMAN.main(GetTransportModifiableSOLMAN.class, new Options(), args,
+        TransportRelatedSOLMAN.main(GetTransportModifiableSOLMAN.class, Opts.addOptions(new Options(), true), args,
             getCommandName(GetTransportModifiableSOLMAN.class), "",
             "Returns 'true' if the transport is modifiable. Otherwise 'false'.");
     }

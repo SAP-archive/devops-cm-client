@@ -53,9 +53,9 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
     private final File upload;
 
     UploadFileToTransportSOLMAN(String host, String user, String password,
-            String changeId, String transportId, String applicationId, String filePath) {
+            String changeId, String transportId, String applicationId, String filePath, boolean returnCodeMode) {
 
-        super(host, user, password, changeId, transportId);
+        super(host, user, password, changeId, transportId, returnCodeMode);
 
         checkArgument(! isBlank(applicationId), "applicationId was null or empty.");
         checkArgument(! isBlank(filePath), "filePath was null or empty.");
@@ -88,7 +88,8 @@ class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
                 getChangeId(commandLine),
                 getTransportId(commandLine),
                 getApplicationId(commandLine),
-                getFilePath(commandLine)).execute();
+                getFilePath(commandLine),
+                isReturnCodeMode(commandLine)).execute();
     }
 
     static String getApplicationId(CommandLine commandLine) {

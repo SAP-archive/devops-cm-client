@@ -28,7 +28,7 @@ abstract class TransportRelatedABAP extends TransportRelated {
         super(host, user, password, transportId, returnCodeMode);
     }
 
-    protected static void main(Class<? extends TransportRelated> clazz, Options options, String[] args, String usage, String argumentDocu, String helpText) throws Exception {
+    protected static void main(Class<? extends TransportRelatedABAP> clazz, Options options, String[] args, String usage, String argumentDocu, String helpText) throws Exception {
 
         logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
 
@@ -49,7 +49,7 @@ abstract class TransportRelatedABAP extends TransportRelated {
                 isReturnCodeMode(commandLine)).execute();
     }
 
-    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String transportId, boolean returnCodeMode) {
+    private static TransportRelated newInstance(Class<? extends TransportRelatedABAP> clazz, String host, String user, String password, String transportId, boolean returnCodeMode) {
         try {
             return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, Boolean.TYPE})
             .newInstance(new Object[] {host, user, password, transportId, returnCodeMode});
@@ -67,9 +67,5 @@ abstract class TransportRelatedABAP extends TransportRelated {
                 | URISyntaxException e) {
             throw new RuntimeException(String.format("Cannot retrieve transport for transportId '%s'.", transportId), e);
         }
-    }
-
-    protected static boolean isReturnCodeMode(CommandLine commandLine) {
-        return commandLine.hasOption(TransportRelated.Opts.RETURN_CODE.getOpt());
     }
 }
