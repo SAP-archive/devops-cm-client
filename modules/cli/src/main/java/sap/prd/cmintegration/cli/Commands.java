@@ -55,10 +55,10 @@ class Commands {
                       CHANGE_ID = newOption("cID", "change-id", "changeID.", "cID", false),
 
                       RETURN_CODE = newOption("rc", "return-code",
-                          "If used with this option return code is 0 " +
-                          "in case of a modifiable transport and 3 in case " +
+                          format("If used with this option return code is %s " +
+                          "in case of a modifiable transport and %d in case " +
                           "the transport is not modifiable. In this mode nothing is " +
-                          "emitted to STDOUT.", null, false);
+                          "emitted to STDOUT.", ExitException.ExitCodes.OK, ExitException.ExitCodes.FALSE), null, false);
 
         static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
             Option o = new Option(shortKey, longKey, argName != null, desc);
@@ -149,14 +149,18 @@ class Commands {
 
         static void handleHelpOption(String commandName, String header, String args, Options options) {
 
-            String exitCodes = 
-                      "    0  The request completed successfully.\n"
-                    + "    1  The request did not complete successfully and\n"
+            String exitCodes = format(
+                      "    %d  The request completed successfully.\n"
+                    + "    %d  The request did not complete successfully and\n"
                     + "       no more specific return code as defined below applies.\n"
-                    + "    2  Wrong credentials.\n"
-                    + "    3  Intentionally used by --return-code option in order to\n"
+                    + "    %d  Wrong credentials.\n"
+                    + "    %d  Intentionally used by --return-code option in order to\n"
                     + "       indicate 'false'. Only available for commands providing\n"
-                    + "       the --return-code option.";
+                    + "       the --return-code option.",
+                        ExitException.ExitCodes.OK,
+                        ExitException.ExitCodes.GENERIC_FAILURE,
+                        ExitException.ExitCodes.NOT_AUTHENTIFICATED,
+                        ExitException.ExitCodes.FALSE);
 
             String commonOpts;
 
