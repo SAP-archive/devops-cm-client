@@ -61,10 +61,12 @@ class Commands {
                           "emitted to STDOUT.", ExitException.ExitCodes.OK, ExitException.ExitCodes.FALSE), null, false);
 
         static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
-            Option o = new Option(shortKey, longKey, argName != null, desc);
-            o.setArgName(argName);
-            o.setRequired(required);
-            return o;
+            return Option.builder(shortKey)
+                        .hasArg(argName != null)
+                        .argName(argName)
+                        .longOpt(longKey)
+                        .desc(desc)
+                        .required(required).build();
         }
     }
 
