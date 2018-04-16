@@ -53,6 +53,10 @@
         	<artifactId>hamcrest-library</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+        </dependency>
+        <dependency>
           <groupId>${project.parent.groupId}</groupId>
           <artifactId>testutils</artifactId>
           <version>${project.version}</version>
