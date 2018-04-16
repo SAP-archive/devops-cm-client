@@ -12,7 +12,7 @@ import com.sap.cmclient.Transport;
 /**
  * Command for retrieving the owner of a transport.
  */
-@CommandDescriptor(name="get-transport-type", type = BackendType.ABAP)
+@CommandDescriptor(name="get-transport-type", type = BackendType.CTS)
 class GetTransportTypeABAP extends TransportRelatedABAP {
 
     GetTransportTypeABAP(String host, String user, String password, String transportId, boolean returnCodeMode) {

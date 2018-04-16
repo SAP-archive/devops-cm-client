@@ -1,3 +1,3 @@
 package sap.prd.cmintegration.cli;
 
-public enum BackendType  {ABAP, SOLMAN};
+public enum BackendType  {CTS, SOLMAN};

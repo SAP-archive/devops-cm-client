@@ -26,7 +26,7 @@ public class ABAPBackendTransportDescriptionTest extends ABAPBackendTransportTes
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-description",
                         "-tID", "999"});
 

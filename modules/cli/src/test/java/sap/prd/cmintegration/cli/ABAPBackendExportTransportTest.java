@@ -50,7 +50,7 @@ public class ABAPBackendExportTransportTest extends ABAPBackendTest {
                 "-e", "http://example.org:8000/endpoint",
                 "-u", "me",
                 "-p", "openSesame",
-                "-t", "ABAP",
+                "-t", "CTS",
                 "export-transport",
                 "-tID", "999"});
 
@@ -68,7 +68,7 @@ public class ABAPBackendExportTransportTest extends ABAPBackendTest {
                 "-e", "http://example.org:8000/endpoint",
                 "-u", "me",
                 "-p", "openSesame",
-                "-t", "ABAP",
+                "-t", "CTS",
                 "export-transport"
                 });
     }

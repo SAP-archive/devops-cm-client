@@ -11,7 +11,7 @@ import com.sap.cmclient.Transport;
 /**
  * Command for retrieving the owner of a transport.
  */
-@CommandDescriptor(name="get-transport-owner", type = BackendType.ABAP)
+@CommandDescriptor(name="get-transport-owner", type = BackendType.CTS)
 class GetTransportOwnerABAP extends TransportRelatedABAP {
 
     GetTransportOwnerABAP(String host, String user, String password, String transportId, boolean returnCodeMode) {

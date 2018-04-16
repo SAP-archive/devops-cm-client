@@ -27,7 +27,7 @@ import com.sap.cmclient.http.CMODataAbapClient;
 /**
  * Command for creating a transport for a change in SAP Solution Manager.
  */
-@CommandDescriptor(name = "create-transport", type = BackendType.ABAP)
+@CommandDescriptor(name = "create-transport", type = BackendType.CTS)
 class CreateTransportABAP extends Command {
 
     private static class Opts {

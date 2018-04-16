@@ -41,7 +41,7 @@ public class ABAPBackendIsTransportModifiableTest extends ABAPBackendTransportTe
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "is-transport-modifiable",
                         "-tID", "999"});
 
@@ -58,7 +58,7 @@ public class ABAPBackendIsTransportModifiableTest extends ABAPBackendTransportTe
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "is-transport-modifiable",
                         "-tID", "999"});
 
@@ -77,7 +77,7 @@ public class ABAPBackendIsTransportModifiableTest extends ABAPBackendTransportTe
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "is-transport-modifiable",
                         "--return-code",
                         "-tID", "999"});
@@ -98,7 +98,7 @@ public class ABAPBackendIsTransportModifiableTest extends ABAPBackendTransportTe
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "is-transport-modifiable",
                         "--return-code",
                         "-tID", "999"});

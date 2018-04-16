@@ -20,7 +20,7 @@ import org.apache.olingo.odata2.api.ep.EntityProviderException;
 
 import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
-@CommandDescriptor(name="import-transport", type = BackendType.ABAP)
+@CommandDescriptor(name="import-transport", type = BackendType.CTS)
 public class ImportTransport extends Command {
 
     static class Opts {

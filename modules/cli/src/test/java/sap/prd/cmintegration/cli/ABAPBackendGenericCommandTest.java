@@ -60,7 +60,7 @@ public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner",
                         "-tID", "999"});
 
@@ -78,7 +78,7 @@ public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
         Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner",
                         "-tID", "999"});
     }
@@ -92,7 +92,7 @@ public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
         Commands.main(new String[]
                 {       "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner",
                         "-tID", "999"});
     }
@@ -106,7 +106,7 @@ public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
         Commands.main(new String[]
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner",
                         "-tID", "999"});
     }
@@ -124,7 +124,7 @@ public class ABAPBackendGenericCommandTest extends ABAPBackendTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner",
                         "-tID", "999"});
 

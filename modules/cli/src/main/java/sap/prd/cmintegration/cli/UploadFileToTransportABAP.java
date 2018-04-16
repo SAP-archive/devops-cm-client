@@ -25,7 +25,7 @@ import com.sap.cmclient.Transport;
 /**
  * Command for uploading a file into a transport.
  */
-@CommandDescriptor(name="upload-file-to-transport", type = BackendType.ABAP)
+@CommandDescriptor(name="upload-file-to-transport", type = BackendType.CTS)
 class UploadFileToTransportABAP extends TransportRelatedABAP {
 
     final static private Logger logger = LoggerFactory.getLogger(TransportRelatedSOLMAN.class);

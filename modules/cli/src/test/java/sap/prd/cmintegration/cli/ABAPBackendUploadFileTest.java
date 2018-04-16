@@ -55,7 +55,7 @@ public class ABAPBackendUploadFileTest extends CMABAPBackendTestBase {
                         "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "upload-file-to-transport",
                         "-tID", "999",
                         upload.getAbsolutePath()
@@ -77,7 +77,7 @@ public class ABAPBackendUploadFileTest extends CMABAPBackendTestBase {
                         "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "upload-file-to-transport",
                         "-tID", "999",
                         "does/not/exist.txt"
@@ -96,7 +96,7 @@ public class ABAPBackendUploadFileTest extends CMABAPBackendTestBase {
                         "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "upload-file-to-transport",
                         "-tID", "999",
                         upload.getAbsolutePath()

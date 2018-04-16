@@ -27,7 +27,7 @@ public class ABAPBackendGetTransportOwnerTest extends ABAPBackendTransportTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner",
                         "-tID", "999"});
 
@@ -44,7 +44,7 @@ public class ABAPBackendGetTransportOwnerTest extends ABAPBackendTransportTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "get-transport-owner"});
     }
 }

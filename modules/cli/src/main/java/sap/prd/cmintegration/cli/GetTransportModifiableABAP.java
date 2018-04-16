@@ -11,7 +11,7 @@ import com.sap.cmclient.Transport;
 /**
  *  Checks if a transport is modifiable.
  */
-@CommandDescriptor(name="is-transport-modifiable", type = BackendType.ABAP)
+@CommandDescriptor(name="is-transport-modifiable", type = BackendType.CTS)
 class GetTransportModifiableABAP extends TransportRelatedABAP {
 
     static class Opts {

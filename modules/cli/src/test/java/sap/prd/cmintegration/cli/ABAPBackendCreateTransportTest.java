@@ -47,7 +47,7 @@ public class ABAPBackendCreateTransportTest extends ABAPBackendTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "create-transport",
                         "-tt", "K",
                         "-d", "desc",
@@ -81,7 +81,7 @@ public class ABAPBackendCreateTransportTest extends ABAPBackendTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "create-transport",
                         "-d", "desc",
                         "-ts", "A5X"});
@@ -97,7 +97,7 @@ public class ABAPBackendCreateTransportTest extends ABAPBackendTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "create-transport",
                         "-tt", "K",
                         "-ts", "A5X"});
@@ -113,7 +113,7 @@ public class ABAPBackendCreateTransportTest extends ABAPBackendTest {
                 {       "-e", "http://example.org:8000/endpoint",
                         "-u", "me",
                         "-p", "openSesame",
-                        "-t", "ABAP",
+                        "-t", "CTS",
                         "create-transport",
                         "-tt", "K",
                         "-d", "desc"});
