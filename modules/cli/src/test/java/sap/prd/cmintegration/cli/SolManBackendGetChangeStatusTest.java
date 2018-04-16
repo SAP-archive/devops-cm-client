@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.cli.MissingOptionException;
+import org.apache.commons.io.IOUtils;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
 import org.junit.Test;
 
@@ -26,14 +27,22 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
 
     private SolmanClientFactory setupMock() throws Exception {
-        return setupMock(null);
+        return setupMock(true, null);
+    }
+
+    private SolmanClientFactory setupMock(boolean isInDevelopment) throws Exception {
+        return setupMock(isInDevelopment, null);
     }
 
     private SolmanClientFactory setupMock(Exception ex) throws Exception {
+        return setupMock(true, ex);
+    }
+
+    private SolmanClientFactory setupMock(boolean isInDevelopment, Exception ex) throws Exception {
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         clientMock.close(); expectLastCall();
         if(ex == null) {
-            CMODataChange change = new CMODataChange("8000038673", true);
+            CMODataChange change = new CMODataChange("8000038673", isInDevelopment);
             expect(clientMock.getChange(capture(changeId))).andReturn(change);
         } else {
             expect(clientMock.getChange(capture(changeId))).andThrow(ex);
@@ -49,7 +58,7 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
     }
 
     @Test
-    public void testGetChangeStatusStraightForward() throws Exception {
+    public void testGetChangeStatusStraightForwardViaStdout() throws Exception {
 
         //
         // Comment line below in order to go against the real back-end as specified via -h
@@ -70,6 +79,76 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
 
         assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("true"));
     }
+
+    @Test
+    public void testGetChangeStatusStraightForwardViaStdoutReturnsFalseWhenChangeIsNotInDevelopment() throws Exception {
+
+        //
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock(false));
+
+        Commands.main(new String[] {
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
+        "is-change-in-development",
+        "-cID", "8000038673"});
+
+        assertThat(changeId.getValue(), is(equalTo("8000038673")));
+        assertThat(user.getValue(), is(equalTo(SERVICE_USER)));
+        assertThat(password.getValue(), is(equalTo(SERVICE_PASSWORD)));
+        assertThat(host.getValue(), is(equalTo(SERVICE_ENDPOINT)));
+
+        assertThat(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(result.toByteArray()), "UTF-8")).readLine(), equalTo("false"));
+    }
+
+    @Test
+    public void testGetChangeStatusReturnsTrueStraightForwardViaReturnCode() throws Exception {
+
+        // The absence of an exception means "change is in development"
+
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock());
+
+        Commands.main(new String[] {
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
+        "is-change-in-development",
+        "--return-code",
+        "-cID", "8000038673"});
+
+        assertThat(changeId.getValue(), is(equalTo("8000038673")));
+        assertThat(user.getValue(), is(equalTo(SERVICE_USER)));
+        assertThat(password.getValue(), is(equalTo(SERVICE_PASSWORD)));
+        assertThat(host.getValue(), is(equalTo(SERVICE_ENDPOINT)));
+
+        assertThat(IOUtils.toString(new ByteArrayInputStream(result.toByteArray()), "UTF-8"), equalTo(""));
+    }
+
+    @Test
+    public void testGetChangeStatusThrowsExceptionStraightForwardViaReturnCode() throws Exception {
+
+        // The absence of an exception means "change is in development"
+
+        thrown.expect(ExitException.class);
+        thrown.expect(sap.prd.cmintegration.cli.Matchers.exitCode(3));
+
+        // Comment line below in order to go against the real back-end as specified via -h
+        setMock(setupMock(false));
+
+        Commands.main(new String[] {
+        "-u", SERVICE_USER,
+        "-p", SERVICE_PASSWORD,
+        "-e", SERVICE_ENDPOINT,
+        "-t", "SOLMAN",
+        "is-change-in-development",
+        "--return-code",
+        "-cID", "8000038673"});
+    }
+
 
     @Test
     public void testGetChangeStatusWithBadCredentials() throws Exception {

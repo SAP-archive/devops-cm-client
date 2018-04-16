@@ -35,20 +35,23 @@ class GetChangeStatus extends Command {
                 Command.addOpts(opts);
             }
 
-            return opts.addOption(Commands.CMOptions.CHANGE_ID);
+            return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(Commands.CMOptions.RETURN_CODE);
         }
     }
 
     final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
     private String changeId;
+    private final boolean returnCodeMode;
 
-    GetChangeStatus(String host, String user, String password, String changeId) {
+    GetChangeStatus(String host, String user, String password, String changeId, boolean returnCodeMode) {
 
         super(host, user, password);
 
         Preconditions.checkArgument(! isBlank(changeId), "No changeId provided.");
 
         this.changeId = changeId;
+        this.returnCodeMode = returnCodeMode;
     }
 
     @Override
@@ -56,7 +59,14 @@ class GetChangeStatus extends Command {
         try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
             CMODataChange change = client.getChange(changeId);
             logger.debug(format("Change '%s' retrieved from host '%s'. isInDevelopment: '%b'.", change.getChangeID(), host, change.isInDevelopment()));
-            System.out.println(change.isInDevelopment());
+
+            if(returnCodeMode) {
+                if(!change.isInDevelopment()) {
+                    throw new ExitException(ExitException.ExitCodes.FALSE);
+                }
+            } else {
+                System.out.println(change.isInDevelopment());
+            }
         } catch(Exception e) {
             logger.warn(format("Change '%s' could not be retrieved from '%s'.", changeId, host), e);
             throw e;
@@ -77,6 +87,7 @@ class GetChangeStatus extends Command {
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine)).execute();
+                getChangeId(commandLine),
+                commandLine.hasOption(Commands.CMOptions.RETURN_CODE.getOpt())).execute();
     }
 }
