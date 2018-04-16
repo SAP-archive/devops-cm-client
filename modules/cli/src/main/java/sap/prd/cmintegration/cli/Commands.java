@@ -52,7 +52,13 @@ class Commands {
                       HELP = newOption("h", "help", "Prints this help.", null, false),
                       VERSION = newOption("v", "version", "Prints the version.", null, false),
 
-                      CHANGE_ID = newOption("cID", "change-id", "changeID.", "cID", false);
+                      CHANGE_ID = newOption("cID", "change-id", "changeID.", "cID", false),
+
+                      RETURN_CODE = newOption("rc", "return-code",
+                          "If used with this option return code is 0 " +
+                          "in case of a modifiable transport and 3 in case " +
+                          "the transport is not modifiable. In this mode nothing is " +
+                          "emitted to STDOUT.", null, false);
 
         static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
             Option o = new Option(shortKey, longKey, argName != null, desc);

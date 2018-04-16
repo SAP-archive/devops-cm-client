@@ -17,7 +17,7 @@ class GetTransportModifiableSOLMAN extends TransportRelatedSOLMAN {
     private static class Opts {
         static Options addOptions(Options opts, boolean includeStandardOpts) {
             TransportRelatedSOLMAN.Opts.addOptions(opts, includeStandardOpts);
-            return opts.addOption(TransportRelated.Opts.RETURN_CODE);
+            return opts.addOption(Commands.CMOptions.RETURN_CODE);
         }
     }
     GetTransportModifiableSOLMAN(String host, String user, String password, String changeId, String transportId, boolean returnCodeMode) {

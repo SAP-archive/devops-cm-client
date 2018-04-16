@@ -24,11 +24,6 @@ public abstract class TransportRelated extends Command {
 
     protected static class Opts {
         protected final static Option TRANSPORT_ID = newOption("tID", "transport-id", "transportID.", "tId", true);
-        protected final static Option RETURN_CODE = Commands.CMOptions.newOption("rc", "return-code",
-                    "If used with this option return code is 0 " +
-                    "in case of a modifiable transport and 3 in case " +
-                    "the transport is not modifiable. In this mode nothing is " +
-                    "emitted to STDOUT.", null, false);
 
         protected static Options addOpts(Options options, boolean includeStandardOpts) {
             if(includeStandardOpts) {
@@ -149,7 +144,7 @@ public abstract class TransportRelated extends Command {
     }
 
     protected static boolean isReturnCodeMode(CommandLine commandLine) {
-        return commandLine.hasOption(TransportRelated.Opts.RETURN_CODE.getOpt());
+        return commandLine.hasOption(Commands.CMOptions.RETURN_CODE.getOpt());
     }
 
 }

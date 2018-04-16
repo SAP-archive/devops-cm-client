@@ -18,7 +18,7 @@ class GetTransportModifiableABAP extends TransportRelatedABAP {
 
         static Options addOption(Options options, boolean includeStandardOpts) {
             TransportRelated.Opts.addOpts(options, includeStandardOpts);
-            return options.addOption(TransportRelated.Opts.RETURN_CODE);
+            return options.addOption(Commands.CMOptions.RETURN_CODE);
         }
     }
 
