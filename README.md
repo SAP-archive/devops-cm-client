@@ -33,7 +33,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `-v`, `--version`        | Prints the version.     |
 
 
-| Subcommand                  |                                           |
+| Subcommand                  |     Description                           |
 |-----------------------------|-------------------------------------------|
 | `create-transport`          | Creates a new transport entity.           |
 | `get-transport-description` | Returns the description of the transport. |
