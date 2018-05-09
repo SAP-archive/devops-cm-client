@@ -39,16 +39,27 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `-v`, `--version`        | Prints the version.     |
 
 
-| Subcommand                  |     Description                           |
-|-----------------------------|-------------------------------------------|
-| `create-transport`          | Creates a new transport entity.           |
-| `get-transport-description` | Returns the description of the transport. |
-| `get-transport-owner`       | Returns the owner of the transport.       |
-| `get-transports`            | Returns the IDs of the transports.        |
-| `is-change-in-development`  | Returns 'true' if the change is in development. |
-| `is-transport-modifiable`   | Returns 'true' if the transport is modifiable. |
-| `release-transport`         | Releases the transport.                   |
-| `upload-file-to-transport`  | Uploads a file to a transport.            |
+| Subcommand                    | Backend Type |    Description                                  |
+|-------------------------------|--------------|-------------------------------------------------|
+| `create-transport`            | SOLMAN       | Creates a new transport entity.                 |
+| `get-transport-description`   | SOLMAN       | Returns the description of the transport.       |
+| `get-transport-owner`         | SOLMAN       | Returns the owner of the transport.             |
+| `get-transports`              | SOLMAN       | Returns the IDs of the transports.              |
+| `is-change-in-development`    | SOLMAN       | Returns 'true' if the change is in development. |
+| `is-transport-modifiable`     | SOLMAN       | Returns 'true' if the transport is modifiable.  |
+| `release-transport`           | SOLMAN       | Releases the transport.                         |
+| `upload-file-to-transport`    | SOLMAN       | Uploads a file to a transport.                  |
+| `create-transport`            | CTS          | Creates a new transport entity.                 |
+| `export-transport`            | CTS          | Exports a transport entity.                     |
+| `get-transport-description`   | CTS          | Returns the description of the transport.       |
+| `get-transport-owner`         | CTS          | Returns the owner of the transport.             |
+| `get-transport-status`        | CTS          | Returns the status of the transport.            |
+| `get-transport-target-system` | CTS          | Returns the target system of the transport.     |
+| `get-transport-type`          | CTS          | Returns the type of the transport.              |
+| `import-transport`            | CTS          | Imports a transport entity.                     |
+| `is-transport-modifiable`     | CTS          | Returns 'true' if the transport is modifiable.  |
+| `upload-file-to-transport`    | CTS          | Uploads a file to a transport.                  |
+
 
 For more information about subcommands and subcommand options run `<CMD> <subcommand> --help`.
 
