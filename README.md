@@ -11,13 +11,18 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 
 # Download and Installation
 
-  - Clone this project from github.com
-  - Build the project with maven: `mvn clean package`
-  - Create a temporary directory: `mkdir tmp`
-  - Extract the command line interface into that folder:
+  - Download the command line interface package from [mavencentral](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) 
+  - Extract the command line interface package into suitable folder
 
-    `tar -C tmp -xvf modules/dist.cli/target/dist.cli-${project.version}.tar.gz`
-  - Run `tmp/bin/cmclient --help` in order to see all available commands
+  E.g.:
+  ```
+     CM_VERSION=0.0.1
+     mkdir cm_client
+     curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
+     |tar -C cm_client -xvf -
+     cm_client/bin/cmclient --version
+     cm_client/bin/cmclient --help
+  ```
 
 # Usage
 ````
