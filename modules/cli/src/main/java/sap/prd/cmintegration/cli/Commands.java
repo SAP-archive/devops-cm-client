@@ -1,5 +1,6 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getArgsLogString;
@@ -7,13 +8,12 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.getArgsLogString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -28,8 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
+import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
  * Helpers for using/calling commands.
@@ -38,29 +39,34 @@ class Commands {
 
     final static private Logger logger = LoggerFactory.getLogger(Commands.class);
     private final static String DASH = "-";
-    private final static String TWO_DASHES = DASH+DASH;
 
     /**
      * The common command line options used by all commands.
      */
     static class CMOptions {
 
-        static Option USER = new Option("u", "user", true, "Service user."),
-                      PASSWORD = new Option("p", "password", true, "Service password, if '-' is provided, password will be read from stdin."),
-                      HOST = new Option("e", "endpoint", true, "Service endpoint"),
-                      HELP = new Option("h", "help", false, "Prints this help."),
-                      VERSION = new Option("v", "version", false, "Prints the version.");
+        static Option USER = newOption("u", "user", "Service user.", "user", true),
+                      PASSWORD = newOption("p", "password", "Service password, if '-' is provided, password will be read from stdin.", "pwd", true),
+                      BACKEND_TYPE = newOption("t", "backend-type", format("Backend Type, one of %s.", asList(BackendType.values())), "type", true),
+                      HOST = newOption("e", "endpoint", "Service endpoint.", "url", true),
+                      HELP = newOption("h", "help", "Prints this help.", null, false),
+                      VERSION = newOption("v", "version", "Prints the version.", null, false),
 
-        static {
-            USER.setRequired(true);
-            PASSWORD.setRequired(true);
-            HOST.setRequired(true);
-            HELP.setRequired(false);
-            VERSION.setRequired(false);
-        }
+                      CHANGE_ID = newOption("cID", "change-id", "changeID.", "cID", false),
 
-        static Option clone(Option o) {
-            return new Option(o.getOpt(), o.getLongOpt(), o.hasArg(), o.getDescription());
+                      RETURN_CODE = newOption("rc", "return-code",
+                          format("If used with this option return code is %s " +
+                          "in case of a modifiable transport and %d in case " +
+                          "the transport is not modifiable. In this mode nothing is " +
+                          "emitted to STDOUT.", ExitException.ExitCodes.OK, ExitException.ExitCodes.FALSE), null, false);
+
+        static Option newOption(String shortKey, String longKey, String desc, String argName, boolean required) {
+            return Option.builder(shortKey)
+                        .hasArg(argName != null)
+                        .argName(argName)
+                        .longOpt(longKey)
+                        .desc(desc)
+                        .required(required).build();
         }
     }
 
@@ -73,12 +79,26 @@ class Commands {
             return addStandardParameters(new Options());
         }
 
-        static Options addStandardParameters(Options options) {
-            options.addOption(CMOptions.USER);
-            options.addOption(CMOptions.PASSWORD);
-            options.addOption(CMOptions.HOST);
-            options.addOption(CMOptions.HELP);
-            options.addOption(CMOptions.VERSION);
+        static Options addStandardParameters(Options o) {
+            return getStandardParameters(o, false);
+        }
+
+        static Options getStandardParameters(boolean optional) {
+            return getStandardParameters(new Options(), optional);
+        }
+
+        static Options getStandardParameters(Options options, boolean optional) {
+            Set<Option> standardOpts = newHashSet(
+              CMOptions.USER,
+              CMOptions.PASSWORD,
+              CMOptions.BACKEND_TYPE,
+              CMOptions.HOST,
+              CMOptions.HELP,
+              CMOptions.VERSION);
+
+            standardOpts.stream().forEach(o -> { Option c = (Option)o.clone();
+                                                 if(optional) c.setRequired(false);
+                                                 options.addOption(c);});
             return options;
         }
 
@@ -92,12 +112,24 @@ class Commands {
             return commandLine.getOptionValue(CMOptions.USER.getOpt());
         }
 
+        static BackendType getBackendType(CommandLine commandLine) {
+            try {
+                return BackendType.valueOf(commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt()));
+            } catch(IllegalArgumentException e) {
+                throw new RuntimeException("Cannot retrieve backend type.", e);
+            }
+        }
+
         static String getHost(CommandLine commandLine) {
             return commandLine.getOptionValue(CMOptions.HOST.getOpt());
         }
 
         static String getChangeId(CommandLine commandLine) {
-            return getArg(commandLine, 1, "changeId");
+            String changeID = commandLine.getOptionValue(CMOptions.CHANGE_ID.getOpt());
+            if(StringUtils.isEmpty(changeID)) {
+                throw new CMCommandLineException("No changeId specified.");
+            }
+            return changeID;
         }
 
         static String getArg(CommandLine commandLine, int index, String name) {
@@ -113,18 +145,45 @@ class Commands {
         }
 
         static boolean helpRequested(String[] args) {
-            return asList(args).contains("--help");
+            List<String> l = asList(args);
+            return l.contains("--help") || l.contains("-h");
         }
 
-        static void handleHelpOption(String usage, String header, Options options) {
+        static void handleHelpOption(String commandName, String header, String args, Options options) {
 
-            String footer = "Exit codes:\n"
-                    + "    0  The request completed successfully.\n"
-                    + "    1  The request did  not complete successfully and\n"
+            String exitCodes = format(
+                      "    %d  The request completed successfully.\n"
+                    + "    %d  The request did not complete successfully and\n"
                     + "       no more specific return code as defined below applies.\n"
-                    + "    2  Wrong credentials.";
+                    + "    %d  Wrong credentials.\n"
+                    + "    %d  Intentionally used by --return-code option in order to\n"
+                    + "       indicate 'false'. Only available for commands providing\n"
+                    + "       the --return-code option.",
+                        ExitException.ExitCodes.OK,
+                        ExitException.ExitCodes.GENERIC_FAILURE,
+                        ExitException.ExitCodes.NOT_AUTHENTIFICATED,
+                        ExitException.ExitCodes.FALSE);
+
+            String commonOpts;
+
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("<CMD> [COMMON_OPTIONS] "+ usage, header, options, footer);
+
+            try( StringWriter commonOptions = new StringWriter();
+                 PrintWriter pw = new PrintWriter(commonOptions);) {
+                formatter.printOptions(pw, formatter.getWidth(), Command.addOpts(new Options()), formatter.getLeftPadding(), formatter.getDescPadding());
+                commonOpts = commonOptions.toString();
+            } catch(IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            String footer = format("%nCOMMON OPTIONS:%n%s%nEXIT CODES%n%s", commonOpts, exitCodes);
+
+            formatter.printHelp(
+                    format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%n", 
+                            commandName,
+                            args != null ? args : ""),
+                    format("SUBCOMMAND OPTIONS:%n",header), options, footer);
+
         }
 
         private static String readPassword() throws IOException {
@@ -174,12 +233,22 @@ class Commands {
     static {
         commands.add(GetChangeStatus.class);
         commands.add(GetChangeTransports.class);
-        commands.add(GetTransportModifiable.class);
-        commands.add(GetTransportOwner.class);
-        commands.add(GetTransportDescription.class);
-        commands.add(UploadFileToTransport.class);
-        commands.add(CreateTransport.class);
+        commands.add(GetTransportModifiableSOLMAN.class);
+        commands.add(GetTransportModifiableABAP.class);
+        commands.add(GetTransportOwnerSOLMAN.class);
+        commands.add(GetTransportOwnerABAP.class);
+        commands.add(GetTransportDescriptionSOLMAN.class);
+        commands.add(GetTransportDescriptionABAP.class);
+        commands.add(UploadFileToTransportSOLMAN.class);
+        commands.add(UploadFileToTransportABAP.class);
+        commands.add(CreateTransportSOLMAN.class);
+        commands.add(CreateTransportABAP.class);
         commands.add(ReleaseTransport.class);
+        commands.add(ImportTransport.class);
+        commands.add(ExportTransport.class);
+        commands.add(GetTransportStatusABAP.class);
+        commands.add(GetTransportTargetSystemABAP.class);
+        commands.add(GetTransportTypeABAP.class);
 
         if(commands.stream()
                 .filter(it -> it.getAnnotation(CommandDescriptor.class) == null)
@@ -190,10 +259,10 @@ class Commands {
     public final static void main(String[] args) throws Exception {
 
         logger.debug(format("CM Client has been called with command line '%s'.", getArgsLogString(args)));
-        Collection<String> _args = Arrays.asList(args);
 
-        if((_args.contains(DASH+CMOptions.HELP.getOpt()) ||
-           _args.contains(TWO_DASHES+CMOptions.HELP.getLongOpt()) &&
+        CommandLine commandLine = new DefaultParser().parse(Helpers.getStandardParameters(true), args, true);
+
+        if((commandLine.hasOption(CMOptions.HELP.getOpt()) &&
            args.length <= 1) || args.length == 0) {
             logger.debug("Printing help and return.");
             printHelp();
@@ -201,81 +270,97 @@ class Commands {
             return;
         }
 
-        if(_args.contains(DASH+CMOptions.VERSION.getOpt()) ||
-           _args.contains(TWO_DASHES+CMOptions.VERSION.getLongOpt())) {
+        if(commandLine.hasOption(CMOptions.VERSION.getOpt())) {
             logger.debug("Printing version and return.");
             printVersion();
             return;
         }
 
-        final String commandName = getCommandName(args);
+        final String commandName;
+        try {
+            commandName = getCommandName(commandLine, args);
+        } catch(CMCommandLineException e) {
+            if(commandLine.hasOption(CMOptions.HELP.getOpt())) {
+                printHelp();
+                return;
+            } else {
+                throw e;
+            }
+        }
+
+        final BackendType type = getBackendType(commandLine, args);
+ 
         try {
             Optional<Class<? extends Command>> command = commands.stream()
-                .filter( it -> it.getAnnotation(CommandDescriptor.class)
-                        .name().equals(commandName)).findFirst();
+                .filter (it ->
+                { CommandDescriptor a = it.getAnnotation(CommandDescriptor.class);
+                  return a.name().equals(commandName) && a.type() == type;}).findFirst();
 
             if(command.isPresent()) {
                 logger.debug(format("Command name '%s' resolved to implementing class '%s'.", commandName, command.get().getName()));
                 command.get().getDeclaredMethod("main", String[].class)
                 .invoke(null, new Object[] { args });
             } else {
-                throw new CMCommandLineException(String.format("Command '%s' not found.", commandName));
+                throw new CMCommandLineException(String.format("Command '%s' not found for backend type '%s'.", commandName, type));
             }
-
         } catch (InvocationTargetException e) {
-            logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
-            if(e.getTargetException() instanceof ODataClientErrorException) {
-                 StatusLine statusLine = ((ODataClientErrorException) e.getTargetException()).getStatusLine();
-                 if(statusLine.getStatusCode() == 401) { // unauthorized
-                     throw new ExitException(e.getTargetException(), 2);
-                 } else {
-                     throw (ODataClientErrorException)e.getTargetException();
-                 }
-            } else if(e.getTargetException() instanceof Exception)
-              throw (Exception)e.getTargetException();
-            else
-              throw e;
+            logger.error(format("Exception caught while executing command '%s': '%s'.", commandName, e.getMessage()),e);
+            throw handle(e);
         } catch(Exception e) {
-            logger.error(format("Exception caught while executingn command '%s': '%s'.", commandName, e.getMessage()),e);
+            logger.error(format("Exception caught while executing command '%s': '%s'.", commandName, e.getMessage()),e);
             throw e;
         }
     }
 
-    private static String getCommandName(String[] args) throws ParseException {
+    private static Exception handle(InvocationTargetException e) {
+        if(e == null || e.getTargetException() == null) throw new RuntimeException("No exception (?)");
+        StatusLine statusLine = null;
+        if(e.getTargetException() instanceof ODataClientErrorException) {
+           statusLine = ((ODataClientErrorException) e.getTargetException()).getStatusLine();
+       } else if(e.getTargetException() instanceof UnexpectedHttpResponseException) {
+           statusLine = ((UnexpectedHttpResponseException)e.getTargetException()).getStatus();
+       }
 
-        Options opts = new Options();
-        asList(CMOptions.HELP, CMOptions.VERSION, CMOptions.HOST, CMOptions.USER, CMOptions.PASSWORD).stream().map(
-           new Function<Option, Option>() {
+       if(statusLine != null && statusLine.getStatusCode() == 401) { // unauthorized
+           return new ExitException(e.getTargetException(), 2);
+       }
 
-              @Override
-              public Option apply(Option o) {
-                Option c = CMOptions.clone(o);
-                c.setRequired(false);
-                return c;
-              }
-          }).forEach(o -> opts.addOption(o));
+       return (e.getTargetException() instanceof Exception) ? (Exception)e.getTargetException() : new RuntimeException(e.getTargetException());
+    }
 
-          CommandLine parser = new DefaultParser().parse(opts, args, true);
-          if(parser.getArgs().length == 0) {
-              throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+    private static BackendType getBackendType(CommandLine commandLine, String[] args) {
+        String b = commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt());
+        if(StringUtils.isEmpty(b)) {
+            printHelp();
+            throw new CMCommandLineException(format("Cannot retrieve backend type. Provide common option '-%s'. Values: %s.", CMOptions.BACKEND_TYPE.getOpt(), asList(BackendType.values())));
+        }
+        return BackendType.valueOf(b);
+    }
+
+    private static String getCommandName(CommandLine commandLine, String[] args) throws ParseException {
+
+        if(commandLine.getArgs().length == 0) {
+            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
                         getArgsLogString(args)));
-          }
-          String commandName = parser.getArgs()[0];
-          logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
-          return commandName;
+        }
+
+        String commandName = commandLine.getArgs()[0];
+        logger.debug(format("Command name '%s' extracted from command line '%s'.", commandName, getArgsLogString(args)));
+        return commandName;
     }
 
     private static void printVersion() throws IOException {
-        System.out.println(CMODataClient.getLongVersion());
+        System.out.println(CMODataSolmanClient.getLongVersion());
     }
 
-    private static void printHelp() throws Exception {
+    private static void printHelp() {
 
         String cmd = "<CMD>";
         String CRLF = "\r\n";
         StringWriter subCommandsHelp = new StringWriter();
 
-            commands.stream().map(it -> it.getAnnotation(CommandDescriptor.class).name())
+            commands.stream().map(it -> { CommandDescriptor cDesc = it.getAnnotation(CommandDescriptor.class);
+                                          return format("%s (%s)", cDesc.name(), cDesc.type());})
             .sorted().forEach(subcmd ->
             subCommandsHelp.append(StringUtils.repeat(' ', 4))
                            .append(subcmd)

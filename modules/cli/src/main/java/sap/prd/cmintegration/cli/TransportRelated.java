@@ -1,110 +1,150 @@
 package sap.prd.cmintegration.cli;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.lang.String.format;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
-import static sap.prd.cmintegration.cli.Commands.Helpers.getUser;
-import static sap.prd.cmintegration.cli.Commands.Helpers.handleHelpOption;
-import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static sap.prd.cmintegration.cli.Commands.CMOptions.newOption;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
+import com.sap.cmclient.Transport;
+import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
-/**
- * Base class for all transport related commands.
- */
-abstract class TransportRelated extends Command {
+public abstract class TransportRelated extends Command {
 
-    final static private Logger logger = LoggerFactory.getLogger(TransportRelated.class);
-    protected final String changeId, transportId;
+    private final boolean returnCodeMode;
 
-    protected TransportRelated(String host, String user, String password,
-            String changeId, String transportId) {
-        super(host, user, password);
-        this.changeId = changeId;
-        this.transportId = transportId;
+    protected static class Opts {
+        protected final static Option TRANSPORT_ID = newOption("tID", "transport-id", "transportID.", "tId", true);
+
+        protected static Options addOpts(Options options, boolean includeStandardOpts) {
+            if(includeStandardOpts) {
+                Command.addOpts(options);
+            }
+            options.addOption(TransportRelated.Opts.TRANSPORT_ID);
+            return options;
+        }
     }
 
-    protected abstract Predicate<CMODataTransport> getOutputPredicate();
+    private static class FollowUp {
+        private final static Function<String, Void> printToStdout = new Function<String, Void>() {
+
+            @Override
+            public Void apply(String output) {
+                if(output != null) System.out.println(output);
+                return null;
+            }
+        },
+        raiseFriendlyExitException = new Function<String, Void>() {
+
+            // yes, this is some kind of miss-use of exceptions.
+
+            @Override
+            public Void apply(String output) {
+                if(output != null && ! Boolean.valueOf(output))
+                    throw new ExitException(ExitException.ExitCodes.FALSE);
+                return null;
+            }
+        };
+    }
+
+    protected final static Function<Transport, String> getDescription = new Function<Transport, String>() {
+
+        @Override
+        public String apply(Transport t) {
+            String description = t.getDescription();
+            if(StringUtils.isBlank(description)) {
+                logger.debug(format("Description of transport '%s' is blank. Nothing will be emitted.", t.getTransportID()));
+                return null;
+            } else {
+                logger.debug(format("Description of transport '%s' is not blank. Description '%s' will be emitted.", t.getTransportID(), t.getDescription()));
+                return description; 
+            }
+        };
+    };
+
+    protected final static Function<Transport, String> isModifiable = new Function<Transport, String>() {
+
+        @Override
+        public String apply(Transport t) {
+            return String.valueOf(t.isModifiable());
+        }
+    };
+
+    protected final static Function<Transport, String> getOwner = new Function<Transport, String>() {
+
+        @Override
+        public String apply(Transport t) {
+
+            String owner = t.getOwner();
+            if(StringUtils.isBlank(owner)) {
+                logger.debug(String.format("Owner attribute for transport '%s' is blank. Nothing will be emitted.", t.getTransportID()));
+                return null;
+            } else {
+                logger.debug(String.format("Owner '%s' has been emitted for transport '%s'.", t.getOwner(), t.getTransportID()));
+                return owner;}
+            };
+    };
+
+    protected final String transportId;
+
+    protected TransportRelated(String host, String user, String password, String transportId, boolean returnCodeMode) {
+        super(host, user, password);
+        checkArgument(! isBlank(transportId), "No transportId provided.");
+        this.transportId = transportId;
+        this.returnCodeMode = returnCodeMode;
+    }
+
+    protected final static Logger logger = LoggerFactory.getLogger(TransportRelated.class);
+
+    protected abstract Optional<Transport> getTransport() throws UnexpectedHttpResponseException;
+
+    protected abstract Function<Transport, String> getAction();
 
     @Override
-    final void execute() throws Exception {
+    void execute() throws Exception {
 
-        try(CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
-
-            Optional<CMODataTransport> transport = client.getChangeTransports(changeId).stream()
-                .filter( it -> it.getTransportID().equals(transportId) ).findFirst();
-
-            if(transport.isPresent()) {
-                CMODataTransport t = transport.get();
- 
-                if(!t.getTransportID().trim().equals(transportId.trim())) {
-                    throw new CMCommandLineException(
-                        format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
-                                t.getTransportID(),
-                                transportId));
-                }
- 
-                logger.debug(format("Transport '%s' has been found for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
-                        transportId, changeId,
-                        t.isModifiable(), t.getOwner(), t.getDescription()));
- 
-                getOutputPredicate().test(t);
-            }  else {
-                throw new CMCommandLineException(String.format("Transport '%s' not found for change '%s'.", transportId, changeId));
-            }
-        } catch(Exception e) {
-            logger.warn(format("Exception caught while getting transport '%s' for change document '%s' from host '%s'.", transportId, changeId, host), e);
-            throw e;
-        }
-    }
-
-    protected static void main(Class<? extends TransportRelated> clazz, String[] args, String usage, String helpText) throws Exception {
-
-        logger.debug(format("%s called with arguments: %s", clazz.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-
-        Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
-
-        if(helpRequested(args)) {
-            handleHelpOption(usage, helpText, new Options()); return;
+        Optional<Transport> transport = getTransport();
+        if(! transport.isPresent()) {
+            throw new TransportNotFoundException(transportId, format("Transport '%s' not found.", transportId));
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        Transport t = transport.get();
 
-        newInstance(clazz, getHost(commandLine),
-                getUser(commandLine),
-                getPassword(commandLine),
-                getChangeId(commandLine),
-                getTransportId(commandLine)).execute();
-    }
-
-    private static TransportRelated newInstance(Class<? extends TransportRelated> clazz, String host, String user, String password, String changeId, String transportId) {
-        try {
-            return clazz.getDeclaredConstructor(new Class[] {String.class, String.class, String.class, String.class, String.class})
-            .newInstance(new Object[] {host, user, password, changeId, transportId});
-        } catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+        if(!t.getTransportID().trim().equals(transportId.trim())) {
+            throw new CMCommandLineException(
+                format("TransportId of resolved transport ('%s') does not match requested transport id ('%s').",
+                        t.getTransportID(),
+                        transportId));
         }
+
+        logger.debug(format("Transport '%s' has been found. isModifiable: '%b', Owner: '%s', Description: '%s'.",
+                transportId,
+                t.isModifiable(), t.getOwner(), t.getDescription()));
+
+        getAction()
+            .andThen(returnCodeMode ? FollowUp.raiseFriendlyExitException : FollowUp.printToStdout)
+            .apply(t);
     }
 
     static String getTransportId(CommandLine commandLine) {
-        try {
-            return Commands.Helpers.getArg(commandLine, 2);
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        String transportID = commandLine.getOptionValue(Opts.TRANSPORT_ID.getOpt());
+        if(StringUtils.isEmpty(transportID)) {
             throw new CMCommandLineException("No transportId specified.");
         }
+        return transportID;
+    }
+
+    protected static boolean isReturnCodeMode(CommandLine commandLine) {
+        return commandLine.hasOption(Commands.CMOptions.RETURN_CODE.getOpt());
     }
 
 }

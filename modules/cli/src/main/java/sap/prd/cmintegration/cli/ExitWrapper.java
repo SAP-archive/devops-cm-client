@@ -14,12 +14,14 @@ class ExitWrapper {
         try {
             Commands.main(args);
         } catch(ExitException e) {
-            if(e.getCause() == null) {
-                e.printStackTrace();
-            } else {
-                e.getCause().printStackTrace();
+            if(e.getExitCode() != ExitException.ExitCodes.FALSE) {
+                if(e.getCause() == null) {
+                    e.printStackTrace();
+                } else {
+                    e.getCause().printStackTrace();
+                }
+                logger.error(e.getMessage(), e);
             }
-            logger.error(e.getMessage(), e);
             System.exit(e.getExitCode());
         }
     }

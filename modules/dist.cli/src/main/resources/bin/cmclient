@@ -17,12 +17,12 @@ determine_dir() {
             CMCLIENT_HOME=`pwd`/$0
         fi
         CMCLIENT_HOME=`dirname $CMCLIENT_HOME`/..
-	CMCLIENT_LIB=$CMCLIENT_HOME/lib/*
         if is_emulated_shell; then
             CMCLIENT_HOME=`cygpath -wp $CMCLIENT_HOME`
 	    CMCLIENT_LIB=`cygpath -wp $CMCLIENT_LIB`
         fi
     fi
+    CMCLIENT_LIB=$CMCLIENT_HOME/lib/*
 }
 
 check_env() {

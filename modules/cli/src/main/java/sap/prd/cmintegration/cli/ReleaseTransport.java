@@ -1,6 +1,5 @@
 package sap.prd.cmintegration.cli;
 
-import static java.lang.String.format;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -12,18 +11,27 @@ import static sap.prd.cmintegration.cli.Commands.Helpers.helpRequested;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
  * Command for releasing a transport.
  */
-@CommandDescriptor(name="release-transport")
+@CommandDescriptor(name="release-transport", type = BackendType.SOLMAN)
 class ReleaseTransport extends Command {
 
-    final static private Logger logger = LoggerFactory.getLogger(ReleaseTransport.class);
+    static class Opts {
+
+        static Options addOptions(Options opts, boolean includeStandardOptions) {
+            if(includeStandardOptions) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(TransportRelated.Opts.TRANSPORT_ID);
+        }
+    }
+
     private final String changeId, transportId;
 
     ReleaseTransport(String host, String user, String password,
@@ -35,31 +43,28 @@ class ReleaseTransport extends Command {
     }
 
     public final static void main(String[] args) throws Exception {
-        logger.debug(format("%s called with arguments: '%s'.", ReleaseTransport.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
 
         if(helpRequested(args)) {
             handleHelpOption(
-                format("%s <changeId> <transportId>", getCommandName(ReleaseTransport.class)),
-                "Releases the transport specified by <changeId>, <transportId>.", new Options()); return;
+                getCommandName(ReleaseTransport.class),"",
+                "Releases the transport specified by [<changeId>,] <transportId>.", Opts.addOptions(new Options(), false)); return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
 
-        new ReleaseTransport(getHost(commandLine),
+        new ReleaseTransport(
+                getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
-                TransportRelated.getTransportId(commandLine)).execute();
+                TransportRelatedSOLMAN.getTransportId(commandLine)).execute();
     }
 
     @Override
     void execute() throws Exception {
-        try (CMODataClient client = ClientFactory.getInstance().newClient(host,  user,  password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host,  user,  password)) {
             client.releaseDevelopmentTransport(changeId, transportId);
         } catch(Exception e) {
-            logger.error(format("Exception caught while releasing transport '%s' for change document '%s': '%s'.", transportId, changeId, e.getMessage()), e);
             throw e;
         }
     }

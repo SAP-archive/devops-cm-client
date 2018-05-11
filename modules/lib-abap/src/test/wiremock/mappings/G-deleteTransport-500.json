@@ -1,0 +1,20 @@
+{
+  "id" : "efad1d36-912c-4451-9f31-ece7fbdb3f44",
+  "name" : "transportsa5dk900044",
+  "request" : {
+    "url" : "/Transports('A5DK900044')",
+    "method" : "DELETE"
+  },
+  "response" : {
+    "status" : 500,
+    "body" : "<?xml version=\"1.0\" encoding=\"utf-8\"?><error xmlns=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\"><code>SY/530</code><message xml:lang=\"en\">An exception was raised.</message><innererror><application><component_id>BC-CTS-TMS</component_id><service_namespace>/SAP/</service_namespace><service_id>SCTS_CLOUD_API_ODATA_SRV</service_id><service_version>0001</service_version></application><transactionid>938023A3529F0080E005A996AEE68B1B</transactionid><timestamp>20180316152554.2686410</timestamp><Error_Resolution><SAP_Transaction>For backend administrators: run transaction /IWFND/ERROR_LOG on SAP Gateway hub system and search for entries with the timestamp above for more details</SAP_Transaction><SAP_Note>See SAP Note 1797736 for error analysis (https://service.sap.com/sap/support/notes/1797736)</SAP_Note></Error_Resolution><errordetails><errordetail><code>CX_CTS_REQUEST_NOT_EXISTS</code><message>Request A5DK900044 is unknown</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>CX_CTS_TRANSPORT_REQUEST</code><message>Request A5DK900044 is unknown</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>CX_CTS_CLOUD_EXCEPTION</code><message>An exception was raised</message><propertyref/><severity>error</severity><target/></errordetail><errordetail><code>/IWBEP/CX_MGW_TECH_EXCEPTION</code><message>An exception was raised</message><propertyref/><severity>error</severity><target/></errordetail></errordetails></innererror></error>",
+    "headers" : {
+      "content-type" : "application/xml;charset=utf-8",
+      "dataserviceversion" : "1.0",
+      "sap-processing-info" : "ODataBEP=,crp=,st=,MedCacheHub=SHM,codeployed=X,softstate="
+    }
+  },
+  "uuid" : "efad1d36-912c-4451-9f31-ece7fbdb3f44",
+  "persistent" : true,
+  "insertionIndex" : 17
+}

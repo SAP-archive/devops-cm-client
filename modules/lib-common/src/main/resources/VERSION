@@ -1,0 +1,3 @@
+mvnProjectVersion=${project.version}
+gitCommitId=${git.commit.id}
+olingoVersionV2=${olingo.v2.version}

@@ -8,6 +8,13 @@ package sap.prd.cmintegration.cli;
  */
 class ExitException extends CMCommandLineException {
 
+    public static class ExitCodes {
+        public final static int OK = 0,
+                                GENERIC_FAILURE = 1,
+                                NOT_AUTHENTIFICATED = 2,
+                                FALSE = 3; // returned in case of --return-code option.
+    }
+
     private static final long serialVersionUID = -3269137608207801150L;
     private final int exitCode;
 
