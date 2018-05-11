@@ -83,3 +83,7 @@ otherwise in the [LICENSE file][license]
 [cm-cli-issues]: https://github.com/SAP/change-management-cli/issues
 [license]: ./LICENSE
 [contribution]: ./CONTRIBUTING.md
+
+# Release Notes
+The release notes are available [here](RELEASES.md)
+
