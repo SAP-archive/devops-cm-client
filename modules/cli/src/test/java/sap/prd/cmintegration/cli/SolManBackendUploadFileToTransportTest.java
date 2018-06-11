@@ -97,7 +97,7 @@ public class SolManBackendUploadFileToTransportTest extends CMSolmanTestBase {
 
         CMODataSolmanClient clientMock = EasyMock.createMock(CMODataSolmanClient.class);
 
-        expect(clientMock.getChangeTransports(EasyMock.anyString())).andReturn(Arrays.asList(new CMODataTransport("L21K90002J", true, "desc", "me")));
+        expect(clientMock.getChangeTransports(EasyMock.anyString())).andReturn(Arrays.asList(new CMODataTransport("L21K90002J", "J01~JAVA", true, "desc", "me")));
         clientMock.uploadFileToTransport(capture(changeId), capture(transportId),
             capture(filePath), capture(applicationId)); expectLastCall();
         clientMock.close(); expectLastCall().anyTimes();

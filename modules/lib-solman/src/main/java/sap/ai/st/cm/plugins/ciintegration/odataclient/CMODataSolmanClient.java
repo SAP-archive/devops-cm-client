@@ -292,10 +292,11 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @return An instance representing the transport.
      * @throws CMODataClientException In case the transport could not be created.
      */
-    public CMODataTransport createDevelopmentTransport(String changeID) throws CMODataClientException {
+    public CMODataTransport createDevelopmentTransport(String changeID, String developmentSystemId) throws CMODataClientException {
         return _createDevelopmentTransport(changeID, "createTransport",
                 getQueryString(new ImmutableMap.Builder<String, String>()
                     .put("ChangeID", changeID)
+                    .put("DevelopmentSystemId", developmentSystemId)
                     .build()));
     }
 
@@ -305,11 +306,12 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @return An instance representing the transport.
      * @throws CMODataClientException In case the transport could not be created.
      */
-    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String description, String owner) throws CMODataClientException {
+    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String developmentSystemId, String description, String owner) throws CMODataClientException {
 
         return _createDevelopmentTransport(changeID, "createTransportAdvanced",
                 getQueryString(new ImmutableMap.Builder<String, String>()
                     .put("ChangeID", changeID)
+                    .put("DevelopmentSystemId", developmentSystemId)
                     .put("Description", description)
                     .put("Owner", owner).build()));
     }
@@ -362,6 +364,9 @@ public class CMODataSolmanClient implements AutoCloseable {
         String transportId = getValueAsString("TransportID", transportEntity);
         checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID));
 
+        String developmentSystemId = getValueAsString("DevelopmentSystemID", transportEntity);
+        checkState(!isBlank(developmentSystemId), format("DevelopmentSystemID found to be null or empty when retrieveing transprts for change '%s'.", changeID));
+
         String bModifiable = getValueAsString("IsModifiable", transportEntity);
         checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID));
 
@@ -373,6 +378,7 @@ public class CMODataSolmanClient implements AutoCloseable {
 
         return new CMODataTransport(
                 transportId,
+                developmentSystemId,
                 parseBoolean(bModifiable),
                 description,
                 owner);

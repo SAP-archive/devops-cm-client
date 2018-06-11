@@ -14,7 +14,7 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
     @Test
     public void getChangeTransportModifiableStraighForwardForNotModifiableTransport() throws Exception {
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
+        setMock(setupMock("L21K900026", "J01~JAVA", "xOwner", "xDescription", false));
         Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
@@ -35,7 +35,7 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
         thrown.expect(ExitException.class);
         thrown.expect(Matchers.exitCode(ExitException.ExitCodes.FALSE));
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
+        setMock(setupMock("L21K900026", "J01~JAVA", "xOwner", "xDescription", false));
         Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
@@ -49,7 +49,7 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
     @Test
     public void getChangeTransportModifiableStraighForwardForModifiableTransport() throws Exception {
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", true));
+        setMock(setupMock("L21K900026", "J01~JAVA", "xOwner", "xDescription", true));
         Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
@@ -68,7 +68,7 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
     public void getChangeTransportModifiableStraighForwardReturnCodeForModifiableTransport() throws Exception {
 
         // the absence of an ExitException means return code zero
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", true));
+        setMock(setupMock("L21K900026", "J01~JAVA", "xOwner", "xDescription", true));
 
         Commands.main(new String[] {
                 "-u", SERVICE_USER,
@@ -91,7 +91,7 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
         thrown.expect(CMCommandLineException.class);
         thrown.expectMessage("Transport 'DOES_NOT_EXIST' not found for change '8000038673'.");
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
+        setMock(setupMock("L21K900026", "J01~JAVA", "xOwner", "xDescription", false));
         Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,

@@ -70,12 +70,14 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
          */
         setMock(examinee, setupMock(SERVICE_USER, "Jenkins CI Test"));
 
-        CMODataTransport transport = examinee.createDevelopmentTransport("8000038673");
+        CMODataTransport transport = examinee.createDevelopmentTransport("8000038673", "J01~JAVA");
 
         assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
         assertThat(address.getValue().toASCIIString(), allOf(
                 startsWith(SERVICE_ENDPOINT + "createTransport?"),
-                containsString("ChangeID='8000038673'")));
+                containsString("ChangeID='8000038673'"),
+                containsString("DevelopmentSystemId='J01~JAVA'"),
+                containsString("&")));
         assertThat(transport.getTransportID(), is(equalTo("L21K90002H")));
         assertThat(transport.isModifiable(), is(equalTo(true)));
         assertThat(transport.getOwner(), is(equalTo(SERVICE_USER)));
@@ -96,7 +98,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         setMock(examinee, setupMock(new ODataClientErrorException(StatusLines.BAD_REQUEST,
             new ODataError().setMessage("User DOESNOTEXIST does not exist in the system (or locked)."))));
 
-        examinee.createDevelopmentTransportAdvanced("8000042445", "myDescription", "doesNotExist");
+        examinee.createDevelopmentTransportAdvanced("8000042445", "J01~JAVA", "myDescription", "doesNotExist");
     }
 
   @Test
@@ -109,7 +111,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
       setMock(examinee, setupMock(SERVICE_USER, "my Description"));
 
       // with that test we check also for blanks in the description ...
-      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "my Description", SERVICE_USER);
+      CMODataTransport transport = examinee.createDevelopmentTransportAdvanced("8000042445", "J01~JAVA", "my Description", SERVICE_USER);
 
       assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
       // ~ remains unescaped, <SPACE> is escaped to %20.
@@ -117,6 +119,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
           startsWith(SERVICE_ENDPOINT + "createTransportAdvanced?"),
           containsString("ChangeID='8000042445'"),
           containsString("Description='my%20Description'"),
+          containsString("DevelopmentSystemId='J01~JAVA'"),
           containsString("Owner='" + SERVICE_USER + "'"),
           containsString("&")));
       assertThat(transport.isModifiable(), is(equalTo(true)));
@@ -139,11 +142,13 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         thrown.expect(hasServerSideErrorMessage("DOES_NOT_E not found."));
 
         try {
-            examinee.createDevelopmentTransport("DOES_NOT_EXIST");
+            examinee.createDevelopmentTransport("DOES_NOT_EXIST", "J01~JAVA");
         } catch(Exception e) {
             assertThat(address.getValue().toASCIIString(), allOf(
                     startsWith(SERVICE_ENDPOINT + "createTransport?"),
-                    containsString("ChangeID='DOES_NOT_EXIST'")));
+                    containsString("ChangeID='DOES_NOT_EXIST'"),
+                    containsString("DevelopmentSystemId='J01~JAVA'"),
+                    containsString("&")));
             assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
             throw e;
         }
@@ -154,7 +159,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("has been closed");
         examinee.close();
-        examinee.createDevelopmentTransport("xx");
+        examinee.createDevelopmentTransport("xx", "J01~JAVA");
     }
 
     private ODataClient setupMock(String owner, String description) {
@@ -177,6 +182,9 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
 
                 clientEntity.getProperties().add(new ClientPropertyImpl("TransportID",
                         factory.newPrimitiveValueBuilder().setValue("L21K90002H").build()));
+
+                clientEntity.getProperties().add(new ClientPropertyImpl("DevelopmentSystemID",
+                        factory.newPrimitiveValueBuilder().setValue("J01~JAVA").build()));
 
                 clientEntity.getProperties().add(new ClientPropertyImpl("IsModifiable",
                         factory.newPrimitiveValueBuilder().setValue("true").build()));

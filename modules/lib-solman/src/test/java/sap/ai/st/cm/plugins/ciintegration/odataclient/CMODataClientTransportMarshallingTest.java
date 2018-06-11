@@ -41,6 +41,7 @@ public class CMODataClientTransportMarshallingTest {
 
         ClientEntity transport = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
         transport.getProperties().add(new ClientPropertyImpl("TransportID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("8000038673").build()));
+        transport.getProperties().add(new ClientPropertyImpl("DevelopmentSystemID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("J01~JAVA").build()));
         CMODataSolmanClient.toTransport("x", transport);
     }
 
@@ -50,6 +51,7 @@ public class CMODataClientTransportMarshallingTest {
         ClientEntity transportEnity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
         List<ClientProperty> props = transportEnity.getProperties();
         props.add(new ClientPropertyImpl("TransportID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("8000038673").build()));
+        props.add(new ClientPropertyImpl("DevelopmentSystemID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("J01~JAVA").build()));
         props.add(new ClientPropertyImpl("IsModifiable", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build()));
         CMODataTransport transport = CMODataSolmanClient.toTransport("x", transportEnity);
         assertThat(transport.getDescription(), is(nullValue()));
@@ -61,6 +63,7 @@ public class CMODataClientTransportMarshallingTest {
         ClientEntity transportEnity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
         List<ClientProperty> props = transportEnity.getProperties();
         props.add(new ClientPropertyImpl("TransportID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("8000038673").build()));
+        props.add(new ClientPropertyImpl("DevelopmentSystemID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("J01~JAVA").build()));
         props.add(new ClientPropertyImpl("IsModifiable", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build()));
         CMODataTransport transport = CMODataSolmanClient.toTransport("x", transportEnity);
         assertThat(transport.getOwner(), is(nullValue()));
@@ -72,6 +75,7 @@ public class CMODataClientTransportMarshallingTest {
         ClientEntity transportEnity = new ClientEntityImpl(new FullQualifiedName("AI_CRM_GW_CM_CI_SRV.Change"));
         List<ClientProperty> props = transportEnity.getProperties();
         props.add(new ClientPropertyImpl("TransportID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("8000038673").build()));
+        props.add(new ClientPropertyImpl("DevelopmentSystemID", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("J01~JAVA").build()));
         props.add(new ClientPropertyImpl("IsModifiable", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build()));
         props.add(new ClientPropertyImpl("Owner", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("me").build()));
         props.add(new ClientPropertyImpl("Description", new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("Lorem ipsum").build()));

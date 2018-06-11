@@ -12,7 +12,7 @@ public class SolManBackendGetChangeTransportDescriptionTest extends SolManBacken
     @Test
     public void getChangeTransportDesciptionStraightForward() throws Exception {
 
-        setMock(setupMock("L21K900026", "xOwner", "xDescription", false));
+        setMock(setupMock("L21K900026", "J01~JAVA", "xOwner", "xDescription", false));
         Commands.main(new String[] {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,

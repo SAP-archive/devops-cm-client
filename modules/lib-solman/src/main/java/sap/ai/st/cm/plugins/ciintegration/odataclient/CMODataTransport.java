@@ -8,6 +8,7 @@ import com.sap.cmclient.Transport;
 public class CMODataTransport implements Transport {
 
     private final String transportID;
+    private final String developmentSystemID;
     private final Boolean isModifiable;
     private final String description;
     private final String owner;
@@ -16,6 +17,9 @@ public class CMODataTransport implements Transport {
         return transportID;
     }
 
+    public String getDevelopmentSystemID() {
+        return developmentSystemID;
+    }
     public Boolean isModifiable() {
         return isModifiable;
     }
@@ -28,9 +32,10 @@ public class CMODataTransport implements Transport {
         return owner;
     }
 
-    public CMODataTransport(String transportID, Boolean isModifiable, String description, String owner) {
+    public CMODataTransport(String transportID, String developmentSystemID, Boolean isModifiable, String description, String owner) {
 
         this.transportID = transportID;
+        this.developmentSystemID = developmentSystemID;
         this.isModifiable = isModifiable;
         this.description = description;
         this.owner = owner;
@@ -38,7 +43,7 @@ public class CMODataTransport implements Transport {
 
     @Override
     public String toString() {
-        return "CMODataTransport [TransportID='" + transportID + "', IsModifiable='" + isModifiable + "', Description='"
+        return "CMODataTransport [TransportID='" + transportID + "', DevelopmentSystemID='" + developmentSystemID + "'IsModifiable='" + isModifiable + "', Description='"
                 + description + "', Owner='" + owner + "']";
     }
 }

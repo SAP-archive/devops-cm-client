@@ -53,6 +53,7 @@ class Commands {
                       VERSION = newOption("v", "version", "Prints the version.", null, false),
 
                       CHANGE_ID = newOption("cID", "change-id", "changeID.", "cID", false),
+                      DEVELOPMENT_SYSTEM_ID = newOption("dID", "development-system-id", "DevelopmentSystemID", "devSysID", false),
 
                       RETURN_CODE = newOption("rc", "return-code",
                           format("If used with this option return code is %s " +
@@ -130,6 +131,14 @@ class Commands {
                 throw new CMCommandLineException("No changeId specified.");
             }
             return changeID;
+        }
+
+        static String getDevelopmentSystemId(CommandLine commandLine) {
+            String developmentSystemId = commandLine.getOptionValue(CMOptions.DEVELOPMENT_SYSTEM_ID.getOpt());
+            if(StringUtils.isEmpty(developmentSystemId)) {
+                throw new CMCommandLineException("No developmentSystemId specified.");
+            }
+            return developmentSystemId;
         }
 
         static String getArg(CommandLine commandLine, int index, String name) {
@@ -249,6 +258,7 @@ class Commands {
         commands.add(GetTransportStatusABAP.class);
         commands.add(GetTransportTargetSystemABAP.class);
         commands.add(GetTransportTypeABAP.class);
+        commands.add(GetTransportDevelopmentSystemSOLMAN.class);
 
         if(commands.stream()
                 .filter(it -> it.getAnnotation(CommandDescriptor.class) == null)
