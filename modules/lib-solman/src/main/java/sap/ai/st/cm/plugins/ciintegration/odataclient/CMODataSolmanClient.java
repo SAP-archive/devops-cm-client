@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -42,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.net.UrlEscapers;
 import com.sap.cmclient.Transport;
 import com.sap.cmclient.VersionHelper;
@@ -291,7 +293,10 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @throws CMODataClientException In case the transport could not be created.
      */
     public CMODataTransport createDevelopmentTransport(String changeID) throws CMODataClientException {
-        return _createDevelopmentTransport(changeID, "createTransport", "?ChangeID='" + changeID + "'");
+        return _createDevelopmentTransport(changeID, "createTransport",
+                getQueryString(new ImmutableMap.Builder<String, String>()
+                    .put("ChangeID", changeID)
+                    .build()));
     }
 
     /**
@@ -301,7 +306,27 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @throws CMODataClientException In case the transport could not be created.
      */
     public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String description, String owner) throws CMODataClientException {
-        return _createDevelopmentTransport(changeID, "createTransportAdvanced", "?ChangeID='" + changeID + "'" + "&Description='" + description + "'" + "&Owner='" + owner + "'");
+
+        return _createDevelopmentTransport(changeID, "createTransportAdvanced",
+                getQueryString(new ImmutableMap.Builder<String, String>()
+                    .put("ChangeID", changeID)
+                    .put("Description", description)
+                    .put("Owner", owner).build()));
+    }
+
+    private static String getQueryString(Map<String, String> params) {
+        StringBuffer queryString = new StringBuffer("?");
+        boolean first = true;
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            if(first) {
+                first = false;
+            } else {
+                queryString.append("&");
+            }
+            queryString.append(format("%s='%s'", e.getKey(), e.getValue()));
+        }
+
+        return queryString.toString();
     }
 
     /**
