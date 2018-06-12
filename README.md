@@ -49,6 +49,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `is-transport-modifiable`         | SOLMAN       | Returns 'true' if the transport is modifiable.  |
 | `release-transport`               | SOLMAN       | Releases the transport.                         |
 | `upload-file-to-transport`        | SOLMAN       | Uploads a file to a transport.                  |
+| `get-transport-development-system | SOLMAN       | Returns the target system of the transport.     |
 | `create-transport`                | CTS          | Creates a new transport entity.                 |
 | `export-transport`                | CTS          | Exports a transport entity.                     |
 | `get-transport-description`       | CTS          | Returns the description of the transport.       |
