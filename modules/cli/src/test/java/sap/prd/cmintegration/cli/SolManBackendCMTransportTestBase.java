@@ -20,7 +20,7 @@ public class SolManBackendCMTransportTestBase extends CMSolmanTestBase {
 
     @Before
     public void setup() throws Exception {
-        super.setup();;
+        super.setup();
     }
 
     @After
