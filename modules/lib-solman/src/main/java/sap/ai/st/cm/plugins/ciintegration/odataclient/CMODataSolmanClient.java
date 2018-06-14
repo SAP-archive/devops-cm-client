@@ -62,6 +62,11 @@ public class CMODataSolmanClient implements AutoCloseable {
     private String serviceUrl; //REVISIT: uri instead of string?
     private final ODataClient client;
 
+    private final static String REQ_PARAM_CHANGE_ID = "ChangeID",
+                                REQ_PARAM_DEVELOPMENT_SYSTM_ID = "DevelopmentSystemID",
+                                REQ_PARAM_OWNER = "Owner",
+                                REQ_PARAM_DESCRIPTION = "Description";
+
     public CMODataSolmanClient(String serviceUrl, String serviceUser, String servicePassword) {
 
         checkArgument(!isBlank(serviceUrl), "Service url must not be blank.");
@@ -295,8 +300,8 @@ public class CMODataSolmanClient implements AutoCloseable {
     public CMODataTransport createDevelopmentTransport(String changeID, String developmentSystemId) throws CMODataClientException {
         return _createDevelopmentTransport(changeID, "createTransport",
                 getQueryString(new ImmutableMap.Builder<String, String>()
-                    .put("ChangeID", changeID)
-                    .put("DevelopmentSystemId", developmentSystemId)
+                    .put(REQ_PARAM_CHANGE_ID, changeID)
+                    .put(REQ_PARAM_DEVELOPMENT_SYSTM_ID, developmentSystemId)
                     .build()));
     }
 
@@ -310,10 +315,10 @@ public class CMODataSolmanClient implements AutoCloseable {
 
         return _createDevelopmentTransport(changeID, "createTransportAdvanced",
                 getQueryString(new ImmutableMap.Builder<String, String>()
-                    .put("ChangeID", changeID)
-                    .put("DevelopmentSystemId", developmentSystemId)
-                    .put("Description", description)
-                    .put("Owner", owner).build()));
+                    .put(REQ_PARAM_CHANGE_ID, changeID)
+                    .put(REQ_PARAM_DEVELOPMENT_SYSTM_ID, developmentSystemId)
+                    .put(REQ_PARAM_DESCRIPTION, description)
+                    .put(REQ_PARAM_OWNER, owner).build()));
     }
 
     private static String getQueryString(Map<String, String> params) {

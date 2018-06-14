@@ -76,7 +76,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
         assertThat(address.getValue().toASCIIString(), allOf(
                 startsWith(SERVICE_ENDPOINT + "createTransport?"),
                 containsString("ChangeID='8000038673'"),
-                containsString("DevelopmentSystemId='J01~JAVA'"),
+                containsString("DevelopmentSystemID='J01~JAVA'"),
                 containsString("&")));
         assertThat(transport.getTransportID(), is(equalTo("L21K90002H")));
         assertThat(transport.isModifiable(), is(equalTo(true)));
@@ -119,7 +119,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
           startsWith(SERVICE_ENDPOINT + "createTransportAdvanced?"),
           containsString("ChangeID='8000042445'"),
           containsString("Description='my%20Description'"),
-          containsString("DevelopmentSystemId='J01~JAVA'"),
+          containsString("DevelopmentSystemID='J01~JAVA'"),
           containsString("Owner='" + SERVICE_USER + "'"),
           containsString("&")));
       assertThat(transport.isModifiable(), is(equalTo(true)));
@@ -147,7 +147,7 @@ public class CMODataClientCreateTransportTest extends CMODataClientBaseTest {
             assertThat(address.getValue().toASCIIString(), allOf(
                     startsWith(SERVICE_ENDPOINT + "createTransport?"),
                     containsString("ChangeID='DOES_NOT_EXIST'"),
-                    containsString("DevelopmentSystemId='J01~JAVA'"),
+                    containsString("DevelopmentSystemID='J01~JAVA'"),
                     containsString("&")));
             assertThat(contentType.getValue(), is(equalTo("application/atom+xml")));
             throw e;
