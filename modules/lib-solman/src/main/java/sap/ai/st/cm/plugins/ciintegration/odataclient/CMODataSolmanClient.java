@@ -378,7 +378,7 @@ public class CMODataSolmanClient implements AutoCloseable {
 
             response = executeRequest(functionInvokeRequest, 200);
 
-            CMODataTransport transport = toTransport("", response.getBody());
+            CMODataTransport transport = toTransport(changeID, response.getBody());
 
             logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Description: '%s', Owner: '%s'.",
                     transport.getTransportID(), changeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));
