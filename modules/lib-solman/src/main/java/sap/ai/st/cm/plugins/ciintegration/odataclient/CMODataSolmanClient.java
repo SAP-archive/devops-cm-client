@@ -1,7 +1,6 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -365,15 +364,19 @@ public class CMODataSolmanClient implements AutoCloseable {
     }
 
     static CMODataTransport toTransport(String changeID, ClientEntity transportEntity) {
+        return toTransport(changeID, transportEntity, true);
+    }
+
+    static CMODataTransport toTransport(String changeID, ClientEntity transportEntity, boolean failOnMissingProperty) {
 
         String transportId = getValueAsString("TransportID", transportEntity);
-        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID));
+        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
 
         String developmentSystemId = getValueAsString("DevelopmentSystemID", transportEntity);
-        checkState(!isBlank(developmentSystemId), format("DevelopmentSystemID found to be null or empty when retrieveing transprts for change '%s'.", changeID));
+        checkState(!isBlank(developmentSystemId), format("DevelopmentSystemID found to be null or empty when retrieveing transprts for change '%s'.", changeID), failOnMissingProperty);
 
         String bModifiable = getValueAsString("IsModifiable", transportEntity);
-        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID));
+        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
 
         String description = getValueAsString("Description", transportEntity);
         String owner = getValueAsString("Owner", transportEntity);
@@ -387,6 +390,13 @@ public class CMODataSolmanClient implements AutoCloseable {
                 parseBoolean(bModifiable),
                 description,
                 owner);
+    }
+
+    static void checkState(boolean state, String message, boolean failOnMissingProperty) {
+        if (!state) {
+            if(failOnMissingProperty) throw new IllegalStateException(message);
+            logger.warn(message);
+        }
     }
 
     private void checkClosed() {
@@ -414,7 +424,11 @@ public class CMODataSolmanClient implements AutoCloseable {
 
             response = executeRequest(functionInvokeRequest, 200);
 
-            CMODataTransport transport = toTransport(changeID, response.getBody());
+            // failOnMissingProperty in toTransport below is false, since we do not want to
+            // fail if the transport has been created, but a property is missing in the response.
+            // NB: the transportId itself is checked / should be checked in the constructor of the
+            // transport object.
+            CMODataTransport transport = toTransport(changeID, response.getBody(), false);
 
             logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Description: '%s', Owner: '%s'.",
                     transport.getTransportID(), changeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));

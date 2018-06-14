@@ -1,5 +1,8 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
+import com.google.common.base.Preconditions;
 import com.sap.cmclient.Transport;
 
 /**
@@ -34,6 +37,7 @@ public class CMODataTransport implements Transport {
 
     public CMODataTransport(String transportID, String developmentSystemID, Boolean isModifiable, String description, String owner) {
 
+        Preconditions.checkArgument(! isNullOrEmpty(transportID), "transportId was null or empty.");
         this.transportID = transportID;
         this.developmentSystemID = developmentSystemID;
         this.isModifiable = isModifiable;
