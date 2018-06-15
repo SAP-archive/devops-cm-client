@@ -1,7 +1,6 @@
 package sap.ai.st.cm.plugins.ciintegration.odataclient;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -14,6 +13,7 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 
@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.net.UrlEscapers;
 import com.sap.cmclient.Transport;
 import com.sap.cmclient.VersionHelper;
@@ -59,6 +60,11 @@ public class CMODataSolmanClient implements AutoCloseable {
 
     private String serviceUrl; //REVISIT: uri instead of string?
     private final ODataClient client;
+
+    private final static String REQ_PARAM_CHANGE_ID = "ChangeID",
+                                REQ_PARAM_DEVELOPMENT_SYSTM_ID = "DevelopmentSystemID",
+                                REQ_PARAM_OWNER = "Owner",
+                                REQ_PARAM_DESCRIPTION = "Description";
 
     public CMODataSolmanClient(String serviceUrl, String serviceUser, String servicePassword) {
 
@@ -290,8 +296,12 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @return An instance representing the transport.
      * @throws CMODataClientException In case the transport could not be created.
      */
-    public CMODataTransport createDevelopmentTransport(String changeID) throws CMODataClientException {
-        return _createDevelopmentTransport(changeID, "createTransport", "?ChangeID='" + changeID + "'");
+    public CMODataTransport createDevelopmentTransport(String changeID, String developmentSystemId) throws CMODataClientException {
+        return _createDevelopmentTransport(changeID, "createTransport",
+                getQueryString(new ImmutableMap.Builder<String, String>()
+                    .put(REQ_PARAM_CHANGE_ID, changeID)
+                    .put(REQ_PARAM_DEVELOPMENT_SYSTM_ID, developmentSystemId)
+                    .build()));
     }
 
     /**
@@ -300,8 +310,29 @@ public class CMODataSolmanClient implements AutoCloseable {
      * @return An instance representing the transport.
      * @throws CMODataClientException In case the transport could not be created.
      */
-    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String description, String owner) throws CMODataClientException {
-        return _createDevelopmentTransport(changeID, "createTransportAdvanced", "?ChangeID='" + changeID + "'" + "&Description='" + description + "'" + "&Owner='" + owner + "'");
+    public CMODataTransport createDevelopmentTransportAdvanced(String changeID, String developmentSystemId, String description, String owner) throws CMODataClientException {
+
+        return _createDevelopmentTransport(changeID, "createTransportAdvanced",
+                getQueryString(new ImmutableMap.Builder<String, String>()
+                    .put(REQ_PARAM_CHANGE_ID, changeID)
+                    .put(REQ_PARAM_DEVELOPMENT_SYSTM_ID, developmentSystemId)
+                    .put(REQ_PARAM_DESCRIPTION, description)
+                    .put(REQ_PARAM_OWNER, owner).build()));
+    }
+
+    private static String getQueryString(Map<String, String> params) {
+        StringBuffer queryString = new StringBuffer("?");
+        boolean first = true;
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            if(first) {
+                first = false;
+            } else {
+                queryString.append("&");
+            }
+            queryString.append(format("%s='%s'", e.getKey(), e.getValue()));
+        }
+
+        return queryString.toString();
     }
 
     /**
@@ -333,12 +364,19 @@ public class CMODataSolmanClient implements AutoCloseable {
     }
 
     static CMODataTransport toTransport(String changeID, ClientEntity transportEntity) {
+        return toTransport(changeID, transportEntity, true);
+    }
+
+    static CMODataTransport toTransport(String changeID, ClientEntity transportEntity, boolean failOnMissingProperty) {
 
         String transportId = getValueAsString("TransportID", transportEntity);
-        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID));
+        checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
+
+        String developmentSystemId = getValueAsString("DevelopmentSystemID", transportEntity);
+        checkState(!isBlank(developmentSystemId), format("DevelopmentSystemID found to be null or empty when retrieveing transprts for change '%s'.", changeID), failOnMissingProperty);
 
         String bModifiable = getValueAsString("IsModifiable", transportEntity);
-        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID));
+        checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
 
         String description = getValueAsString("Description", transportEntity);
         String owner = getValueAsString("Owner", transportEntity);
@@ -348,9 +386,17 @@ public class CMODataSolmanClient implements AutoCloseable {
 
         return new CMODataTransport(
                 transportId,
+                developmentSystemId,
                 parseBoolean(bModifiable),
                 description,
                 owner);
+    }
+
+    static void checkState(boolean state, String message, boolean failOnMissingProperty) {
+        if (!state) {
+            if(failOnMissingProperty) throw new IllegalStateException(message);
+            logger.warn(message);
+        }
     }
 
     private void checkClosed() {
@@ -378,7 +424,11 @@ public class CMODataSolmanClient implements AutoCloseable {
 
             response = executeRequest(functionInvokeRequest, 200);
 
-            CMODataTransport transport = toTransport("", response.getBody());
+            // failOnMissingProperty in toTransport below is false, since we do not want to
+            // fail if the transport has been created, but a property is missing in the response.
+            // NB: the transportId itself is checked / should be checked in the constructor of the
+            // transport object.
+            CMODataTransport transport = toTransport(changeID, response.getBody(), false);
 
             logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Description: '%s', Owner: '%s'.",
                     transport.getTransportID(), changeID, transport.isModifiable(), transport.getDescription(), transport.getOwner()));

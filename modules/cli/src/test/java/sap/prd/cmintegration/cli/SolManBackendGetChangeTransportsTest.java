@@ -113,14 +113,14 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
     private SolmanClientFactory setupMock() throws Exception {
 
         ArrayList<Transport> transports = new ArrayList<>();
-        transports.add(new CMODataTransport("L21K900026", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K900028", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K900029", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K90002A", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K90002B", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K90002C", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K90002D", false, "Description", "Owner"));
-        transports.add(new CMODataTransport("L21K90002E", true, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K900026", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K900028", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K900029", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002A", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002B", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002C", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002D", "J01~JAVA", false, "Description", "Owner"));
+        transports.add(new CMODataTransport("L21K90002E", "J01~JAVA", true, "Description", "Owner"));
 
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         expect(clientMock.getChangeTransports(capture(changeId))).andReturn(transports);

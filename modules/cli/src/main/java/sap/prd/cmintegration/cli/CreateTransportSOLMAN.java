@@ -3,6 +3,7 @@ package sap.prd.cmintegration.cli;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
+import static sap.prd.cmintegration.cli.Commands.Helpers.getDevelopmentSystemId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getPassword;
@@ -38,20 +39,22 @@ class CreateTransportSOLMAN extends Command {
             }
 
             return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(Commands.CMOptions.DEVELOPMENT_SYSTEM_ID)
                        .addOption(owner)
                        .addOption(description);
         }
     }
 
     final static private Logger logger = LoggerFactory.getLogger(CreateTransportSOLMAN.class);
-    private final String changeId, owner, description;
+    private final String changeId, developmentSystemId, owner, description;
 
-    public CreateTransportSOLMAN(String host, String user, String password, String changeId,
+    public CreateTransportSOLMAN(String host, String user, String password, String changeId, String developmentSystemId,
             String owner, String description) {
         super(host, user, password);
         this.changeId = changeId;
         this.owner = owner;
         this.description = description;
+        this.developmentSystemId = developmentSystemId;
     }
 
     public final static void main(String[] args) throws Exception {
@@ -73,6 +76,7 @@ class CreateTransportSOLMAN extends Command {
                 getUser(commandLine),
                 getPassword(commandLine),
                 getChangeId(commandLine),
+                getDevelopmentSystemId(commandLine),
                 commandLine.getOptionValue(Opts.owner.getOpt()),
                 commandLine.getOptionValue(Opts.description.getOpt())).execute();
     }
@@ -85,7 +89,7 @@ class CreateTransportSOLMAN extends Command {
             CMODataTransport transport;
             if(owner == null && description == null) {
 
-                transport = client.createDevelopmentTransport(changeId);
+                transport = client.createDevelopmentTransport(changeId, developmentSystemId);
 
             } else {
 
@@ -94,7 +98,7 @@ class CreateTransportSOLMAN extends Command {
 
                 logger.debug(format("Creating transport with owner '%s' and description '%s'", o, d));
                 transport = client.createDevelopmentTransportAdvanced(
-                              changeId, d, o);
+                              changeId, developmentSystemId, d, o);
             }
             logger.debug(format("Transport '%s' created for change document '%s'. isModifiable: '%b', Owner: '%s', Description: '%s'.",
                 transport.getTransportID(), changeId, transport.isModifiable(), transport.getOwner(), transport.getDescription()));

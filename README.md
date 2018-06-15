@@ -16,7 +16,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 
   E.g.:
   ```
-     CM_VERSION=1.0.0
+     CM_VERSION=2.0.0
      mkdir cm_client
      curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
      |tar -C cm_client -xvf -
@@ -39,26 +39,27 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `-v`, `--version`        | Prints the version.     |
 
 
-| Subcommand                    | Backend Type |    Description                                  |
-|-------------------------------|--------------|-------------------------------------------------|
-| `create-transport`            | SOLMAN       | Creates a new transport entity.                 |
-| `get-transport-description`   | SOLMAN       | Returns the description of the transport.       |
-| `get-transport-owner`         | SOLMAN       | Returns the owner of the transport.             |
-| `get-transports`              | SOLMAN       | Returns the IDs of the transports.              |
-| `is-change-in-development`    | SOLMAN       | Returns 'true' if the change is in development. |
-| `is-transport-modifiable`     | SOLMAN       | Returns 'true' if the transport is modifiable.  |
-| `release-transport`           | SOLMAN       | Releases the transport.                         |
-| `upload-file-to-transport`    | SOLMAN       | Uploads a file to a transport.                  |
-| `create-transport`            | CTS          | Creates a new transport entity.                 |
-| `export-transport`            | CTS          | Exports a transport entity.                     |
-| `get-transport-description`   | CTS          | Returns the description of the transport.       |
-| `get-transport-owner`         | CTS          | Returns the owner of the transport.             |
-| `get-transport-status`        | CTS          | Returns the status of the transport.            |
-| `get-transport-target-system` | CTS          | Returns the target system of the transport.     |
-| `get-transport-type`          | CTS          | Returns the type of the transport.              |
-| `import-transport`            | CTS          | Imports a transport entity.                     |
-| `is-transport-modifiable`     | CTS          | Returns 'true' if the transport is modifiable.  |
-| `upload-file-to-transport`    | CTS          | Uploads a file to a transport.                  |
+| Subcommand                        | Backend Type |    Description                                  |
+|-----------------------------------|--------------|-------------------------------------------------|
+| `create-transport`                | SOLMAN       | Creates a new transport entity.                 |
+| `get-transport-description`       | SOLMAN       | Returns the description of the transport.       |
+| `get-transport-owner`             | SOLMAN       | Returns the owner of the transport.             |
+| `get-transports`                  | SOLMAN       | Returns the IDs of the transports.              |
+| `is-change-in-development`        | SOLMAN       | Returns 'true' if the change is in development. |
+| `is-transport-modifiable`         | SOLMAN       | Returns 'true' if the transport is modifiable.  |
+| `release-transport`               | SOLMAN       | Releases the transport.                         |
+| `upload-file-to-transport`        | SOLMAN       | Uploads a file to a transport.                  |
+| `get-transport-development-system | SOLMAN       | Returns the target system of the transport.     |
+| `create-transport`                | CTS          | Creates a new transport entity.                 |
+| `export-transport`                | CTS          | Exports a transport entity.                     |
+| `get-transport-description`       | CTS          | Returns the description of the transport.       |
+| `get-transport-owner`             | CTS          | Returns the owner of the transport.             |
+| `get-transport-statu    s`        | CTS          | Returns the status of the transport.            |
+| `get-transport-t    arget-system` | CTS          | Returns the target system of the transport.     |
+| `get-transport-type`              | CTS          | Returns the type of the transport.              |
+| `import-transport`                | CTS          | Imports a transport entity.                     |
+| `is-transport-modifiable`         | CTS          | Returns 'true' if the transport is modifiable.  |
+| `upload-file-to-transport`        | CTS          | Uploads a file to a transport.                  |
 
 
 For more information about subcommands and subcommand options run `<CMD> <subcommand> --help`.

@@ -178,6 +178,9 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         ClientProperty t = new ClientPropertyImpl("TransportID",
             new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(transportId).build());
 
+        ClientProperty ds = new ClientPropertyImpl("DevelopmentSystemID",
+                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(transportId).build());
+
         ClientProperty m = new ClientPropertyImpl("IsModifiable",
             new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build());
 
@@ -188,6 +191,7 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
                 new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(SERVICE_USER).build());
 
         expect(transportMock.getProperty("TransportID")).andReturn(t);
+        expect(transportMock.getProperty("DevelopmentSystemID")).andReturn(ds);
         expect(transportMock.getProperty("IsModifiable")).andReturn(m);
         expect(transportMock.getProperty("Description")).andReturn(d);
         expect(transportMock.getProperty("Owner")).andReturn(o);

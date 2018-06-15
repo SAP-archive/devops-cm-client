@@ -20,13 +20,15 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 
 public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
-    private Capture<String> owner, description;
+    private Capture<String> owner, description,
+                            developmentSystemId;
 
     @Before
     public void setup() throws Exception {
         super.setup();
         owner = Capture.newInstance();
         description = Capture.newInstance();
+        developmentSystemId = Capture.newInstance();
     }
 
     @After
@@ -47,9 +49,11 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
                 "-e", SERVICE_ENDPOINT,
                 "-t", "SOLMAN",
                 "create-transport",
-                "-cID", "8000038673"});
+                "-cID", "8000038673",
+                "-dID", "J01~JAVA"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
+        assertThat(developmentSystemId.getValue(), is(equalTo("J01~JAVA")));
         assertThat(owner.hasCaptured(), is(equalTo(false)));
         assertThat(description.hasCaptured(), is(equalTo(false)));
 
@@ -70,7 +74,8 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
                 "create-transport",
                 "--owner", "me",
                 "--description", "lorem ipsum",
-                "-cID", "8000038673"});
+                "-cID", "8000038673",
+                "-dID", "J01~JAVA"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.getValue(), is(equalTo("me")));
@@ -92,7 +97,8 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
                 "-t", "SOLMAN",
                 "create-transport",
                 "--owner", "me",
-                "-cID", "8000038673"});
+                "-cID", "8000038673",
+                "-dID", "J01~JAVA"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.getValue(), is(equalTo("me")));
@@ -114,7 +120,8 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
                 "-t", "SOLMAN",
                 "create-transport",
                 "--description", "lorem ipsum",
-                "-cID", "8000038673"});
+                "-cID", "8000038673",
+                "-dID", "J01~JAVA"});
 
         assertThat(changeId.getValue(), is(equalTo("8000038673")));
         assertThat(owner.getValue(), is(equalTo(SERVICE_USER)));
@@ -130,14 +137,14 @@ public class SolManBackendCreateTransportTest extends CMSolmanTestBase {
 
     private SolmanClientFactory setupStraightForwardMock(String owner, String description) throws Exception {
 
-        CMODataTransport transport = new CMODataTransport("myTransport", true, description, owner);
+        CMODataTransport transport = new CMODataTransport("myTransport", "J01~JAVA", true, description, owner);
 
         CMODataSolmanClient clientMock = createMock(CMODataSolmanClient.class);
         if(owner != null && description != null) {
             expect(clientMock.createDevelopmentTransportAdvanced(
-                capture(this.changeId), capture(this.description), capture(this.owner))).andReturn(transport);
+                capture(this.changeId), capture(this.developmentSystemId), capture(this.description), capture(this.owner))).andReturn(transport);
         } else {
-            expect(clientMock.createDevelopmentTransport(capture(this.changeId))).andReturn(transport);
+            expect(clientMock.createDevelopmentTransport(capture(this.changeId), capture(this.developmentSystemId))).andReturn(transport);
         }
 
         clientMock.close(); expectLastCall();
