@@ -1,4 +1,7 @@
 # Release Notes
+* 2.0.0 Support for DevelopmentSystemID property
+  * Incompatible changes:
+    * Creating a transport requires a new property 'developmentSystemID' (`-dID`)
 * 1.0.0 Additing commands for interacting with CTS.
   * Incompatible changes: 
     * changeId and transportId needs to be provided as option `-cID`, `-tID` rather than as argument.
