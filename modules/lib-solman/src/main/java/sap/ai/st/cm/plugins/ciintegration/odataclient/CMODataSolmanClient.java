@@ -373,7 +373,7 @@ public class CMODataSolmanClient implements AutoCloseable {
         checkState(!isBlank(transportId), format("Transport id found to be null or empty when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
 
         String developmentSystemId = getValueAsString("DevelopmentSystemID", transportEntity);
-        checkState( developmentSystemId != null, format("DevelopmentSystemID found to be null or empty when retrieveing transprts for change '%s'.", changeID), failOnMissingProperty);
+        checkState( developmentSystemId != null, format("DevelopmentSystemID was null when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
 
         String bModifiable = getValueAsString("IsModifiable", transportEntity);
         checkState(!isBlank(bModifiable), format("Modifiable flag found to be null or empty when retrieving transports for change '%s'.", changeID), failOnMissingProperty);
