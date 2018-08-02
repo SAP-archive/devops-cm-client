@@ -17,7 +17,11 @@ import static sap.ai.st.cm.plugins.ciintegration.odataclient.Matchers.hasServerS
 import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfiguration;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -43,6 +47,17 @@ import com.sap.cmclient.Transport;
 public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
 
+    private static class TransportDescriptor {
+        String transportId, developmentSystemId;
+        boolean modifiable;
+        static TransportDescriptor create(String transportId, String developmentSystemId, boolean modifiable) {
+            TransportDescriptor t = new TransportDescriptor();
+            t.transportId = transportId;
+            t.developmentSystemId = developmentSystemId;
+            t.modifiable = modifiable;
+            return t;
+        }
+    }
     private Capture<String> contentType = Capture.newInstance();
     @Before
     public void setup() throws Exception {
@@ -126,12 +141,29 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         examinee.getChangeTransports("xx");
     }
 
+    @Test
+    public void testGetChangeTransportWithEmptyDevelopmentSystemId() throws Exception{
+        Set<TransportDescriptor> transports = new HashSet<TransportDescriptor>();
+        transports.add(TransportDescriptor.create("L21K90002N", "", false));
+        setMock(examinee, setupMock(null, transports));
+        List<Transport> t = examinee.getChangeTransports("L21K90002N");
+        assertThat(((CMODataTransport)t.get(0)).getDevelopmentSystemID(), is(equalTo("")));
+    }
+
     private ODataClient setupMock() throws Exception {
         return setupMock(null);
     }
 
-    @SuppressWarnings("unchecked")
     private ODataClient setupMock(Exception e) {
+        Set<TransportDescriptor> transports = new HashSet<TransportDescriptor>();
+        transports.add(TransportDescriptor.create("L21K90002N", "xxx~123", false));
+        transports.add(TransportDescriptor.create("L21K90002L", "xxx~123", false));
+        transports.add(TransportDescriptor.create("L21K90002J", "xxx~123", true));
+        return setupMock(e, transports);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ODataClient setupMock(Exception e, Set<TransportDescriptor> transports) {
 
         ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> responseMock = createMock(ODataRetrieveResponse.class);
 
@@ -140,12 +172,11 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         } else {
 
             ClientEntitySetIterator<ClientEntitySet, ClientEntity> iteratorMock = createMock(ClientEntitySetIterator.class);
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002N", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002L", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002J", true));
+
+            for(TransportDescriptor t : transports) {
+                expect(iteratorMock.hasNext()).andReturn(true);
+                expect(iteratorMock.next()).andReturn(setupTransportMock(t.transportId, t.developmentSystemId, t.modifiable));
+            }
             expect(iteratorMock.hasNext()).andReturn(false);
 
             expect(responseMock.getBody()).andReturn(iteratorMock);
@@ -171,31 +202,23 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         return clientMock;
     }
 
-    private static ClientEntity setupTransportMock(String transportId, boolean isModifiable) {
+    private static ClientEntity setupTransportMock(String transportId, String developmentSystemId, boolean isModifiable) {
 
         ClientEntity transportMock = createMock(ClientEntity.class);
 
-        ClientProperty t = new ClientPropertyImpl("TransportID",
-            new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(transportId).build());
+        Map<String, String> props = new HashMap<String ,String>();
 
-        ClientProperty ds = new ClientPropertyImpl("DevelopmentSystemID",
-                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(transportId).build());
+        props.put("TransportID", transportId);
+        props.put("DevelopmentSystemID", developmentSystemId);
+        props.put("IsModifiable", Boolean.valueOf(isModifiable).toString());
+        props.put("Description", "S 8000038673: HCP CI Jenkins Deploy UC 1");
+        props.put("Owner", SERVICE_USER);
 
-        ClientProperty m = new ClientPropertyImpl("IsModifiable",
-            new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("true").build());
-
-        ClientProperty d = new ClientPropertyImpl("Description",
-                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue("S 8000038673: HCP CI Jenkins Deploy UC 1").build());
-
-        ClientProperty o = new ClientPropertyImpl("Owner",
-                new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(SERVICE_USER).build());
-
-        expect(transportMock.getProperty("TransportID")).andReturn(t);
-        expect(transportMock.getProperty("DevelopmentSystemID")).andReturn(ds);
-        expect(transportMock.getProperty("IsModifiable")).andReturn(m);
-        expect(transportMock.getProperty("Description")).andReturn(d);
-        expect(transportMock.getProperty("Owner")).andReturn(o);
-
+        for(Map.Entry<String, String> e : props.entrySet()) {
+            ClientProperty cp = new ClientPropertyImpl(e.getKey(),
+                    new ClientObjectFactoryImpl().newPrimitiveValueBuilder().setValue(e.getValue()).build());
+            expect(transportMock.getProperty(e.getKey())).andReturn(cp);
+        }
         replay(transportMock);
         return transportMock;
     }

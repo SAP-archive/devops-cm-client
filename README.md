@@ -16,7 +16,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 
   E.g.:
   ```
-     CM_VERSION=2.0.0
+     CM_VERSION=2.0.1
      mkdir cm_client
      curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
      |tar -C cm_client -xvf -
