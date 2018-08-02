@@ -18,8 +18,10 @@ import static sap.ai.st.cm.plugins.ciintegration.odataclient.MockHelper.getConfi
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.olingo.client.api.ODataClient;
 import org.apache.olingo.client.api.communication.ODataClientErrorException;
@@ -45,6 +47,17 @@ import com.sap.cmclient.Transport;
 public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
 
+    private static class TransportDescriptor {
+        String transportId, developmentSystemId;
+        boolean modifiable;
+        static TransportDescriptor create(String transportId, String developmentSystemId, boolean modifiable) {
+            TransportDescriptor t = new TransportDescriptor();
+            t.transportId = transportId;
+            t.developmentSystemId = developmentSystemId;
+            t.modifiable = modifiable;
+            return t;
+        }
+    }
     private Capture<String> contentType = Capture.newInstance();
     @Before
     public void setup() throws Exception {
@@ -132,8 +145,16 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         return setupMock(null);
     }
 
-    @SuppressWarnings("unchecked")
     private ODataClient setupMock(Exception e) {
+        Set<TransportDescriptor> transports = new HashSet<TransportDescriptor>();
+        transports.add(TransportDescriptor.create("L21K90002N", "xxx~123", false));
+        transports.add(TransportDescriptor.create("L21K90002L", "xxx~123", false));
+        transports.add(TransportDescriptor.create("L21K90002J", "xxx~123", true));
+        return setupMock(e, transports);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ODataClient setupMock(Exception e, Set<TransportDescriptor> transports) {
 
         ODataRetrieveResponse<ClientEntitySetIterator<ClientEntitySet, ClientEntity>> responseMock = createMock(ODataRetrieveResponse.class);
 
@@ -142,12 +163,11 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         } else {
 
             ClientEntitySetIterator<ClientEntitySet, ClientEntity> iteratorMock = createMock(ClientEntitySetIterator.class);
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002N", "xxx~123", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002L", "xxx~123", false));
-            expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002J", "xxx~123", true));
+
+            for(TransportDescriptor t : transports) {
+                expect(iteratorMock.hasNext()).andReturn(true);
+                expect(iteratorMock.next()).andReturn(setupTransportMock(t.transportId, t.developmentSystemId, t.modifiable));
+            }
             expect(iteratorMock.hasNext()).andReturn(false);
 
             expect(responseMock.getBody()).andReturn(iteratorMock);
