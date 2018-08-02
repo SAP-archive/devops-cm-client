@@ -1,4 +1,7 @@
 # Release Notes
+* 2.0.1 Allow also empty DevelopmentSystemIds
+  * Bug fixes:
+    * The client is now able to deal with empty development system ids.
 * 2.0.0 Support for DevelopmentSystemID property
   * Incompatible changes:
     * Creating a transport requires a new property 'developmentSystemID' (`-dID`)
