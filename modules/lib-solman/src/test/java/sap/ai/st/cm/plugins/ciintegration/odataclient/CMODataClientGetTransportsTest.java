@@ -141,6 +141,15 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         examinee.getChangeTransports("xx");
     }
 
+    @Test
+    public void testGetChangeTransportWithEmptyDevelopmentSystemId() throws Exception{
+        Set<TransportDescriptor> transports = new HashSet<TransportDescriptor>();
+        transports.add(TransportDescriptor.create("L21K90002N", "", false));
+        setMock(examinee, setupMock(null, transports));
+        List<Transport> t = examinee.getChangeTransports("L21K90002N");
+        assertThat(((CMODataTransport)t.get(0)).getDevelopmentSystemID(), is(equalTo("")));
+    }
+
     private ODataClient setupMock() throws Exception {
         return setupMock(null);
     }
