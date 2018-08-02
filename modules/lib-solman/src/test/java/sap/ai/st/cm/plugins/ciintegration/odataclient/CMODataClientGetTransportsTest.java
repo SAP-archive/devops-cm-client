@@ -143,11 +143,11 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
 
             ClientEntitySetIterator<ClientEntitySet, ClientEntity> iteratorMock = createMock(ClientEntitySetIterator.class);
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002N", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002N", "xxx~123", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002L", false));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002L", "xxx~123", false));
             expect(iteratorMock.hasNext()).andReturn(true);
-            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002J", true));
+            expect(iteratorMock.next()).andReturn(setupTransportMock("L21K90002J", "xxx~123", true));
             expect(iteratorMock.hasNext()).andReturn(false);
 
             expect(responseMock.getBody()).andReturn(iteratorMock);
@@ -173,14 +173,14 @@ public class CMODataClientGetTransportsTest extends CMODataClientBaseTest {
         return clientMock;
     }
 
-    private static ClientEntity setupTransportMock(String transportId, boolean isModifiable) {
+    private static ClientEntity setupTransportMock(String transportId, String developmentSystemId, boolean isModifiable) {
 
         ClientEntity transportMock = createMock(ClientEntity.class);
 
         Map<String, String> props = new HashMap<String ,String>();
 
         props.put("TransportID", transportId);
-        props.put("DevelopmentSystemID", "xxx~123");
+        props.put("DevelopmentSystemID", developmentSystemId);
         props.put("IsModifiable", Boolean.valueOf(isModifiable).toString());
         props.put("Description", "S 8000038673: HCP CI Jenkins Deploy UC 1");
         props.put("Owner", SERVICE_USER);
