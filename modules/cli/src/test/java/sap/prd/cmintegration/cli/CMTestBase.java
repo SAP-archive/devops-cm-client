@@ -2,12 +2,10 @@ package sap.prd.cmintegration.cli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 
 import org.apache.http.ProtocolVersion;
 import org.apache.http.message.BasicStatusLine;
 import org.easymock.Capture;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -41,22 +39,16 @@ public class CMTestBase {
         prepareOutputStream();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        System.setOut(oldOut);
-        setMock(null);
-    }
-
     protected void prepareOutputStream(){
         result = new ByteArrayOutputStream();
         oldOut = System.out;
         System.setOut(new PrintStream(result));
     }
 
-    protected static void setMock(ClientFactory mock) throws Exception {
-        Field field = ClientFactory.class.getDeclaredField("instance");
-        field.setAccessible(true);
-        field.set(null, mock);
-        field.setAccessible(false);
+    /*
+     * Intended for being used with a single line string.
+     */
+    protected static String removeCRLF(String str) {
+        return str.replaceAll("\\r?\\n$", "");
     }
 }

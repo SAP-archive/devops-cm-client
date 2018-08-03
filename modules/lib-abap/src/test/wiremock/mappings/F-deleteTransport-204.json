@@ -1,0 +1,18 @@
+{
+  "id" : "1c80fd90-e8e8-4062-af33-ddad364587a3",
+  "name" : "transportsa5dk900042",
+  "request" : {
+    "url" : "/Transports('A5DK900042')",
+    "method" : "DELETE"
+  },
+  "response" : {
+    "status" : 204,
+    "headers" : {
+      "dataserviceversion" : "2.0",
+      "sap-processing-info" : "ODataBEP=,crp=,st=,MedCacheHub=SHM,codeployed=X,softstate="
+    }
+  },
+  "uuid" : "1c80fd90-e8e8-4062-af33-ddad364587a3",
+  "persistent" : true,
+  "insertionIndex" : 12
+}

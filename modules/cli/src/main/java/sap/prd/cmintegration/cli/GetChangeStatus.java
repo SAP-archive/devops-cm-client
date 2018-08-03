@@ -1,6 +1,7 @@
 package sap.prd.cmintegration.cli;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getChangeId;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getCommandName;
 import static sap.prd.cmintegration.cli.Commands.Helpers.getHost;
@@ -15,29 +16,57 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataChange;
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
 /**
  * Command for retrieving the status of a change.
  */
-@CommandDescriptor(name = "is-change-in-development")
+@CommandDescriptor(name = "is-change-in-development", type = BackendType.SOLMAN)
 class GetChangeStatus extends Command {
+
+    static class Opts {
+
+        static Options addOptions(Options opts, boolean includeStandardOptions) {
+
+            if(includeStandardOptions) {
+                Command.addOpts(opts);
+            }
+
+            return opts.addOption(Commands.CMOptions.CHANGE_ID)
+                       .addOption(Commands.CMOptions.RETURN_CODE);
+        }
+    }
 
     final static private Logger logger = LoggerFactory.getLogger(GetChangeStatus.class);
     private String changeId;
+    private final boolean returnCodeMode;
 
-    GetChangeStatus(String host, String user, String password, String changeId) {
+    GetChangeStatus(String host, String user, String password, String changeId, boolean returnCodeMode) {
+
         super(host, user, password);
+
+        Preconditions.checkArgument(! isBlank(changeId), "No changeId provided.");
+
         this.changeId = changeId;
+        this.returnCodeMode = returnCodeMode;
     }
 
     @Override
     void execute() throws Exception {
-        try (CMODataClient client = ClientFactory.getInstance().newClient(host, user, password)) {
+        try (CMODataSolmanClient client = SolmanClientFactory.getInstance().newClient(host, user, password)) {
             CMODataChange change = client.getChange(changeId);
             logger.debug(format("Change '%s' retrieved from host '%s'. isInDevelopment: '%b'.", change.getChangeID(), host, change.isInDevelopment()));
-            System.out.println(change.isInDevelopment());
+
+            if(returnCodeMode) {
+                if(!change.isInDevelopment()) {
+                    throw new ExitException(ExitException.ExitCodes.FALSE);
+                }
+            } else {
+                System.out.println(change.isInDevelopment());
+            }
         } catch(Exception e) {
             logger.warn(format("Change '%s' could not be retrieved from '%s'.", changeId, host), e);
             throw e;
@@ -46,20 +75,19 @@ class GetChangeStatus extends Command {
 
     public final static void main(String[] args) throws Exception {
 
-        logger.debug(format("%s called with arguments: '%s'.", GetChangeStatus.class.getSimpleName(), Commands.Helpers.getArgsLogString(args)));
-        Options options = new Options();
-        Commands.Helpers.addStandardParameters(options);
-
         if(helpRequested(args)) {
-            handleHelpOption(format("%s <changeId>", getCommandName(GetChangeStatus.class)),
-                    "Returns 'true' if the change specified by <changeId> is in development. Otherwise 'false'.", new Options()); return;
+            handleHelpOption(getCommandName(GetChangeStatus.class), "",
+                    "Returns 'true' if the given change is in development. Otherwise 'false'.", Opts.addOptions(new Options(), false));
+            return;
         }
 
-        CommandLine commandLine = new DefaultParser().parse(options, args);
+        CommandLine commandLine = new DefaultParser().parse(Opts.addOptions(new Options(), true), args);
+
         new GetChangeStatus(
                 getHost(commandLine),
                 getUser(commandLine),
                 getPassword(commandLine),
-                getChangeId(commandLine)).execute();
+                getChangeId(commandLine),
+                commandLine.hasOption(Commands.CMOptions.RETURN_CODE.getOpt())).execute();
     }
 }
