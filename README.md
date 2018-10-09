@@ -49,13 +49,13 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `is-transport-modifiable`         | SOLMAN       | Returns 'true' if the transport is modifiable.  |
 | `release-transport`               | SOLMAN       | Releases the transport.                         |
 | `upload-file-to-transport`        | SOLMAN       | Uploads a file to a transport.                  |
-| `get-transport-development-system | SOLMAN       | Returns the target system of the transport.     |
+| `get-transport-development-system`| SOLMAN       | Returns the target system of the transport.     |
 | `create-transport`                | CTS          | Creates a new transport entity.                 |
 | `export-transport`                | CTS          | Exports a transport entity.                     |
 | `get-transport-description`       | CTS          | Returns the description of the transport.       |
 | `get-transport-owner`             | CTS          | Returns the owner of the transport.             |
-| `get-transport-statu    s`        | CTS          | Returns the status of the transport.            |
-| `get-transport-t    arget-system` | CTS          | Returns the target system of the transport.     |
+| `get-transport-status`            | CTS          | Returns the status of the transport.            |
+| `get-transport-target-system`     | CTS          | Returns the target system of the transport.     |
 | `get-transport-type`              | CTS          | Returns the type of the transport.              |
 | `import-transport`                | CTS          | Imports a transport entity.                     |
 | `is-transport-modifiable`         | CTS          | Returns 'true' if the transport is modifiable.  |
@@ -79,12 +79,12 @@ before opening a pull request.
 
 Copyright (c) 2017 SAP SE or an SAP affiliate company. All rights reserved.
 This file is licensed under the Apache Software License, v. 2 except as noted
-otherwise in the [LICENSE file][license]
+otherwise in the [LICENSE file][license].
 
 [cm-cli-issues]: https://github.com/SAP/change-management-cli/issues
 [license]: ./LICENSE
 [contribution]: ./CONTRIBUTING.md
 
 # Release Notes
-The release notes are available [here](RELEASES.md)
+The release notes are available [here](RELEASES.md).
 
