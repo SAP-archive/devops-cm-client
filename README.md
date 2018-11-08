@@ -6,7 +6,19 @@ in continuous integration and continuous delivery scenarios and supports only
 the actions necessary within those scenarios. See section _Usage_ for more details.
 
 # Requirements
+### SAP Solution Manager Functionality
  - SAP Solution Manager 7.2 SP6
+### CTS+ without SAP Solution Manager
+
+| AS ABAP Version       |     Service Pack    |
+|-----------------------|---------------------|
+| 7.50             |  > SP08             |
+| 7.51             |  > SP07             |
+| 7.52             |  > SP03             |
+
+ - SAPUI 7.53
+
+### General Requirements
  - JDK 8 to build this project (to run the client JRE 8 is sufficient)
 
 # Download and Installation
