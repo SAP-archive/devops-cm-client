@@ -16,7 +16,7 @@ abstract class Command {
 
         checkArgument(! isBlank(host), "No endpoint provided.");
         checkArgument(! isBlank(user), "No user provided.");
-        checkArgument(! isBlank(password), "No passwordprovided.");
+        checkArgument(! isBlank(password), "No password provided.");
 
         this.host = host;
         this.user = user;
