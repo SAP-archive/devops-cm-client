@@ -24,9 +24,12 @@ cache:
   directories:
   - $HOME/.m2
 before_install:
-- openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv
-  -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
-- gpg --fast-import cfg/codesigning.asc
+  - |
+    if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+    then
+      openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
+      gpg --fast-import cfg/codesigning.asc
+    fi
 deploy:
   - provider: script
     script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/service/local/staging/deploy/maven2
