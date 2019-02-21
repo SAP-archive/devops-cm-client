@@ -24,11 +24,11 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 
 # Download and Installation
 
-This command line client can be consumed either as a Java application from [mavencentral](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) or as a Docker image from [hub.docker.com](https://hub.docker.com/r/ppiper/cm-client).
+This command line client can be consumed either as a Java application from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) or as a Docker image from [hub.docker.com](https://hub.docker.com/r/ppiper/cm-client).
 
-## Installation from Mavencentral
+## Installation from maven.org
 
-  - Download the command line interface package from [mavencentral](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) 
+  - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli)
   - Extract the command line interface package into suitable folder
 
   E.g.:
