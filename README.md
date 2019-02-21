@@ -31,15 +31,15 @@ This command line client can be consumed either as a Java application from [mave
   - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli)
   - Extract the command line interface package into suitable folder
 
-  E.g.:
-  ```
-     CM_VERSION=0.0.1
-     mkdir cm_client
-     curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
-     |tar -C cm_client -xvf -
-     cm_client/bin/cmclient --version
-     cm_client/bin/cmclient --help
-  ```
+    Example:
+    ```
+       CM_VERSION=0.0.1
+       mkdir cm_client
+       curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
+       |tar -C cm_client -xvf -
+       cm_client/bin/cmclient --version
+       cm_client/bin/cmclient --help
+    ```
 
 # Usage of the CLI
 ````
