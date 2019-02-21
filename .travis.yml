@@ -2,8 +2,18 @@ language: java
 sudo: false
 jdk:
   - oraclejdk8
-# signing is not really required here. We keep it, since we get aware of issues earlier.
-install: mvn --settings cfg/settings.xml -P signing clean verify
+# Signing is not really required here. We keep it, since we get aware of issues earlier.
+# In case we are outside the base repo signing is skipped since the encrypted variables
+# are not availabe in this case. "noop" profile is just an empty profile, only available
+# in order to avoid a warning from maven wrt non existing profile.
+install:
+  - |
+    PROFILE=noop
+    if [ "${{TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+    then
+      PROFILE=signing
+    fi
+    mvn --settings cfg/settings.xml -P ${PROFILE} clean verify
 script: 
   - mkdir tmp/ 
   - export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 

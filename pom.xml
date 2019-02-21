@@ -171,6 +171,10 @@
 
     <profiles>
       <profile>
+        <id>noop</id>
+        <!-- empty profile, avoid a message that there is no valid profile with does nothing. -->
+      </profile>
+      <profile>
         <id>signing</id>
         <build>
           <plugins>
