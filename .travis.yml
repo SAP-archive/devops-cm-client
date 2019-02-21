@@ -39,6 +39,7 @@ deploy:
     script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/content/repositories/snapshots
     on:
       branch: master
+      repo: SAP/devops-cm-client
 
 env:
   global:
