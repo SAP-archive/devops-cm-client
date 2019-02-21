@@ -13,6 +13,7 @@ install:
     then
       PROFILE=signing
     fi
+    echo "[INFO] Running with profile: ${PROFILE}"
     mvn --settings cfg/settings.xml -P ${PROFILE} clean verify
 script: 
   - mkdir tmp/ 
