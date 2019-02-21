@@ -26,6 +26,7 @@ cache:
 before_install:
   - |
     echo "REPO_SLUG: ${TRAVIS_REPO_SLUG}"
+    echo "PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
     if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
     then
       openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
