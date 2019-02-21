@@ -9,7 +9,7 @@ jdk:
 install:
   - |
     PROFILE=noop
-    if [ "${{TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+    if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
     then
       PROFILE=signing
     fi
