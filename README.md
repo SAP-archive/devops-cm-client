@@ -19,9 +19,14 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
  - SAPUI 7.53
 
 ### General Requirements
- - JDK 8 to build this project (to run the client JRE 8 is sufficient)
+ - JDK 8 to build this project (to run the client JRE 8 is sufficient) OR
+ - a Docker environment to run the Docker image
 
 # Download and Installation
+
+This command line client can be consumed either as a Java application from [mavencentral](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) or as a Docker image from [hub.docker.com](https://hub.docker.com/r/ppiper/cm-client).
+
+## Installation from Mavencentral
 
   - Download the command line interface package from [mavencentral](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) 
   - Extract the command line interface package into suitable folder
@@ -36,7 +41,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
      cm_client/bin/cmclient --help
   ```
 
-# Usage
+# Usage of the CLI
 ````
 <CMD> [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS] <parameters...>
 ````
@@ -73,9 +78,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `is-transport-modifiable`         | CTS          | Returns 'true' if the transport is modifiable.  |
 | `upload-file-to-transport`        | CTS          | Uploads a file to a transport.                  |
 
-
 For more information about subcommands and subcommand options run `<CMD> <subcommand> --help`.
-
 
 # How to obtain support
 
