@@ -9,10 +9,32 @@ jdk:
 install:
   - |
     PROFILE=noop
-    if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+    echo "TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
+    echo "TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
+    if [ ! -z "${TRAVIS_PULL_REQUEST_SLUG}" ]
     then
-      PROFILE=signing
+      if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+      then
+        if [ "${TRAVIS_PULL_REQUEST_SLUG}" == "${TRAVIS_REPO_SLUG}" ]
+        then
+          echo "[INFO]: Configuring code signing."
+          PROFILE=signing
+        else
+          echo "[INFO]: Pull request proposed from outside base repo. Not preparing code signing."
+        fi
+      else
+        echo "[INFO]: Pull request proposed to other repo than base repo. Not preparing code signing."
+      fi
+    else
+      echo "[INFO]: No pull request."
+      if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+        echo "[INFO]: Configuring code signing."
+        PROFILE=signing
+      then
+        echo "[INFO]: No pull request and outside base repo. Not preparing code signing."
+      fi
     fi
+
     echo "[INFO] Running with profile: ${PROFILE}"
     mvn --settings cfg/settings.xml -P ${PROFILE} clean verify
 script: 
