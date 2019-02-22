@@ -27,7 +27,7 @@ before_install:
   - |
     echo "TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
     echo "TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
-    if [ ! -z "TRAVIS_PULL_REQUEST_SLUG" ]
+    if [ ! -z "${TRAVIS_PULL_REQUEST_SLUG}" ]
     then
       if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
       then
