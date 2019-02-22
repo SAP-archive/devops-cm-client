@@ -37,10 +37,10 @@ before_install:
           openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
           gpg --fast-import cfg/codesigning.asc
         else
-          echo "[INFO]: Pull request proposed from outside base repo."
+          echo "[INFO]: Pull request proposed from outside base repo. Not preparing code signing."
         fi
       else
-        echo "[INFO]: Pull request proposed to other repo than base repo."
+        echo "[INFO]: Pull request proposed to other repo than base repo. Not preparing code signing."
       fi
     else
       echo "[INFO]: No pull request."
@@ -49,6 +49,7 @@ before_install:
         openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
         gpg --fast-import cfg/codesigning.asc
       then
+        echo "[INFO]: No pull request and outside base repo. Not preparing code signing."
       fi
     fi
 deploy:
