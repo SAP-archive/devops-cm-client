@@ -33,7 +33,7 @@ This command line client can be consumed either as a Java application from [mave
 
     Example:
     ```
-       CM_VERSION=0.0.1
+       CM_VERSION=2.0.1
        mkdir cm_client
        curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
        |tar -C cm_client -xvf -
@@ -42,6 +42,7 @@ This command line client can be consumed either as a Java application from [mave
     ```
 
 # Usage of the CLI
+
 ````
 <CMD> [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS] <parameters...>
 ````
