@@ -19,24 +19,30 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
  - SAPUI 7.53
 
 ### General Requirements
- - JDK 8 to build this project (to run the client JRE 8 is sufficient)
+ - JDK 8 to build this project (to run the client JRE 8 is sufficient) OR
+ - a Docker environment to run the Docker image
 
 # Download and Installation
 
-  - Download the command line interface package from [mavencentral](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) 
+This command line client can be consumed either as a Java application from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) or as a Docker image from [hub.docker.com](https://hub.docker.com/r/ppiper/cm-client).
+
+## Installation from maven.org
+
+  - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli)
   - Extract the command line interface package into suitable folder
 
-  E.g.:
-  ```
-     CM_VERSION=2.0.1
-     mkdir cm_client
-     curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
-     |tar -C cm_client -xvf -
-     cm_client/bin/cmclient --version
-     cm_client/bin/cmclient --help
-  ```
+    Example:
+    ```
+       CM_VERSION=2.0.1
+       mkdir cm_client
+       curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
+       |tar -C cm_client -xvf -
+       cm_client/bin/cmclient --version
+       cm_client/bin/cmclient --help
+    ```
 
-# Usage
+# Usage of the CLI
+
 ````
 <CMD> [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS] <parameters...>
 ````
@@ -73,9 +79,7 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 | `is-transport-modifiable`         | CTS          | Returns 'true' if the transport is modifiable.  |
 | `upload-file-to-transport`        | CTS          | Uploads a file to a transport.                  |
 
-
 For more information about subcommands and subcommand options run `<CMD> <subcommand> --help`.
-
 
 # How to obtain support
 
@@ -87,7 +91,7 @@ the [GitHub issues page of this project][cm-cli-issues].
 Read and understand our [contribution guidelines][contribution]
 before opening a pull request.
 
-# [License][license]
+# License
 
 Copyright (c) 2017 SAP SE or an SAP affiliate company. All rights reserved.
 This file is licensed under the Apache Software License, v. 2 except as noted
