@@ -49,6 +49,8 @@ This command line client can be consumed either as a Java application from [mave
 <CMD> [COMMON_OPTIONS...] <subcommand> [SUBCOMMAND_OPTIONS] <parameters...>
 ````
 
+To pass additional Java options to the command (for example, another truststore), set the environment variable `CMCLIENT_OPTS`
+
 | Option                   |     Description         |
 |--------------------------|-------------------------|
 | `-t`, `--backend-type`   | `SOLMAN` or `CTS`       |
