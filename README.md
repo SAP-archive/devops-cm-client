@@ -10,13 +10,15 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
  - SAP Solution Manager 7.2 SP6, SP7 -> cm_client v1.x
  - SAP Solution Manager 7.2 SP 8 and higher -> cm_client v2.0
 
-### CTS+ without SAP Solution Manager
+### CTS without SAP Solution Manager
 
 | AS ABAP Version       |     Service Pack    |
 |-----------------------|---------------------|
-| 7.50             |  > SP08             |
-| 7.51             |  > SP07             |
-| 7.52             |  > SP03             |
+| 7.50             |  >= SP12             |
+| 7.51             |  >= SP07             |
+| 7.52             |  >= SP03             |
+| 7.53             |  >= SP01             |
+| 7.54             |  >= SP01             |
 
  - SAPUI 7.53
 
