@@ -1,7 +1,7 @@
 language: java
 sudo: false
 jdk:
-  - oraclejdk8
+  - openjdk8
 # Signing is not really required here. We keep it, since we get aware of issues earlier.
 # In case we are outside the base repo signing is skipped since the encrypted variables
 # are not availabe in this case. "noop" profile is just an empty profile, only available
