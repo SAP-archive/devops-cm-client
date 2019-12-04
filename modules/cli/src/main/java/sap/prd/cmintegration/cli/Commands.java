@@ -117,7 +117,7 @@ class Commands {
             try {
                 return BackendType.valueOf(commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt()));
             } catch(IllegalArgumentException e) {
-                throw new RuntimeException("Cannot retrieve backend type.", e);
+                throw new RuntimeException("Can not retrieve backend type.", e);
             }
         }
 
@@ -188,7 +188,7 @@ class Commands {
             String footer = format("%nCOMMON OPTIONS:%n%s%nEXIT CODES%n%s", commonOpts, exitCodes);
 
             formatter.printHelp(
-                    format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%n", 
+                    format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMAND_OPTIONS] %s%n%n", 
                             commandName,
                             args != null ? args : ""),
                     format("SUBCOMMAND OPTIONS:%n",header), options, footer);
@@ -342,7 +342,7 @@ class Commands {
         String b = commandLine.getOptionValue(CMOptions.BACKEND_TYPE.getOpt());
         if(StringUtils.isEmpty(b)) {
             printHelp();
-            throw new CMCommandLineException(format("Cannot retrieve backend type. Provide common option '-%s'. Values: %s.", CMOptions.BACKEND_TYPE.getOpt(), asList(BackendType.values())));
+            throw new CMCommandLineException(format("Can not retrieve backend type. Provide common option '-%s'. Values: %s.", CMOptions.BACKEND_TYPE.getOpt(), asList(BackendType.values())));
         }
         return BackendType.valueOf(b);
     }
@@ -350,7 +350,7 @@ class Commands {
     private static String getCommandName(CommandLine commandLine, String[] args) throws ParseException {
 
         if(commandLine.getArgs().length == 0) {
-            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+            throw new CMCommandLineException(format("Can not extract command name from arguments: '%s'.",
                         getArgsLogString(args)));
         }
 
