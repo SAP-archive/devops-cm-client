@@ -350,7 +350,7 @@ class Commands {
     private static String getCommandName(CommandLine commandLine, String[] args) throws ParseException {
 
         if(commandLine.getArgs().length == 0) {
-            throw new CMCommandLineException(format("Can not extract command name from arguments: '%s'.",
+            throw new CMCommandLineException(format("Cannot extract command name from arguments: '%s'.",
                         getArgsLogString(args)));
         }
 
