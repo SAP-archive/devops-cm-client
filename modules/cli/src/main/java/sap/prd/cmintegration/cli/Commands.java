@@ -188,7 +188,7 @@ class Commands {
             String footer = format("%nCOMMON OPTIONS:%n%s%nEXIT CODES%n%s", commonOpts, exitCodes);
 
             formatter.printHelp(
-                    format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMNAD_OPTIONS] %s%n%n", 
+                    format("<CMD> [COMMON_OPTIONS] %s [SUBCOMMAND_OPTIONS] %s%n%n", 
                             commandName,
                             args != null ? args : ""),
                     format("SUBCOMMAND OPTIONS:%n",header), options, footer);
@@ -350,7 +350,7 @@ class Commands {
     private static String getCommandName(CommandLine commandLine, String[] args) throws ParseException {
 
         if(commandLine.getArgs().length == 0) {
-            throw new CMCommandLineException(format("Canmnot extract command name from arguments: '%s'.",
+            throw new CMCommandLineException(format("Cannot extract command name from arguments: '%s'.",
                         getArgsLogString(args)));
         }
 
