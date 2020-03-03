@@ -4,7 +4,7 @@ ARG version=2.0.1
 
 ENV CMCLIENT_HOME /opt/sap/cmclient
 
-RUN PROTOCOL='http' && \
+RUN PROTOCOL='https' && \
     REPO_URL='repo1.maven.org/maven2' && \
     G='com.sap.devops.cmclient' && \
     A='dist.cli' && \
