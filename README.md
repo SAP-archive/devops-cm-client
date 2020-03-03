@@ -16,7 +16,7 @@ This will print the CM Client's help information. For a comprehensive overview o
 
 ## This image provides:
 
-- [CM CLient](https://github.com/SAP/devops-cm-client)
+- [CM Client](https://github.com/SAP/devops-cm-client)
 
 ## License
 
@@ -27,4 +27,3 @@ otherwise in the [LICENSE file][license].
 Please note that Docker images can contain other software which may be licensed under different licenses. This License file is also included in the Docker image. For any usage of built Docker images please make sure to check the licenses of the artifacts contained in the images.
 
 [license]: https://github.com/SAP/devops-docker-images/blob/master/LICENSE
-
