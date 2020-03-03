@@ -30,7 +30,7 @@ This command line client can be consumed either as a Java application from [mave
 
 
 ## Using the Docker Image
-On a linux machine you can run 
+On a linux machine you can run:
 
 `docker run --rm ppiper/cm-client cmclient --help`
 
@@ -38,13 +38,13 @@ This will print the CM Client's help information. For a comprehensive overview o
 
 ### How to Build the Docker Image
 
-The Dockerfile is located in a designated branch [`dockerfile`](/SAP/devops-cm-client/tree/docker). After checking out the branch you can run
+The Dockerfile is located in a designated branch [`dockerfile`](/SAP/devops-cm-client/tree/docker). After checking out the branch you can run:
 `docker build -t cm-client .`
 
 ## Using the Java Application from maven.org
 
-  - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli)
-  - Extract the command line interface package into suitable folder
+  - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli).
+  - Extract the command line interface package into suitable folder.
 
     Example:
     ```
