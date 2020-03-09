@@ -7,7 +7,7 @@ jdk:
 # are not availabe in this case. "noop" profile is just an empty profile, only available
 # in order to avoid a warning from maven wrt non existing profile.
 install:
-  - |
+  - >
     PROFILE=noop
     echo "TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
     echo "TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
@@ -46,7 +46,7 @@ cache:
   directories:
   - $HOME/.m2
 before_install:
-  - |
+  - >
     echo "TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
     echo "TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
     if [ ! -z "${TRAVIS_PULL_REQUEST_SLUG}" ]
