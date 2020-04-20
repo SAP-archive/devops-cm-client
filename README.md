@@ -40,7 +40,7 @@ This prints the help information of the CM Client. For a comprehensive overview 
 
 ### How to Build the Docker Image
 
-The Dockerfile is located in a designated branch [`dockerfile`](/SAP/devops-cm-client/tree/docker). After checking out the branch, you can run:
+The Dockerfile is located in a designated branch [`dockerfile`](https://github.com/SAP/devops-cm-client/tree/docker). After checking out the branch, you can run:
 `docker build -t cm-client .`
 
 ## Using the Java Application from maven.org
