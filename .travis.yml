@@ -103,7 +103,7 @@ deploy:
   - provider: script
     script: mvn clean deploy --settings cfg/settings.xml -P signing
     on:
-      branch: master
+      branch: newKeypair
       repo: SAP/devops-cm-client
 
 env:
