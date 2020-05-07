@@ -15,6 +15,24 @@
       <olingo.v4.version>4.3.0</olingo.v4.version>
     </properties>
 
+    <distributionManagement>
+
+      <repository>
+        <uniqueVersion>true</uniqueVersion>
+        <id>ossrh</id>
+        <name>Maven Central Release</name>
+        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        <layout>default</layout>
+      </repository>
+      <snapshotRepository>
+        <uniqueVersion>true</uniqueVersion>
+        <id>ossrh-snapshots</id>
+        <name>Maven Central Snapshot</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <layout>default</layout>
+      </snapshotRepository>
+    </distributionManagement>
+
     <scm>
       <connection>scm:git:git://github.com/SAP/devops-cm-client.git</connection>
       <developerConnection>scm:git:ssh://github.com:SAP/devops-cm-client.git</developerConnection>
@@ -167,8 +185,19 @@
           </plugin>
         </plugins>
       </pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.7</version>
+          <extensions>true</extensions>
+          <configuration>
+            <nexusUrl>https://oss.sonatype.org</nexusUrl>
+            <serverId>ossrh</serverId>
+          </configuration>
+        </plugin>
+      </plugins>
     </build>
-
     <profiles>
       <profile>
         <id>noop</id>

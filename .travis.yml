@@ -102,11 +102,11 @@ before_install:
     fi
 deploy:
   - provider: script
-    script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/service/local/staging/deploy/maven2
+    script: mvn clean deploy --settings cfg/settings.xml -P signing -DstagingProfileId=22fbc0443d9154
     on:
       branch: release
   - provider: script
-    script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/content/repositories/snapshots
+    script: mvn clean deploy --settings cfg/settings.xml -P signing
     on:
       branch: master
       repo: SAP/devops-cm-client
