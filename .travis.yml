@@ -88,9 +88,11 @@ before_install:
           echo "[INFO]: private key imported."
         else
           echo "[ERROR]: private key import failed."
+          exit 1
         fi
       else
         echo "[ERROR]: decrypting private key failed."
+        exit 1
       fi
     fi
 deploy:
