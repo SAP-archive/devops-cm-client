@@ -9,8 +9,8 @@ jdk:
 install:
   - |
     PROFILE=noop
-    echo "TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
-    echo "TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
+    echo "[INFO]: TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
+    echo "[INFO]: TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
     if [ ! -z "${TRAVIS_PULL_REQUEST_SLUG}" ]
     then
       if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
@@ -28,9 +28,10 @@ install:
     else
       echo "[INFO]: No pull request."
       if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
+      then
         echo "[INFO]: Configuring code signing."
         PROFILE=signing
-      then
+      else
         echo "[INFO]: No pull request and outside base repo. Not preparing code signing."
       fi
     fi
@@ -47,17 +48,18 @@ cache:
   - $HOME/.m2
 before_install:
   - |
-    echo "TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
-    echo "TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
+    echo "[INFO]: TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG}"
+    echo "[INFO]: TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG}"
+    PREPARE_SIGNING=false
     if [ ! -z "${TRAVIS_PULL_REQUEST_SLUG}" ]
     then
       if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
       then
+        echo "[INFO]: pull request."
         if [ "${TRAVIS_PULL_REQUEST_SLUG}" == "${TRAVIS_REPO_SLUG}" ]
         then
-          echo "[INFO]: Prepare code signing."
-          openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
-          gpg --fast-import cfg/codesigning.asc
+          PREPARE_SIGNING=true
+          echo "[INFO]: Inside repo '${TRAVIS_REPO_SLUG}'. Prepare code signing."
         else
           echo "[INFO]: Pull request proposed from outside base repo. Not preparing code signing."
         fi
@@ -66,21 +68,40 @@ before_install:
       fi
     else
       echo "[INFO]: No pull request."
-      if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]
-        echo "[INFO]: Prepare code signing."
-        openssl aes-256-cbc -K $encrypted_d5d7c7a681ca_key -iv $encrypted_d5d7c7a681ca_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
-        gpg --fast-import cfg/codesigning.asc
-      then
+      if [ "${TRAVIS_REPO_SLUG}" == "SAP/devops-cm-client" ]; then
+        PREPARE_SIGNING=true
+        echo "[INFO]: Inside repo '${TRAVIS_REPO_SLUG}'. Prepare code signing."
+      else
         echo "[INFO]: No pull request and outside base repo. Not preparing code signing."
+      fi
+    fi
+    if [ "${PREPARE_SIGNING}" = "true" ]
+    then
+      echo "[INFO]: Prepare code signing"
+      openssl aes-256-cbc -K $encrypted_12c8071d2874_key -iv $encrypted_12c8071d2874_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
+      if [ "$?" == "0" ]
+      then
+        echo "[INFO]: decrypting private key succeeded. Importing ..."
+        gpg --verbose --fast-import cfg/codesigning.asc
+        if [ "$?" == "0" ]
+        then
+          echo "[INFO]: private key imported."
+        else
+          echo "[ERROR]: private key import failed."
+          exit 1
+        fi
+      else
+        echo "[ERROR]: decrypting private key failed."
+        exit 1
       fi
     fi
 deploy:
   - provider: script
-    script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/service/local/staging/deploy/maven2
+    script: mvn clean deploy --settings cfg/settings.xml -P signing -DstagingProfileId=22fbc0443d9154
     on:
       branch: release
   - provider: script
-    script: mvn clean deploy --settings cfg/settings.xml -P signing -DaltDeploymentRepository=ossrh::default::https://oss.sonatype.org/content/repositories/snapshots
+    script: mvn clean deploy --settings cfg/settings.xml -P signing
     on:
       branch: master
       repo: SAP/devops-cm-client
@@ -89,5 +110,5 @@ env:
   global:
   - secure: "nHxFPejYlhtglcXnekn0o/66fuJQQSEeQZxdGwrPXP38XjTNeRs686UbNb8KDrCKPghlgLY5DlEPn+dSko3+rhFabcEh91T3J+3vmTRYHmSKwSHKkRr0/5uHos7AcU/YqYObZUSF1zr+ZSU+/R89HVEOfT1auRv9d2zHWFwvaGokWJgpaeLP6qee/7lIurKsg9yz1aa8Do2hXIb+oV2lRujE4qvR9tn9MRcfYP8vloGGUtnivcK2zDoMp0SxRupzc30vwu0R6YW7B1Kq2w8KZVhif9kTmTBy0CAcQ96AoJrv4n6q1BpFHGYhGGUaIEDF0+ZlngKXyVUYdOk1UPYP7z+qcTT2Ejfn5JwuG3bovZV1Y9w7F1bTFm3AkqyKvwSl6e/tQICt15k2ecj5i1WFHK17oMKW75V4i9/GONaKgwPcBrGVu1ueFjv+6Xm8UYIH/AsBp0epkywo7pf6iw+WcY/El7dm9FZtc8qBn0rfxvI+m1yEsQMLROFR4jzPFPduAxGcPKn8HE9CYFFAxi28ixcRKahQ3uDELjn8723pF/WLrgeqcAXcj0aFVlBznkViLLQDAzPWxJlqGuLRmtt0DbyoL4B/FDomFSaACtvfXrvFPlh2kxDhxqoDe+48mcvkkmbePPQSlcxwzZet+xjqfsMbhhlqE1vOTxgV4rkQVFs="
   - secure: "D1jrZqbGHuxAI/UqV9HFSyVLBX0RlPbykjLFnB6G58NF9eS0AHtdOojcDXmuLg8CeAYH/nLzVGaWfRo68fbjmZoTzcVMXYQhDG0aRdy16IUi2of9q0jOrA8W+aAoQIupT0cWC5hPq6+dgVyoOs3RRh0rN85vSzmfcFs5cworbZyuUrkY6VGn/6xk5O0iqSJwTuQEOgvJgAG4i/T9/sU0a0AZFhl4YTEEKRKu8LYLrKwMIwKXn3VZxOAJ6FPmsDYqfZV+FYtEa5Lh4/PR2Wnm782PsxDf+8J7LpDyL01v92tvAn74jgEK9EGXXEY7o/ca6kQ98/JeCAJk1Cmb3LLpML7wZr58O4cgTh3RlEQR1kM9sN4C2eD95qrBiCruWRwiHZmyGwR2tqdkqWU4A5ykNBgpnPLgKSLdQIZ9greakoTSFbGOzeHt3HcdLcgyw4iau5jwwFffwXXUTs572H8BToiobYpXT9lfofPnaJ7Cl7gFzGj3hLos67s8PGHfUswsTtRkojZh49joiWOvDKwiqXMxiEniHfbuCQoT/ZgVpjVK3fM08O2QHUJOPVZcRKl3xfsDek3Kvj8qRgFT1NTCKIMbl7DRw4qQ8ighNJRv21NBGBc+6MDEMw+7KjnB1uSrPzvh99Z5uHs+4VLpG6icFLwf5NNp8htszfE43iRf45I="
-  - secure: HUcHmYOSdDxee86RxYW4QI/Yele4p56CiUq1Iy+O6pOb9Nx4jVWoQbgum80gO94D7eHYfURpQvIhvGNeQwimfN6IdEnpoi6b1yXpRi0Y8oLl4bXfcDUwzS0wiXr4vMeVG2F/P43Fqo/8QDaJgfnIHwimG57teSGTd4Zzu1iiJayi0jyvGw20ne5tNHTkLj2niJ07+bM5hlE9+M1hCWMuG+i7FNgFhlafc27Ebvix9hcxZz2u0oH/NnWDcNuG90O4CLnMNjIqr7kBzJ0sQxTIW9prRSUTYLmC4aSLVdLDOXzB55K+ZDjq4qHzFtzaI1pWm/ukKCHzzU+JC3W6hMnxd4i55+SLh8T57Ds4sZUQr0y5BUNzD45wFJ638xOpuydRAghA01f3cPcJDxkS3/nArGUrILAvRvZlCGGnorBZ59slIyVp0HGsNsKY8OsRk4ugUvpGKQDIxlHRP7zZK8qkTQ+mGXlh45rR+Y0NdBUOt1MB1PuSNcj38ptn0GMpWzcfeL5C+ZrSgc9u7TWb58L6n1RpIi0NCSZTlWq5J1FScMmY9T/O8itYAx6cducjLPoiFHvnmCpTvzFFPngG9IJEKTw325qJ2lz5a7g4VqfCURojAz3+p73RikY+WxS5x4jXTuBT3Kc79DL/7GuLur8/8qLIPekkruyIYMrzv2g5lGQ=
   - secure: bypTXEbBITqiXnoq+nWb43DHZn4s+IkYPa9e8TjO1pp7dPMMKeeGrMRh64btCWlcQkWGVoy5388JjyNoWdUEaW7QGomDFwC7z7KLAFOH9KwvpFFPSQ68Np4YQVleZQBYQINaXQaLHszeRyItio2aTZRvhgABAYQLd8ArG2mwr4+2DxR9P25PHZsqVlTnldi4NHwuq1MQhzkqz0pxOVbKgxBdoYt/s4wY6YXJlS57AASyrl3XH6nJY8O6syqXC1EqIsiL3QO+J37Wu9KWBVNh3jpLN8z4mcTx/uJGzaisWUV3CG1TshgtvV4ymhQyL0gdgIw9ohOyp1kEgXIigWOM/c6gbhyu+51gCwRHC23ebxTXpgUeB6Xz7HGbgTnR2Bgv//G5fFMNLlsDeJPYOpGawSbjZlbudlHp9xKlQN5DOA/DoNW1U2tbmsDBDQBUeWfurFZq1IF/hFEmQosRzuNrLnLp3nQxpUELG8CMdDJvIpCuKjNq0FGebVsXqPtCsRamaEKgQhgCwP9Qs7lOg31qBHk9u8PZ4+Bcg5Gx/8NWj8b5exXSoOyEV6E1nj+MYUbIALn2/MbQFJko32AesJiXBek5E1yTyLEbkXWwWIfUD+ZLLC1QZyKUnAlxyb/HvC3QBi7gsGPJ5Zza564/LogzRgmPpDKLHb9MGVLObn4al3Q=
+  - secure: "g2cdf7jfpZ4vLGbsvLxYaqYCcN/h97QeoDLUgHDTBO0a9kmU2AT/7VWSh9jVfZEiDlBWRf9hx1nqijBbpyarYA/v+oNMRrWrQQREfbehJQq/XHnnq+qKxGNxZ6bixwoDglW7iZe2LgV4rg3J+cXpujCy5mmKS8RNg6/Z1On5A08yKKCRaXidYn+43t2G9ciBOfxwIj4JPcUT5XPNL/g8mcuktAestan8WV6jHdE1YpgpiQRMPFEMx04HE+fW/JivDroRaErHEgcbBuRn7KszIHd2Xh+PfbO7MuqAkrVG9ZXnirslxeLkHIOTT5BmJmVyv58ZBPLe0HecQvR0bcGztpu6sW1C5ifBXx+Qge74dnMy9VjlsmSscEDDaZO2m2hTDb/+qfmwgh1ZmTAHWKiSqYpavlR3qqNcev+iTfoSoPIOZK5wqyLR9IZJBPrz92GOr1mcvxWRYPvwPHfUWOI7lEF3oOMoJdF9d9SsZ1iwZE7zStkWX6RQTX5tLuGL4CoRaYjPl2pGHEK84XW5WBMEZc0pSVDcvrnorEK7CLXXDmummxzqHujkom9habBRW+44AdTcWTaasjqTIr++fYxV3RxRfWmJJYZJyJsW5pMRqmrlHr5KvYkuA3Y/5haKhD4cAFquipcbLM5aHwTGEEqzbGeh+X6wScSyMheHfdKwGqc="
