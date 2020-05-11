@@ -30,10 +30,24 @@ the actions necessary within those scenarios. See section _Usage_ for more detai
 
 This command line client can be consumed either as a Java application from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli) or as a Docker image from [hub.docker.com](https://hub.docker.com/r/ppiper/cm-client).
 
-## Installation from maven.org
+The public key for verifing the artifacts is available [here](https://keys.openpgp.org/vks/v1/by-fingerprint/D59BDC1A924385CFEE6AA5962F55B9DDAC28BFAF)
 
-  - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli)
-  - Extract the command line interface package into suitable folder
+## Using the Docker Image
+On a Linux machine, you can run:
+
+`docker run --rm ppiper/cm-client cmclient --help`
+
+This prints the help information of the CM Client. For a comprehensive overview of available commands, please read the [usage information](#usage) below.
+
+### How to Build the Docker Image
+
+The Dockerfile is located in a designated branch [`dockerfile`](https://github.com/SAP/devops-cm-client/tree/docker). After checking out the branch, you can run:
+`docker build -t cm-client .`
+
+## Using the Java Application from maven.org
+
+  - Download the command line interface package from [maven.org](http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli).
+  - Extract the command line interface package into a suitable folder.
 
     Example:
     ```
@@ -109,4 +123,3 @@ otherwise in the [LICENSE file][license].
 
 # Release Notes
 The release notes are available [here](RELEASES.md).
-
