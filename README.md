@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/devops-cm-client)](https://api.reuse.software/info/github.com/SAP/devops-cm-client)
+
 # Description
 
 Simple command line interface to handle basic change management related actions
