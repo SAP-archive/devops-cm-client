@@ -55,7 +55,7 @@ The Dockerfile is located in a designated branch [`dockerfile`](https://github.c
     ```
        CM_VERSION=2.0.1
        mkdir cm_client
-       curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
+       curl "https://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
        |tar -C cm_client -xvf -
        cm_client/bin/cmclient --version
        cm_client/bin/cmclient --help
