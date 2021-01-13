@@ -54,12 +54,16 @@ The Dockerfile is located in a designated branch [`dockerfile`](https://github.c
     Example:
     ```
        CM_VERSION=2.0.1
-       mkdir cm_client
-       curl "http://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
-       |tar -C cm_client -xvf -
-       cm_client/bin/cmclient --version
-       cm_client/bin/cmclient --help
+       export CMCLIENT_HOME=`pwd`/cm_client
+       export PATH=${CMCLIENT_HOME}/bin:${PATH}
+       mkdir -p ${CMCLIENT_HOME}
+       curl "https://repo1.maven.org/maven2/com/sap/devops/cmclient/dist.cli/${CM_VERSION}/dist.cli-${CM_VERSION}.tar.gz"  \
+       |tar -C ${CMCLIENT_HOME} -xvf -
+       cmclient --version
+       cmclient --help
     ```
+It is recommanded to define `CMCLIENT_HOME` and `PATH` in `~/.bash_profile` or in any other suitable way.
+
 
 # Usage of the CLI
 
