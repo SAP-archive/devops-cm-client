@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
-import com.sap.cmclient.http.UnexpectedHttpResponseException;
 
 import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 
@@ -243,21 +242,11 @@ class Commands {
         commands.add(GetChangeStatus.class);
         commands.add(GetChangeTransports.class);
         commands.add(GetTransportModifiableSOLMAN.class);
-        commands.add(GetTransportModifiableABAP.class);
         commands.add(GetTransportOwnerSOLMAN.class);
-        commands.add(GetTransportOwnerABAP.class);
         commands.add(GetTransportDescriptionSOLMAN.class);
-        commands.add(GetTransportDescriptionABAP.class);
         commands.add(UploadFileToTransportSOLMAN.class);
-        commands.add(UploadFileToTransportABAP.class);
         commands.add(CreateTransportSOLMAN.class);
-        commands.add(CreateTransportABAP.class);
         commands.add(ReleaseTransport.class);
-        commands.add(ImportTransport.class);
-        commands.add(ExportTransport.class);
-        commands.add(GetTransportStatusABAP.class);
-        commands.add(GetTransportTargetSystemABAP.class);
-        commands.add(GetTransportTypeABAP.class);
         commands.add(GetTransportDevelopmentSystemSOLMAN.class);
 
         if(commands.stream()
@@ -327,8 +316,6 @@ class Commands {
         StatusLine statusLine = null;
         if(e.getTargetException() instanceof ODataClientErrorException) {
            statusLine = ((ODataClientErrorException) e.getTargetException()).getStatusLine();
-       } else if(e.getTargetException() instanceof UnexpectedHttpResponseException) {
-           statusLine = ((UnexpectedHttpResponseException)e.getTargetException()).getStatus();
        }
 
        if(statusLine != null && statusLine.getStatusCode() == 401) { // unauthorized
