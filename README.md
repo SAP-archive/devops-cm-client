@@ -3,7 +3,7 @@
 # Description
 
 Simple command line interface to handle basic change management related actions
-in SAP Solution Manager or with CTS via ODATA requests. The client is intended to be used
+in SAP Solution Manager via ODATA requests. The client is intended to be used
 in continuous integration and continuous delivery scenarios and supports only
 the actions necessary within those scenarios. See section _Usage_ for more details.
 
