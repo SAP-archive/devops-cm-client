@@ -17,7 +17,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 /**
  * Command for releasing a transport.
  */
-@CommandDescriptor(name = "release-transport", type = BackendType.SOLMAN)
+@CommandDescriptor(name = "release-transport")
 class ReleaseTransport extends Command {
 
 	static class Opts {

@@ -30,7 +30,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
  * handed over to that command only the mofifiable transports are
  * returned.
  */
-@CommandDescriptor(name="get-transports", type = BackendType.SOLMAN)
+@CommandDescriptor(name="get-transports")
 class GetChangeTransports extends Command {
 
     private static class Opts {

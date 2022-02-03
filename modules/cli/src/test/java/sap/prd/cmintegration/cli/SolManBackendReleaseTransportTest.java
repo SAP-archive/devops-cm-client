@@ -42,7 +42,6 @@ public class SolManBackendReleaseTransportTest extends CMSolmanTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "release-transport",
                 "-cID", "8000038673", "-tID", "L21K90002K"});
 
@@ -63,7 +62,6 @@ public class SolManBackendReleaseTransportTest extends CMSolmanTestBase {
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "release-transport",
                 "-cID", "8000038673", "-tID", "L21K900026"});
     }

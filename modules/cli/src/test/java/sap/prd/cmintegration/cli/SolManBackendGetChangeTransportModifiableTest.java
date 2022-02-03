@@ -19,7 +19,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "-cID", "8000038673", "-tID", "L21K900026"});
 
@@ -40,7 +39,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "--return-code",
                 "-cID", "8000038673", "-tID", "L21K900026"});
@@ -54,7 +52,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "-cID", "8000038673", "-tID", "L21K900026"});
 
@@ -74,7 +71,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "--return-code",
                 "-cID", "8000038673", "-tID", "L21K900026"});
@@ -96,7 +92,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "-cID", "8000038673", "-tID", "DOES_NOT_EXIST"});
     }
@@ -115,7 +110,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "-cID", "DOES_NOT_EXIST", "-tID", "NOT_NEEDED"});
         } catch(ODataClientErrorException ex) {
@@ -134,7 +128,6 @@ public class SolManBackendGetChangeTransportModifiableTest extends SolManBackend
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "is-transport-modifiable",
                 "-cID", "8000038673"});
     }

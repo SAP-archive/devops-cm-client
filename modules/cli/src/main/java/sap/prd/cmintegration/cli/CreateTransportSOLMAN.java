@@ -25,7 +25,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 /**
  * Command for creating a transport for a change in SAP Solution Manager.
  */
-@CommandDescriptor(name = "create-transport", type = BackendType.SOLMAN)
+@CommandDescriptor(name = "create-transport")
 class CreateTransportSOLMAN extends Command {
 
     static class Opts {

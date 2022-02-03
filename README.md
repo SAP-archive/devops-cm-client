@@ -63,7 +63,6 @@ To pass additional Java options to the command (for example, another truststore)
 
 | Option                   |     Description         |
 |--------------------------|-------------------------|
-| `-t`, `--backend-type`   | `SOLMAN`                |
 | `-e`, `--endpoint <arg>` | Service endpoint        |
 | `-h`, `--help`           | Prints this help.       |
 | `-p`, `--password <arg>` | Service password, if '-' is provided, password will be read from stdin. |
@@ -71,17 +70,17 @@ To pass additional Java options to the command (for example, another truststore)
 | `-v`, `--version`        | Prints the version.     |
 
 
-| Subcommand                        | Backend Type |    Description                                  |
-|-----------------------------------|--------------|-------------------------------------------------|
-| `create-transport`                | SOLMAN       | Creates a new transport entity.                 |
-| `get-transport-description`       | SOLMAN       | Returns the description of the transport.       |
-| `get-transport-owner`             | SOLMAN       | Returns the owner of the transport.             |
-| `get-transports`                  | SOLMAN       | Returns the IDs of the transports.              |
-| `is-change-in-development`        | SOLMAN       | Returns 'true' if the change is in development. |
-| `is-transport-modifiable`         | SOLMAN       | Returns 'true' if the transport is modifiable.  |
-| `release-transport`               | SOLMAN       | Releases the transport.                         |
-| `upload-file-to-transport`        | SOLMAN       | Uploads a file to a transport.                  |
-| `get-transport-development-system`| SOLMAN       | Returns the target system of the transport.     |
+| Subcommand                        | Description                                     |
+|-----------------------------------|-------------------------------------------------|
+| `create-transport`                | Creates a new transport entity.                 |
+| `get-transport-description`       | Returns the description of the transport.       |
+| `get-transport-owner`             | Returns the owner of the transport.             |
+| `get-transports`                  | Returns the IDs of the transports.              |
+| `is-change-in-development`        | Returns 'true' if the change is in development. |
+| `is-transport-modifiable`         | Returns 'true' if the transport is modifiable.  |
+| `release-transport`               | Releases the transport.                         |
+| `upload-file-to-transport`        | Uploads a file to a transport.                  |
+| `get-transport-development-system`| Returns the target system of the transport.     |
 
 For more information about subcommands and subcommand options run `<CMD> <subcommand> --help`.
 

@@ -28,7 +28,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 /**
  * Command for uploading a file into a transport.
  */
-@CommandDescriptor(name = "upload-file-to-transport", type = BackendType.SOLMAN)
+@CommandDescriptor(name = "upload-file-to-transport")
 class UploadFileToTransportSOLMAN extends TransportRelatedSOLMAN {
 
 	static class Opts {

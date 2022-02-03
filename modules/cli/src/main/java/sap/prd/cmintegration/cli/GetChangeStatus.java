@@ -24,7 +24,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
 /**
  * Command for retrieving the status of a change.
  */
-@CommandDescriptor(name = "is-change-in-development", type = BackendType.SOLMAN)
+@CommandDescriptor(name = "is-change-in-development")
 class GetChangeStatus extends Command {
 
     static class Opts {
