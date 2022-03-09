@@ -20,12 +20,5 @@ jobs:
         distribution: 'adopt'
         cache: maven
 
-    - name: Step 3 - Check project-version 
-      run: |
-        mkdir tmp/ 
-        export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
-        tar -C tmp -xvf modules/dist.cli/target/dist.cli-${PROJECT_VERSION}.tar.gz 
-        tmp/bin/cmclient --version | grep -q "^${PROJECT_VERSION}" 
-
-    - name: Step 4 - Build and Test with Maven
+    - name: Step 3 - Build and Test with Maven
       run: mvn clean deploy --settings cfg/settings.xml -P signing
