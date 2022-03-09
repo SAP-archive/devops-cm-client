@@ -1,0 +1,31 @@
+name: Maven Build and Test (Master Branch)
+
+on: 
+  push:
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Step 1 - Checkout main branch from GitHub
+      uses: actions/checkout@v2
+
+    - name: Step 2 - Set up JDK 1.8
+      uses: actions/setup-java@v2
+      with: 
+        java-version: '8'
+        distribution: 'adopt'
+        cache: maven
+
+    - name: Step 3 - Check project-version 
+      run: |
+        mkdir tmp/ 
+        export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
+        tar -C tmp -xvf modules/dist.cli/target/dist.cli-${PROJECT_VERSION}.tar.gz 
+        tmp/bin/cmclient --version | grep -q "^${PROJECT_VERSION}" 
+
+    - name: Step 4 - Build and Test with Maven
+      run: mvn clean deploy --settings cfg/settings.xml -P signing
