@@ -20,7 +20,5 @@ jobs:
         distribution: 'adopt'
         cache: maven
 
-    - name: Step 3 - Clean and Verify with Maven
-      run:  | 
-        echo "[INFO] Running with profile: noop"
-        mvn --settings cfg/settings.xml -P noop clean verify
+    - name: Step 3 - Verify with Maven
+      run: mvn --batch-mode --update-snapshots verify
