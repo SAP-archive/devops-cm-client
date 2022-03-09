@@ -55,6 +55,7 @@
             <gitDescribe>
               <skip>true</skip>
             </gitDescribe>
+            <useNativeGit>true</useNativeGit>
           </configuration>
         </plugin>
 

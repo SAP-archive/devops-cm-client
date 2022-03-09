@@ -3,7 +3,7 @@ name: Maven Build and Test (Master Branch)
 on: 
   push:
   pull_request:
-    branches: [master]
+    branches: [master, release]
 
 jobs:
   build:
@@ -21,4 +21,11 @@ jobs:
         cache: maven
 
     - name: Step 3 - Verify with Maven
-      run: mvn --batch-mode --update-snapshots clean deploy
+      run: mvn --batch-mode --settings cfg/settings.xml --update-snapshots clean verify
+
+    - name: Step 4 - Check project-version
+      run:  |
+            mkdir tmp/ 
+            export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
+            tar -C tmp -xvf modules/dist.cli/target/dist.cli-${PROJECT_VERSION}.tar.gz 
+            tmp/bin/cmclient --version | grep -q "^${PROJECT_VERSION}"
