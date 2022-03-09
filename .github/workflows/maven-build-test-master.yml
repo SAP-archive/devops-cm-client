@@ -20,5 +20,27 @@ jobs:
         distribution: 'adopt'
         cache: maven
 
-    - name: Step 3 - Build and Test with Maven
-      run: mvn clean deploy --settings cfg/settings.xml -P signing
+    - name: Step 3 - Prepare Code Signing
+      run: |
+        echo "[INFO]: Prepare code signing"
+        openssl aes-256-cbc -K $encrypted_12c8071d2874_key -iv $encrypted_12c8071d2874_iv -in cfg/codesigning.asc.enc -out cfg/codesigning.asc -d
+        if [ "$?" == "0" ]
+        then
+          echo "[INFO]: decrypting private key succeeded. Importing ..."
+          gpg --verbose --fast-import cfg/codesigning.asc
+          if [ "$?" == "0" ]
+          then
+            echo "[INFO]: private key imported."
+          else
+            echo "[ERROR]: private key import failed."
+            exit 1
+          fi
+        else
+          echo "[ERROR]: decrypting private key failed."
+          exit 1
+        fi
+        echo "[INFO] Running with profile: signing"
+        mvn --settings cfg/settings.xml -P signing clean verify
+
+    - name: Step 4 - Build and Test with Maven
+      run:  mvn clean deploy --settings cfg/settings.xml -P signing
