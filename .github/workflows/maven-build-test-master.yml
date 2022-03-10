@@ -2,6 +2,8 @@ name: Maven Build and Test (Master Branch)
 
 on:
   push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
@@ -23,6 +25,7 @@ jobs:
 
     - name: Step 3 - Verify with Maven
       run:  |
+            echo "[INFO]: Not preparing code signing."
             echo "[INFO] Running with profile: noop"
             mvn --settings cfg/settings.xml -P noop clean verify
 
