@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient;
+import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataSolmanClient; 
 
 /**
  * Helpers for using/calling commands.
