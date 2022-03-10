@@ -6,7 +6,7 @@ on:
     branches: [master, release]
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,9 +21,13 @@ jobs:
         cache: maven
 
     - name: Step 3 - Verify with Maven
-      run: mvn --batch-mode --settings cfg/settings.xml --update-snapshots clean verify
+      uses: SAP/project-piper-action@master
+      with:
+        piper-version: master
+        command: mavenBuild
 
-    - name: Step 4 - Check project-version
+
+    - name: Step 4 - Check Project-Version
       run:  |
             mkdir tmp/ 
             export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
