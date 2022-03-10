@@ -20,12 +20,14 @@ jobs:
         distribution: 'adopt'
         cache: maven
 
+    - name: maven version
+      run: mvn --version
+
     - name: Step 3 - Verify with Maven
       uses: SAP/project-piper-action@master
       with:
         piper-version: master
-        command: mavenBuild
-
+        command: mavenBuild 
 
     - name: Step 4 - Check Project-Version
       run:  |
