@@ -39,7 +39,6 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "get-transports",
         "-cID", "8000038673"});
 
@@ -69,7 +68,6 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "get-transports", "-m",
         "-cID", "8000038673"});
 
@@ -83,7 +81,6 @@ public class SolManBackendGetChangeTransportsTest extends SolManBackendCMTranspo
     @Test
     public void testHelp() throws Exception {
         Commands.main(new String[] {
-                "-t", "SOLMAN",
                 "get-transports",
                 "--help"});
         String helpText = IOUtils.toString(result.toByteArray(), "UTF-8");

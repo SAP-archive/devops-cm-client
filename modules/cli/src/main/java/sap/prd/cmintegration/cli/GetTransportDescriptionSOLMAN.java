@@ -11,7 +11,7 @@ import com.sap.cmclient.Transport;
 /**
  * Command for retrieving the description of a transport.
  */
-@CommandDescriptor(name="get-transport-description", type = BackendType.SOLMAN)
+@CommandDescriptor(name="get-transport-description")
 class GetTransportDescriptionSOLMAN extends TransportRelatedSOLMAN {
 
     GetTransportDescriptionSOLMAN(String host, String user, String password, String changeId, String transportId, boolean isReturnCodeMode) {

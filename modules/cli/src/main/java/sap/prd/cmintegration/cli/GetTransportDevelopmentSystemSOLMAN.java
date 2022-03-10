@@ -14,7 +14,7 @@ import sap.ai.st.cm.plugins.ciintegration.odataclient.CMODataTransport;
 /**
  * Command for retrieving the description of a transport.
  */
-@CommandDescriptor(name="get-transport-development-system", type = BackendType.SOLMAN)
+@CommandDescriptor(name="get-transport-development-system")
 class GetTransportDevelopmentSystemSOLMAN extends TransportRelatedSOLMAN {
 
     GetTransportDevelopmentSystemSOLMAN(String host, String user, String password, String changeId, String transportId, boolean isReturnCodeMode) {

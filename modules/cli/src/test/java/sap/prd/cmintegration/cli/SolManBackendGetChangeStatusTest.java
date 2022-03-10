@@ -68,7 +68,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development",
         "-cID", "8000038673"});
 
@@ -91,7 +90,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development",
         "-cID", "8000038673"});
 
@@ -115,7 +113,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development",
         "--return-code",
         "-cID", "8000038673"});
@@ -143,7 +140,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development",
         "--return-code",
         "-cID", "8000038673"});
@@ -165,7 +161,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         "-u", "DOES_NOT_EXIST",
         "-p", "********",
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development",
         "-cID", "8000038673"});
     }
@@ -184,7 +179,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
             "-u", SERVICE_USER,
             "-p", SERVICE_PASSWORD,
             "-e", SERVICE_ENDPOINT,
-            "-t", "SOLMAN",
             "is-change-in-development",
             "-cID", "DOES_NOT_EXIST"});
         } catch(Exception e) {
@@ -206,7 +200,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         "-u", SERVICE_USER,
         "-p", SERVICE_PASSWORD,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development"});
     }
 
@@ -225,7 +218,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
-          "-t", "SOLMAN",
           "is-change-in-development",
           "-cID", "8000038673"});
         } finally {
@@ -253,7 +245,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
-          "-t", "SOLMAN",
           "is-change-in-development", 
           "8000038673"});
         } finally {
@@ -278,7 +269,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
           "-u", SERVICE_USER,
           "-p", "-",
           "-e", SERVICE_ENDPOINT,
-          "-t", "SOLMAN",
           "is-change-in-development",
           "8000038673"});
         } finally {
@@ -299,7 +289,6 @@ public class SolManBackendGetChangeStatusTest extends CMSolmanTestBase {
         Commands.main(new String[] {
         "-u", SERVICE_USER,
         "-e", SERVICE_ENDPOINT,
-        "-t", "SOLMAN",
         "is-change-in-development",
         "8000038673"});
     }

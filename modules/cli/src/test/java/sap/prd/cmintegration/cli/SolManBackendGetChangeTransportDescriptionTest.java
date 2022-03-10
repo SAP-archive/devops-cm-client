@@ -17,7 +17,6 @@ public class SolManBackendGetChangeTransportDescriptionTest extends SolManBacken
                 "-u", SERVICE_USER,
                 "-p", SERVICE_PASSWORD,
                 "-e", SERVICE_ENDPOINT,
-                "-t", "SOLMAN",
                 "get-transport-description",
                 "-cID", "8000038673", "-tID", "L21K900026"});
 

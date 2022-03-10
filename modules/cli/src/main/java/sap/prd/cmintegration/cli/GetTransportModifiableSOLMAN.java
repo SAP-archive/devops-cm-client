@@ -11,7 +11,7 @@ import com.sap.cmclient.Transport;
 /**
  *  Checks if a transport is modifiable.
  */
-@CommandDescriptor(name="is-transport-modifiable", type = BackendType.SOLMAN)
+@CommandDescriptor(name="is-transport-modifiable")
 class GetTransportModifiableSOLMAN extends TransportRelatedSOLMAN {
 
     private static class Opts {

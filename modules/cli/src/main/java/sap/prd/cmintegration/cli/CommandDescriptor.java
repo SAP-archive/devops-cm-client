@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import sap.prd.cmintegration.cli.BackendType;
-
 /**
  * Contains the name of the command as it is used from the command line.
  */
@@ -14,5 +12,4 @@ import sap.prd.cmintegration.cli.BackendType;
 @Target(ElementType.TYPE)
 @interface CommandDescriptor {
     String name();
-    BackendType type();
 }

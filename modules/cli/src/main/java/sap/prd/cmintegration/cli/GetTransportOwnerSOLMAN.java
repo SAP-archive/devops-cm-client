@@ -11,7 +11,7 @@ import com.sap.cmclient.Transport;
 /**
  * Command for retrieving the owner of a transport.
  */
-@CommandDescriptor(name="get-transport-owner", type = BackendType.SOLMAN)
+@CommandDescriptor(name="get-transport-owner")
 class GetTransportOwnerSOLMAN extends TransportRelatedSOLMAN {
 
     GetTransportOwnerSOLMAN(String host, String user, String password, String changeId, String transportId, boolean returnCodeMode) {
