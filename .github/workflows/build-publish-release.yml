@@ -1,0 +1,27 @@
+name: Release - Maven Build and publish to Central
+
+on:
+  push:
+  pull_request:
+    branches:
+      - release
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+        
+    steps:
+    - name: Step 1 - Checkout release branch from GitHub
+      uses: actions/checkout@v2
+
+    - name: Step 2 - Set up JDK 1.8
+      uses: actions/setup-java@v2
+      with:
+        java-version: '8'
+        distribution: 'adopt'
+        cache: maven
+
+    - name: Step 3 - Verify with Maven
+      run:  |
+            echo "[INFO] Running with profile: signing"
+            mvn --batch-mode --settings cfg/settings.xml -P signing clean verify
