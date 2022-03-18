@@ -1,0 +1,49 @@
+name: Release - Maven Build and publish to Central
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Step 1 - Checkout release branch from GitHub
+        uses: actions/checkout@v2
+
+      - name: Step 2 - Set up Apache Maven Central
+        uses: actions/setup-java@v2
+        with: # running setup-java again overwrites the settings.xml
+          java-version: '8'
+          distribution: 'adopt'
+          cache: 'maven'
+          server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
+          server-username: OSSRH_JIRA_USERNAME # env variable for username in deploy
+          server-password: OSSRH_JIRA_PASSWORD # env variable for token in deploy
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
+          gpg-passphrase: GPG_PASSPHRASE # env variable for GPG Passphrase
+
+      - name: Step 3 - Verify with Maven
+        run:  |
+              export GPG_TTY=$(tty)  
+              echo "[INFO] Running with profile: signing"
+              mvn --batch-mode --settings cfg/settings.xml -P signing clean verify
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Step 4 - Check Project-Version
+        run:  |
+              mkdir tmp/ 
+              export PROJECT_VERSION=`mvn -q -Dexec.executable="echo" -Dexec.args='${project.version}' --non-recursive exec:exec` 
+              tar -C tmp -xvf modules/dist.cli/target/dist.cli-${PROJECT_VERSION}.tar.gz 
+              tmp/bin/cmclient --version | grep -q "^${PROJECT_VERSION}"
+
+      - name: Step 5 - Publish package
+        run: mvn --batch-mode clean deploy --settings cfg/settings.xml -P signing -DstagingProfileId=22fbc0443d9154 
+        env:
+          OSSRH_JIRA_USERNAME: ${{ secrets.OSSRH_JIRA_USERNAME }}
+          OSSRH_JIRA_PASSWORD: ${{ secrets.OSSRH_JIRA_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+     

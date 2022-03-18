@@ -27,7 +27,7 @@ jobs:
       run:  |
             echo "[INFO]: Not preparing code signing."
             echo "[INFO] Running with profile: noop"
-            mvn --settings cfg/settings.xml -P noop clean verify
+            mvn --batch-mode --settings cfg/settings.xml -P noop clean verify
 
     - name: Step 4 - Check Project-Version
       run:  |
