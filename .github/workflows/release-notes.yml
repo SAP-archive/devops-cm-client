@@ -22,11 +22,12 @@ jobs:
 
       - name: Step 3 - Set Piper-Version
         run:  |
+              curl --insecure --silent --location --write-out '%{http_code}' --output ./piper_master https://github.com/SAP/jenkins-library/releases/latest/download/piper_master
               echo "PIPER_version = v${{ github.event.inputs.tag }}" >> $GITHUB_ENV
 
       - name: Step 4 - Publish a Release on Github
         uses: SAP/project-piper-action@master
         with:
-          command: githubPublishRelease
           piper-version: master
-          flags: --token ${{ secrets.GITHUB_TOKEN }} 
+          command: githubPublishRelease
+          flags: --token ${{ secrets.GITHUB_TOKEN }} --assetPath ./piper_master
