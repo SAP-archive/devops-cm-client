@@ -19,13 +19,11 @@ jobs:
           java-version: '8'
 
       - name: Prepare Release
-        run:  |
-              curl --insecure --silent --location --write-out '%{http_code}' --output ./piper_master https://github.com/SAP/jenkins-library/releases/latest/download/piper_master
-              echo "PIPER_version = ${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+        run:  echo "PIPER_version = ${{ github.event.inputs.tag }}" >> $GITHUB_ENV
 
       - uses: SAP/project-piper-action@master
         name: Publish Release
         with:
           piper-version: master
           command: githubPublishRelease
-          flags: --token ${{ secrets.GITHUB_TOKEN }} --version ${{ github.event.inputs.tag }} --assetPath ./piper_master
+          flags: --token ${{ secrets.GITHUB_TOKEN }} --version ${{ github.event.inputs.tag }} 

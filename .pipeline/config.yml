@@ -11,4 +11,4 @@ steps:
       - 'stale'
     owner: 'JulianPSchmitt'
     repository: 'devops-cm-client'
-    releaseBodyHeader: 'test'
+    releaseBodyHeader: ''
