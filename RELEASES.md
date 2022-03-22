@@ -1,4 +1,7 @@
 # Release Notes
+* 3.0.0 Remove Interaction with CTS 
+  * Incompatible changes: 
+    * Remove --backend-type Option 
 * 2.0.1 Allow also empty DevelopmentSystemIds
   * Bug fixes:
     * The client is now able to deal with empty development system ids.
