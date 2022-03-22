@@ -6,6 +6,14 @@ on:
       tag:
         description: 'Define name for new Tag'
         required: true
+      branch:
+        description: 'Choose Branch to release'
+        required: true
+        type: choice
+        options: 
+          - master
+          - release
+          - docker
     
 jobs:
   build:
@@ -25,4 +33,4 @@ jobs:
         with:
           piper-version: master
           command: githubPublishRelease
-          flags: --token ${{ secrets.GITHUB_TOKEN }} --version ${{ github.event.inputs.tag }} 
+          flags: --token ${{ secrets.GITHUB_TOKEN }} --version ${{ github.event.inputs.tag }} --commitish ${{ github.event.inputs.branch }}
