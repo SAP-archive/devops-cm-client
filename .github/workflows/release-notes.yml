@@ -28,7 +28,7 @@ jobs:
         with:
           java-version: '8'
 
-      - name: Publish Release
+      - name: Step 3 - Publish Release
         uses: SAP/project-piper-action@master
         with:
           piper-version: master

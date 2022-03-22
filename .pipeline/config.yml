@@ -9,6 +9,6 @@ steps:
       - 'question'
       - 'wontfix'
       - 'stale'
-    owner: 'JulianPSchmitt'
+    owner: 'SAP'
     repository: 'devops-cm-client'
     releaseBodyHeader: ''
