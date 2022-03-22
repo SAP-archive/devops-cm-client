@@ -1,0 +1,36 @@
+name: Release Notes
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Define name for new Tag'
+        required: true
+      branch:
+        description: 'Choose Branch to release'
+        required: true
+        type: choice
+        options: 
+          - master
+          - release
+          - docker
+    
+jobs:
+  build:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 - Checkout Repository from GitHub
+        uses: actions/checkout@v1
+
+      - name: Step 2 - Setup JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+
+      - name: Step 3 - Publish Release
+        uses: SAP/project-piper-action@master
+        with:
+          piper-version: master
+          command: githubPublishRelease
+          flags: --token ${{ secrets.GITHUB_TOKEN }} --version ${{ github.event.inputs.tag }} --commitish ${{ github.event.inputs.branch }}
